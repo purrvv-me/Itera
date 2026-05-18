@@ -16,7 +16,13 @@
   <a href="https://github.com/purrvv-me/Itera">Repository</a>
   ·
   <a href="https://purrvv-me.github.io/Itera/">Website</a>
+  ·
+  <a href="https://github.com/purrvv-me/Itera/releases">Releases</a>
 </p>
+
+## About
+
+Itera is a disposable browser prototype for Windows. It opens as its own minimal browser app, creates a fresh temporary identity for each launch, and destroys that identity when the window closes.
 
 ## What Itera Is
 
