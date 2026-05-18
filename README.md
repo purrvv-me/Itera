@@ -1,0 +1,179 @@
+<p align="center">
+  <img src="app/logo.svg" alt="Itera logo" width="180">
+</p>
+
+<h1 align="center">Itera</h1>
+
+<p align="center">
+  Disposable browser. Every launch begins again.
+</p>
+
+<p align="center">
+  <strong>One launch = one life. Close = death. Next launch = new identity.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/purrvv-me/Itera">Repository</a>
+  ·
+  <a href="https://purrvv-me.github.io/Itera/">Website</a>
+</p>
+
+## What Itera Is
+
+Itera is an experimental disposable browser.
+
+Modern browsers remember the user. Private modes try to hide parts of the session. Itera is built around a different idea: a browser identity exists for one session only. When the browser closes, the identity and its profile are destroyed.
+
+Itera is not meant to be another private browser, a Tor replacement, a VPN, a tracker blocker, or a dressed-up incognito mode. The product goal is simpler and stricter:
+
+> The previous browser identity no longer exists.
+
+## Current Status
+
+The main direction is now the Electron browser shell in [`electron-app`](electron-app/). It gives Itera its own window, address bar, icon, start page, and disposable Electron/Chromium session.
+
+The older Python/Firefox ESR wrapper is still in the repository as a proof of concept for the original disposable-profile lifecycle, but it is no longer the preferred product direction.
+
+## What Works
+
+- Standalone-looking Itera window.
+- Custom Itera icon and start page.
+- Minimal browser chrome with address bar, back, forward, and reload.
+- Disposable Electron/Chromium `userData` directory under `%TEMP%\Itera`.
+- Session cleanup after close.
+- Startup cleanup for abandoned Itera session folders.
+- Portable Windows build through Electron Builder.
+
+## What Itera Destroys
+
+The intended disposable session surface includes:
+
+- cookies
+- cache
+- browsing state
+- localStorage
+- IndexedDB
+- permissions
+- form/login state
+- browser profile files
+
+In the Electron build, this is handled by creating a temporary app data/session directory for each run and removing it after the app exits.
+
+## Run The Electron App
+
+From source:
+
+```powershell
+cd C:\Itera\electron-app
+npm.cmd install
+npm.cmd run dev
+```
+
+If your shell has `ELECTRON_RUN_AS_NODE=1`, use the helper:
+
+```powershell
+cd C:\Itera
+powershell -ExecutionPolicy Bypass -File .\run-electron-dev.ps1
+```
+
+Run the built app:
+
+```powershell
+C:\Itera\electron-app\dist\win-unpacked\Itera.exe
+```
+
+Or run the portable executable:
+
+```powershell
+C:\Itera\electron-app\dist\"Itera 0.2.0.exe"
+```
+
+## Build
+
+Build the Electron portable app:
+
+```powershell
+cd C:\Itera
+powershell -ExecutionPolicy Bypass -File .\build-electron.ps1
+```
+
+Build output:
+
+```text
+electron-app\dist\
+  win-unpacked\
+    Itera.exe
+  Itera 0.2.0.exe
+```
+
+## GitHub Pages
+
+The product landing page lives in [`docs/index.html`](docs/index.html).
+
+To publish it on GitHub:
+
+1. Push the repository to [`purrvv-me/Itera`](https://github.com/purrvv-me/Itera).
+2. Open repository **Settings**.
+3. Go to **Pages**.
+4. Set source to **Deploy from a branch**.
+5. Select branch `main` and folder `/docs`.
+6. Save.
+
+GitHub will publish the page here:
+
+```text
+https://purrvv-me.github.io/Itera/
+```
+
+## Architecture
+
+```text
+electron-app/
+  main.js          Electron lifecycle, disposable session cleanup
+  preload.js       Safe bridge from app shell to renderer
+  src/
+    index.html     Itera browser shell
+    renderer.js    Navigation and address bar behavior
+    home.html      Itera start page
+    styles.css     Browser shell styling
+    home.css       Start page styling
+  assets/
+    logo.svg       Itera visual mark
+    itera.ico      Windows app icon
+```
+
+The old Firefox proof of concept remains here:
+
+```text
+itera_launcher.py
+build.ps1
+app/
+runtime/
+```
+
+## Roadmap
+
+- Stronger session monitor.
+- RAM-only mode.
+- Per-site disposable identities.
+- Optional proxy/VPN/Tor routing modes.
+- Better crash recovery and cleanup verification.
+- Installer and signed Windows release.
+
+These are future features. The current priority is the core product loop:
+
+```text
+open Itera -> browser identity is born
+close Itera -> identity is destroyed
+open again -> a new identity begins
+```
+
+## Design Language
+
+Itera should feel sterile, minimal, memoryless, temporary, and calm. The visual identity uses a single burning match on a near-black field with warm orange `ITERA` lettering.
+
+Avoid cyberpunk, hacker-tool, military-security, and fake privacy aesthetics.
+
+## Security Note
+
+Itera is experimental software. It should not yet be treated as a hardened anonymity tool. The current implementation focuses on disposable local browser identity, not network anonymity.

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Itera</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #030814;
+        --fg: #f3eee7;
+        --muted: #9a918a;
+        --line: rgba(255, 138, 66, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: var(--bg);
+        color: var(--fg);
+        font-family: "Segoe UI", system-ui, sans-serif;
+      }
+
+      main {
+        width: min(760px, calc(100vw - 48px));
+        display: grid;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .logo {
+        width: min(280px, 58vw);
+        aspect-ratio: 1;
+        display: block;
+        object-fit: contain;
+      }
+
+      h1 {
+        margin: -18px 0 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(34px, 8vw, 58px);
+        line-height: 1;
+        font-weight: 400;
+        letter-spacing: 0.5em;
+        text-indent: 0.5em;
+        color: #ff8a42;
+      }
+
+      p {
+        margin: 22px 0 0;
+        max-width: 460px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.45;
+      }
+
+      .status {
+        margin-top: 48px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+        width: min(420px, 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img class="logo" src="logo.svg" alt="Itera">
+      <h1>ITERA</h1>
+      <p>Disposable browser. Every launch begins again.</p>
+      <div class="status">Temporary identity active</div>
+    </main>
+  </body>
+</html>

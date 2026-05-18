@@ -1,0 +1,15 @@
+{
+  "policies": {
+    "DisableAppUpdate": true,
+    "DisableDefaultBrowserAgent": true,
+    "DisableFirefoxAccounts": true,
+    "DisableFirefoxStudies": true,
+    "DisablePocket": true,
+    "DisableProfileImport": true,
+    "DisableTelemetry": true,
+    "DontCheckDefaultBrowser": true,
+    "NoDefaultBookmarks": true,
+    "OfferToSaveLogins": false,
+    "PasswordManagerEnabled": false
+  }
+}

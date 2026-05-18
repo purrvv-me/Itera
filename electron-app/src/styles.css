@@ -1,0 +1,115 @@
+:root {
+  color-scheme: dark;
+  --bg: #030814;
+  --bar: #080d18;
+  --bar-2: #0d1320;
+  --field: #111827;
+  --field-border: #202938;
+  --text: #f3eee7;
+  --muted: #8f98a8;
+  --orange: #ff8a42;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif;
+}
+
+.browser-shell {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 52px minmax(0, 1fr);
+  background: var(--bg);
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: 40px auto minmax(160px, 1fr) 34px;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, var(--bar-2), var(--bar));
+  border-bottom: 1px solid #151c2b;
+}
+
+.brand {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+
+.brand img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: repeat(3, 34px);
+  gap: 4px;
+}
+
+button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 23px;
+  line-height: 1;
+  cursor: default;
+}
+
+button:hover {
+  background: #151c2b;
+  color: var(--text);
+}
+
+.address {
+  margin: 0;
+}
+
+.address input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--field-border);
+  border-radius: 8px;
+  padding: 0 14px;
+  outline: none;
+  background: var(--field);
+  color: var(--text);
+  font: 14px "Segoe UI", system-ui, sans-serif;
+}
+
+.address input:focus {
+  border-color: rgba(255, 138, 66, 0.52);
+}
+
+.session-state {
+  width: 10px;
+  height: 10px;
+  justify-self: center;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 18px rgba(255, 138, 66, 0.42);
+}
+
+webview {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+}

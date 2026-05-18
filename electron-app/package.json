@@ -1,0 +1,46 @@
+{
+  "name": "itera-browser",
+  "version": "0.2.0",
+  "description": "Itera disposable browser shell.",
+  "main": "main.js",
+  "private": true,
+  "scripts": {
+    "dev": "electron .",
+    "start": "electron .",
+    "package": "electron-builder --win portable",
+    "dist": "electron-builder --win nsis portable"
+  },
+  "build": {
+    "appId": "app.itera.browser",
+    "productName": "Itera",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "icon": "assets/itera.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        "portable",
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Itera"
+    }
+  },
+  "devDependencies": {
+    "electron": "^39.2.6",
+    "electron-builder": "^26.0.12"
+  }
+}

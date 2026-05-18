@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+dist/
+build/
+*.spec
+runtime/firefox-esr/
+.cache/
+electron-app/node_modules/
+electron-app/dist/
+electron-app/assets/itera.ico
+electron-app/.electron-cache/
+electron-app/.electron-builder-cache/
