@@ -1,3 +1,4 @@
+!!APP IS STILL IN DEVELOP, AND FOR NOW DON'T WORKING!!
 <p align="center">
   <img src="app/logo.svg" alt="Itera logo" width="180">
 </p>
