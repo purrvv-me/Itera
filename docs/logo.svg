@@ -1,0 +1,36 @@
+<svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Itera match mark</title>
+  <desc id="desc">A single burning match.</desc>
+
+  <g filter="url(#matchShadow)">
+    <path d="M174 145C174 140 179 135 184 135C190 135 195 140 195 146V267C195 275 189 281 181 281C173 281 167 275 167 267L174 145Z" fill="url(#wood)"/>
+    <path d="M167 267H195L181 281L167 267Z" fill="#F1B46C"/>
+    <path d="M176 146C178 143 181 141 184 141C189 141 192 145 193 149L192 163C190 158 186 156 182 157C177 159 173 155 176 146Z" fill="#1B100B"/>
+    <path d="M183 50C199 81 207 109 198 134C195 146 187 155 181 161C172 153 165 142 163 129C162 105 174 78 183 50Z" fill="url(#flameOuter)"/>
+    <path d="M184 78C193 99 197 117 191 132C188 139 185 144 180 149C175 142 171 134 172 125C174 108 180 92 184 78Z" fill="url(#flameInner)"/>
+  </g>
+
+  <defs>
+    <linearGradient id="wood" x1="167" y1="208" x2="195" y2="208" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D88939"/>
+      <stop offset="0.42" stop-color="#FFE0A5"/>
+      <stop offset="0.68" stop-color="#D98937"/>
+      <stop offset="1" stop-color="#8C4A1D"/>
+    </linearGradient>
+    <linearGradient id="flameOuter" x1="181" y1="50" x2="181" y2="161" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2671E"/>
+      <stop offset="0.28" stop-color="#FFB13F"/>
+      <stop offset="0.62" stop-color="#FF7A21"/>
+      <stop offset="1" stop-color="#24100A"/>
+    </linearGradient>
+    <linearGradient id="flameInner" x1="181" y1="78" x2="181" y2="149" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0A8"/>
+      <stop offset="0.45" stop-color="#FFC24D"/>
+      <stop offset="1" stop-color="#FF6B1A"/>
+    </linearGradient>
+    <filter id="matchShadow" x="95" y="15" width="170" height="300" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#000000" flood-opacity="0.55"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#FF7A21" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+</svg>
