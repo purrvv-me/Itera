@@ -97,11 +97,16 @@ body {
   -webkit-app-region: no-drag;
 }
 
+.window-controls * {
+  -webkit-app-region: no-drag;
+}
+
 .window-button {
   width: 46px;
   height: 37px;
   border-radius: 0;
   color: #c9ced8;
+  -webkit-app-region: no-drag;
 }
 
 .window-button svg {
@@ -148,6 +153,7 @@ button {
   font-size: 21px;
   line-height: 1;
   cursor: default;
+  -webkit-app-region: no-drag;
 }
 
 button svg {
@@ -160,6 +166,8 @@ button svg {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+  pointer-events: none;
+  -webkit-app-region: no-drag;
 }
 
 .tool-button svg {
