@@ -1,6 +1,6 @@
 # Release Notes
 
-## v0.2.0 - Standalone Disposable Browser Prototype
+## v1.0 - Standalone Disposable Browser Prototype
 
 Itera now behaves like a standalone browser product instead of a launcher script. The app opens directly into an Itera browser window, creates a fresh disposable identity for the session, and removes that identity after close.
 
@@ -17,7 +17,7 @@ Itera now behaves like a standalone browser product instead of a launcher script
 
 Use the Windows portable build from the GitHub Release assets:
 
-- `Itera-0.2.0.exe`
+- `Itera 1.0.exe`
 
 ### Current Limitations
 

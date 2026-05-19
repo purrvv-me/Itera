@@ -92,7 +92,7 @@ C:\Itera\electron-app\dist\win-unpacked\Itera.exe
 Or run the portable executable:
 
 ```powershell
-C:\Itera\electron-app\dist\"Itera 0.2.0.exe"
+C:\Itera\electron-app\dist\"Itera 1.0.exe"
 ```
 
 ## Build
@@ -110,7 +110,7 @@ Build output:
 electron-app\dist\
   win-unpacked\
     Itera.exe
-  Itera 0.2.0.exe
+  Itera 1.0.exe
 ```
 
 ## GitHub Pages
