@@ -1,4 +1,3 @@
-!!APP IS STILL IN DEVELOP, AND FOR NOW DON'T WORKING!!
 <p align="center">
   <img src="app/logo.svg" alt="Itera logo" width="180">
 </p>
@@ -18,7 +17,9 @@
   ·
   <a href="https://purrvv-me.github.io/Itera/">Website</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases">Releases</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/download/v1.0/Itera-1.0.exe">Download for Windows</a>
+  ·
+  <a href="https://github.com/purrvv-me/Itera/releases/tag/v1.0">Release 1.0</a>
 </p>
 
 ## About
@@ -113,24 +114,11 @@ electron-app\dist\
   Itera-1.0.exe
 ```
 
-## GitHub Pages
+## Website
 
-The product landing page lives in [`docs/index.html`](docs/index.html).
+The public product site lives in [`docs/index.html`](docs/index.html) and is published through GitHub Pages:
 
-To publish it on GitHub:
-
-1. Push the repository to [`purrvv-me/Itera`](https://github.com/purrvv-me/Itera).
-2. Open repository **Settings**.
-3. Go to **Pages**.
-4. Set source to **Deploy from a branch**.
-5. Select branch `main` and folder `/docs`.
-6. Save.
-
-GitHub will publish the page here:
-
-```text
 https://purrvv-me.github.io/Itera/
-```
 
 ## Architecture
 
