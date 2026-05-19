@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/logo.svg" alt="Itera logo" width="180">
+  <img src="app/itera-logo.png" alt="Itera logo" width="520">
 </p>
 
 <h1 align="center">Itera</h1>
