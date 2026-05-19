@@ -16,7 +16,7 @@
     "directories": {
       "output": "dist"
     },
-    "artifactName": "Itera 1.0.${ext}",
+    "artifactName": "Itera-1.0.${ext}",
     "files": [
       "main.js",
       "preload.js",
