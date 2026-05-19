@@ -8,29 +8,56 @@
   </head>
   <body>
     <div class="browser-shell">
-      <div class="tabbar" aria-label="Tabs">
-        <button id="activeTab" class="tab active" type="button" title="Current tab">
-          <img src="../assets/logo.svg" alt="">
-          <span id="tabTitle">New identity</span>
-        </button>
-        <button id="newTabButton" class="new-tab" type="button" title="New start page" aria-label="New start page">+</button>
+      <div class="windowbar">
+        <div class="tabbar" aria-label="Tabs">
+          <button id="activeTab" class="tab active" type="button" title="Current tab">
+            <img src="../assets/logo.svg" alt="">
+            <span id="tabTitle">New identity</span>
+          </button>
+          <button id="newTabButton" class="new-tab icon-button" type="button" title="New start page" aria-label="New start page">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="window-controls" aria-label="Window controls">
+          <button id="minimizeWindowButton" class="window-button" type="button" title="Minimize" aria-label="Minimize">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18h12"/></svg>
+          </button>
+          <button id="maximizeWindowButton" class="window-button" type="button" title="Maximize" aria-label="Maximize">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h8v8H8z"/></svg>
+          </button>
+          <button id="closeWindowButton" class="window-button close-window" type="button" title="Close" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>
+          </button>
+        </div>
       </div>
       <header class="topbar">
         <div class="brand" aria-label="Itera">
           <img src="../assets/logo.svg" alt="">
         </div>
         <nav class="controls" aria-label="Browser controls">
-          <button id="backButton" title="Back" aria-label="Back">‹</button>
-          <button id="forwardButton" title="Forward" aria-label="Forward">›</button>
-          <button id="reloadButton" title="Reload" aria-label="Reload">↻</button>
-          <button id="homeButton" title="Home" aria-label="Home">⌂</button>
+          <button id="backButton" class="icon-button" title="Back" aria-label="Back">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button id="forwardButton" class="icon-button" title="Forward" aria-label="Forward">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <button id="reloadButton" class="icon-button" title="Reload" aria-label="Reload">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>
+          </button>
+          <button id="homeButton" class="icon-button" title="Home" aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10.5V19h11v-8.5"/></svg>
+          </button>
         </nav>
         <form id="addressForm" class="address" autocomplete="off">
           <input id="addressInput" spellcheck="false" aria-label="Address" placeholder="Search or enter address">
         </form>
         <div class="right-tools">
-          <button id="settingsButton" class="tool-button" title="Settings" aria-label="Settings">⚙</button>
-          <button id="menuButton" class="tool-button" title="Menu" aria-label="Menu">☰</button>
+          <button id="settingsButton" class="icon-button tool-button" title="Settings" aria-label="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/><path d="M19 12a7 7 0 0 0-.09-1.11l2.01-1.56-2-3.46-2.38.96a7 7 0 0 0-1.93-1.11L14.25 3h-4.5l-.36 2.72a7 7 0 0 0-1.93 1.11l-2.38-.96-2 3.46 2.01 1.56A7 7 0 0 0 5 12c0 .38.03.75.09 1.11l-2.01 1.56 2 3.46 2.38-.96a7 7 0 0 0 1.93 1.11l.36 2.72h4.5l.36-2.72a7 7 0 0 0 1.93-1.11l2.38.96 2-3.46-2.01-1.56c.06-.36.09-.73.09-1.11z"/></svg>
+          </button>
+          <button id="menuButton" class="icon-button tool-button" title="Menu" aria-label="Menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg>
+          </button>
           <div class="session-state" title="Temporary identity active"><span>Identity alive</span></div>
         </div>
       </header>
@@ -42,7 +69,9 @@
             <h2>Settings</h2>
             <p>Disposable identity controls</p>
           </div>
-          <button id="closeSettingsButton" type="button" aria-label="Close settings">×</button>
+          <button id="closeSettingsButton" class="icon-button" type="button" aria-label="Close settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>
+          </button>
         </div>
 
         <section class="setting-group">

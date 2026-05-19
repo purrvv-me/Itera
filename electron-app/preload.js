@@ -17,6 +17,12 @@ contextBridge.exposeInMainWorld("itera", {
   closeWindow() {
     ipcRenderer.send("itera-close-window");
   },
+  minimizeWindow() {
+    ipcRenderer.send("itera-minimize-window");
+  },
+  toggleMaximizeWindow() {
+    ipcRenderer.send("itera-toggle-maximize-window");
+  },
   onOpenUrl(callback) {
     ipcRenderer.on("itera-open-url", (_event, url) => callback(url));
   }

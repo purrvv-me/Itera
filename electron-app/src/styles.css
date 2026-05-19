@@ -33,32 +33,41 @@ body {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 40px 50px minmax(0, 1fr);
+  grid-template-rows: 38px 50px minmax(0, 1fr);
   background: var(--bg);
 }
 
+.windowbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  background: #11131a;
+  border-bottom: 1px solid var(--chrome-line);
+  -webkit-app-region: drag;
+}
+
 .tabbar {
+  min-width: 0;
   display: flex;
   align-items: end;
   gap: 4px;
-  padding: 4px 12px 0;
-  background: #11131a;
-  border-bottom: 1px solid var(--chrome-line);
+  padding: 4px 10px 0;
 }
 
 .tab {
   width: min(280px, 34vw);
-  height: 36px;
+  height: 34px;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 0 14px;
   border: 1px solid var(--chrome-line);
   border-bottom-color: transparent;
-  border-radius: 7px 7px 0 0;
+  border-radius: 6px 6px 0 0;
   background: #222530;
   color: var(--text);
   font-size: 13px;
+  -webkit-app-region: no-drag;
 }
 
 .tab img {
@@ -76,9 +85,28 @@ body {
 
 .new-tab {
   width: 32px;
-  height: 34px;
-  margin-bottom: 0;
-  font-size: 20px;
+  height: 32px;
+  margin-bottom: 1px;
+  -webkit-app-region: no-drag;
+}
+
+.window-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  align-items: stretch;
+  -webkit-app-region: no-drag;
+}
+
+.window-button {
+  width: 46px;
+  height: 37px;
+  border-radius: 0;
+  color: #c9ced8;
+}
+
+.window-button svg {
+  width: 13px;
+  height: 13px;
 }
 
 .topbar {
@@ -122,6 +150,24 @@ button {
   cursor: default;
 }
 
+button svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  margin: auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tool-button svg {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.85;
+}
+
 button:disabled {
   opacity: 0.38;
 }
@@ -129,6 +175,15 @@ button:disabled {
 button:not(:disabled):hover {
   background: #2a2e39;
   color: var(--text);
+}
+
+.window-button:not(:disabled):hover {
+  background: #2a2d36;
+}
+
+.close-window:not(:disabled):hover {
+  background: #c42b1c;
+  color: #ffffff;
 }
 
 .address {

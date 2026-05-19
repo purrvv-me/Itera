@@ -47,6 +47,7 @@ async function createWindow() {
     minHeight: 620,
     title: APP_NAME,
     icon: iconPath,
+    frame: false,
     backgroundColor: "#030814",
     autoHideMenuBar: true,
     webPreferences: {
@@ -201,6 +202,24 @@ app.on("web-contents-created", (_event, contents) => {
 ipcMain.on("itera-close-window", () => {
   if (mainWindow && !mainWindow.isDestroyed()) {
     mainWindow.close();
+  }
+});
+
+ipcMain.on("itera-minimize-window", () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.minimize();
+  }
+});
+
+ipcMain.on("itera-toggle-maximize-window", () => {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
   }
 });
 
