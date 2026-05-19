@@ -17,9 +17,6 @@ const menuSettingsButton = document.getElementById("menuSettingsButton");
 const menuDestroyButton = document.getElementById("menuDestroyButton");
 const destroySessionButton = document.getElementById("destroySessionButton");
 const searchEngineSelect = document.getElementById("searchEngineSelect");
-const minimizeWindowButton = document.getElementById("minimizeWindowButton");
-const maximizeWindowButton = document.getElementById("maximizeWindowButton");
-const closeWindowButton = document.getElementById("closeWindowButton");
 
 const fallbackHomeUrl = new URL("home.html", window.location.href).href;
 const homeUrl = window.itera?.homeUrl || fallbackHomeUrl;
@@ -48,18 +45,6 @@ forwardButton.addEventListener("click", () => {
 
 reloadButton.addEventListener("click", () => {
   webview.reload();
-});
-
-minimizeWindowButton.addEventListener("click", () => {
-  window.itera?.minimizeWindow();
-});
-
-maximizeWindowButton.addEventListener("click", () => {
-  window.itera?.toggleMaximizeWindow();
-});
-
-closeWindowButton.addEventListener("click", () => {
-  window.itera?.closeWindow();
 });
 
 homeButton.addEventListener("click", openHome);

@@ -38,12 +38,9 @@ body {
 }
 
 .windowbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: stretch;
+  display: block;
   background: #11131a;
   border-bottom: 1px solid var(--chrome-line);
-  -webkit-app-region: drag;
 }
 
 .tabbar {
@@ -67,7 +64,6 @@ body {
   background: #222530;
   color: var(--text);
   font-size: 13px;
-  -webkit-app-region: no-drag;
 }
 
 .tab img {
@@ -87,31 +83,6 @@ body {
   width: 32px;
   height: 32px;
   margin-bottom: 1px;
-  -webkit-app-region: no-drag;
-}
-
-.window-controls {
-  display: grid;
-  grid-template-columns: repeat(3, 46px);
-  align-items: stretch;
-  -webkit-app-region: no-drag;
-}
-
-.window-controls * {
-  -webkit-app-region: no-drag;
-}
-
-.window-button {
-  width: 46px;
-  height: 37px;
-  border-radius: 0;
-  color: #c9ced8;
-  -webkit-app-region: no-drag;
-}
-
-.window-button svg {
-  width: 13px;
-  height: 13px;
 }
 
 .topbar {
@@ -153,7 +124,6 @@ button {
   font-size: 21px;
   line-height: 1;
   cursor: default;
-  -webkit-app-region: no-drag;
 }
 
 button svg {
@@ -167,7 +137,6 @@ button svg {
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
-  -webkit-app-region: no-drag;
 }
 
 .tool-button svg {
@@ -183,15 +152,6 @@ button:disabled {
 button:not(:disabled):hover {
   background: #2a2e39;
   color: var(--text);
-}
-
-.window-button:not(:disabled):hover {
-  background: #2a2d36;
-}
-
-.close-window:not(:disabled):hover {
-  background: #c42b1c;
-  color: #ffffff;
 }
 
 .address {
