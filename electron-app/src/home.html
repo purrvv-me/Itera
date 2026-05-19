@@ -7,11 +7,53 @@
     <link rel="stylesheet" href="home.css">
   </head>
   <body>
-    <main>
-      <img class="logo" src="../assets/logo.svg" alt="Itera">
-      <h1>ITERA</h1>
-      <p>Disposable browser. Every launch begins again.</p>
-      <div class="status">Temporary identity active</div>
+    <main class="home-shell">
+      <img class="ghost-mark" src="../assets/logo.svg" alt="">
+      <section class="identity-panel" aria-label="Itera start">
+        <div class="brand-lockup">
+          <img class="logo" src="../assets/logo.svg" alt="Itera">
+          <div>
+            <h1>ITERA</h1>
+            <p>Every launch begins again.</p>
+          </div>
+        </div>
+
+        <form id="homeSearch" class="home-search" autocomplete="off">
+          <span class="search-mark" aria-hidden="true"></span>
+          <input id="homeSearchInput" aria-label="Search or enter address" spellcheck="false" placeholder="Search or enter address">
+          <button type="submit" aria-label="Open">Begin</button>
+        </form>
+
+        <div class="session-line" aria-label="Disposable session state">
+          <span>Born now</span>
+          <span>Temporary identity active</span>
+          <span>No past survives</span>
+        </div>
+      </section>
     </main>
+    <script>
+      const form = document.getElementById("homeSearch");
+      const input = document.getElementById("homeSearchInput");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const value = input.value.trim();
+        if (!value) {
+          return;
+        }
+
+        if (/^(https?|file|about):/i.test(value)) {
+          window.location.href = value;
+          return;
+        }
+
+        if (value.includes(".") && !value.includes(" ")) {
+          window.location.href = `https://${value}`;
+          return;
+        }
+
+        window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(value)}`;
+      });
+    </script>
   </body>
 </html>

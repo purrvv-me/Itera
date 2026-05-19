@@ -8,21 +8,83 @@
   </head>
   <body>
     <div class="browser-shell">
+      <div class="tabbar" aria-label="Tabs">
+        <button id="activeTab" class="tab active" type="button" title="Current tab">
+          <img src="../assets/logo.svg" alt="">
+          <span id="tabTitle">New identity</span>
+        </button>
+        <button id="newTabButton" class="new-tab" type="button" title="New start page" aria-label="New start page">+</button>
+      </div>
       <header class="topbar">
         <div class="brand" aria-label="Itera">
           <img src="../assets/logo.svg" alt="">
+          <span>Itera</span>
         </div>
         <nav class="controls" aria-label="Browser controls">
           <button id="backButton" title="Back" aria-label="Back">‹</button>
           <button id="forwardButton" title="Forward" aria-label="Forward">›</button>
           <button id="reloadButton" title="Reload" aria-label="Reload">↻</button>
+          <button id="homeButton" title="Home" aria-label="Home">⌂</button>
         </nav>
         <form id="addressForm" class="address" autocomplete="off">
           <input id="addressInput" spellcheck="false" aria-label="Address" placeholder="Search or enter address">
         </form>
-        <div class="session-state" title="Temporary identity active"></div>
+        <div class="right-tools">
+          <button id="settingsButton" title="Settings" aria-label="Settings">⚙</button>
+          <button id="menuButton" title="Menu" aria-label="Menu">☰</button>
+          <div class="session-state" title="Temporary identity active"><span>Identity alive</span></div>
+        </div>
       </header>
       <webview id="browserView" allowpopups></webview>
+
+      <aside id="settingsPanel" class="settings-panel" aria-label="Itera settings" aria-hidden="true">
+        <div class="panel-head">
+          <div>
+            <h2>Settings</h2>
+            <p>Disposable identity controls</p>
+          </div>
+          <button id="closeSettingsButton" type="button" aria-label="Close settings">×</button>
+        </div>
+
+        <section class="setting-group">
+          <h3>Search</h3>
+          <label class="select-row">
+            <span>Search engine</span>
+            <select id="searchEngineSelect">
+              <option value="duckduckgo">DuckDuckGo</option>
+              <option value="startpage">Startpage</option>
+              <option value="brave">Brave Search</option>
+            </select>
+          </label>
+        </section>
+
+        <section class="setting-group">
+          <h3>Session</h3>
+          <label class="toggle-row">
+            <span>Destroy identity on close</span>
+            <input type="checkbox" checked disabled>
+          </label>
+          <label class="toggle-row">
+            <span>Clean abandoned sessions on launch</span>
+            <input type="checkbox" checked disabled>
+          </label>
+        </section>
+
+        <section class="setting-group muted-group">
+          <h3>Prepared modes</h3>
+          <div class="future-row">RAM-only mode <span>Later</span></div>
+          <div class="future-row">Per-site identities <span>Later</span></div>
+          <div class="future-row">Proxy modes <span>Later</span></div>
+        </section>
+
+        <button id="destroySessionButton" class="destroy-button" type="button">Destroy Session</button>
+      </aside>
+
+      <div id="productMenu" class="product-menu" aria-hidden="true">
+        <button id="menuHomeButton" type="button">New start page</button>
+        <button id="menuSettingsButton" type="button">Settings</button>
+        <button id="menuDestroyButton" type="button">Destroy Session</button>
+      </div>
     </div>
     <script src="renderer.js"></script>
   </body>

@@ -14,6 +14,9 @@ contextBridge.exposeInMainWorld("itera", {
   partition: args["itera-partition"] || "itera-default",
   homeUrl: pathToFileUrl(args["itera-home"]),
   features: {},
+  closeWindow() {
+    ipcRenderer.send("itera-close-window");
+  },
   onOpenUrl(callback) {
     ipcRenderer.on("itera-open-url", (_event, url) => callback(url));
   }

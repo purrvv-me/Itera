@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session } = require("electron");
+const { app, BrowserWindow, ipcMain, session } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
@@ -196,6 +196,12 @@ app.on("web-contents-created", (_event, contents) => {
     }
     return { action: "deny" };
   });
+});
+
+ipcMain.on("itera-close-window", () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.close();
+  }
 });
 
 global.iteraFeatureFlags = featureFlags;
