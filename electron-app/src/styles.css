@@ -216,6 +216,10 @@ webview {
   background: var(--bg);
 }
 
+.browser-shell.settings-open webview {
+  pointer-events: none;
+}
+
 .settings-panel {
   position: absolute;
   top: 90px;

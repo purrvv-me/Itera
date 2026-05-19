@@ -13,6 +13,7 @@ const sessionRoot = path.join(os.tmpdir(), APP_NAME);
 const userDataPath = path.join(sessionRoot, sessionId);
 const partitionName = `itera-${crypto.randomUUID()}`;
 const smokeTestMode = process.argv.includes("--itera-smoke-test");
+const destroySmokeTestMode = process.argv.includes("--itera-destroy-smoke-test");
 
 const featureFlags = Object.freeze({
   ramOnlyMode: false,
@@ -35,6 +36,7 @@ app.commandLine.appendSwitch("in-process-gpu");
 
 let mainWindow = null;
 let cleanupScheduled = false;
+let shutdownStarted = false;
 
 async function createWindow() {
   cleanupAbandonedSessions();
@@ -64,6 +66,21 @@ async function createWindow() {
   mainWindow.setMenuBarVisibility(false);
   mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
 
+  if (destroySmokeTestMode) {
+    mainWindow.webContents.once("did-finish-load", () => {
+      setTimeout(() => {
+        if (!mainWindow || mainWindow.isDestroyed()) {
+          return;
+        }
+
+        mainWindow.webContents.executeJavaScript(
+          "document.getElementById('destroySessionButton')?.click()",
+          true
+        );
+      }, 1000);
+    });
+  }
+
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
@@ -85,6 +102,23 @@ async function destroySession() {
   } catch {
     // Profile directory deletion below is the authoritative cleanup path.
   }
+}
+
+async function destroySessionAndQuit() {
+  if (shutdownStarted) {
+    return;
+  }
+
+  shutdownStarted = true;
+  app.isQuittingAfterCleanup = true;
+  await destroySession();
+  schedulePostExitCleanup();
+
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.destroy();
+  }
+
+  app.quit();
 }
 
 function cleanupAbandonedSessions() {
@@ -176,10 +210,7 @@ app.on("before-quit", async (event) => {
   }
 
   event.preventDefault();
-  app.isQuittingAfterCleanup = true;
-  await destroySession();
-  schedulePostExitCleanup();
-  app.quit();
+  await destroySessionAndQuit();
 });
 
 app.on("will-quit", () => {
@@ -204,8 +235,9 @@ ipcMain.on("itera-close-window", () => {
   }
 });
 
-ipcMain.on("itera-destroy-session", () => {
-  app.quit();
+ipcMain.handle("itera-destroy-session", async () => {
+  await destroySessionAndQuit();
+  return true;
 });
 
 global.iteraFeatureFlags = featureFlags;

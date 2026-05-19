@@ -1,4 +1,5 @@
 const webview = document.getElementById("browserView");
+const browserShell = document.querySelector(".browser-shell");
 const addressForm = document.getElementById("addressForm");
 const addressInput = document.getElementById("addressInput");
 const backButton = document.getElementById("backButton");
@@ -66,8 +67,8 @@ menuSettingsButton.addEventListener("click", () => {
   openSettings();
 });
 
-destroySessionButton.addEventListener("click", destroySession);
-menuDestroyButton.addEventListener("click", destroySession);
+wireDestroyButton(destroySessionButton);
+wireDestroyButton(menuDestroyButton);
 searchEngineSelect.addEventListener("change", () => {
   searchEngine = searchEngineSelect.value;
 });
@@ -147,11 +148,13 @@ function openHome() {
 }
 
 function openSettings() {
+  browserShell.classList.add("settings-open");
   settingsPanel.classList.add("open");
   settingsPanel.setAttribute("aria-hidden", "false");
 }
 
 function closeSettings() {
+  browserShell.classList.remove("settings-open");
   settingsPanel.classList.remove("open");
   settingsPanel.setAttribute("aria-hidden", "true");
 }
@@ -166,9 +169,22 @@ function closeMenu() {
   productMenu.setAttribute("aria-hidden", "true");
 }
 
-function destroySession() {
+function wireDestroyButton(button) {
+  button.addEventListener("pointerup", destroySession);
+  button.addEventListener("click", destroySession);
+}
+
+async function destroySession(event) {
+  event?.preventDefault();
+  event?.stopPropagation();
+
+  destroySessionButton.disabled = true;
+  menuDestroyButton.disabled = true;
+  destroySessionButton.textContent = "Destroying...";
+  menuDestroyButton.textContent = "Destroying...";
+
   if (window.itera?.destroySession) {
-    window.itera.destroySession();
+    await window.itera.destroySession();
     return;
   }
 

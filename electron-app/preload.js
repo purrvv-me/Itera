@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld("itera", {
     ipcRenderer.send("itera-close-window");
   },
   destroySession() {
-    ipcRenderer.send("itera-destroy-session");
+    return ipcRenderer.invoke("itera-destroy-session");
   },
   onOpenUrl(callback) {
     ipcRenderer.on("itera-open-url", (_event, url) => callback(url));
