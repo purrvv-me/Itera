@@ -167,5 +167,10 @@ function closeMenu() {
 }
 
 function destroySession() {
-  window.itera?.closeWindow();
+  if (window.itera?.destroySession) {
+    window.itera.destroySession();
+    return;
+  }
+
+  window.close();
 }

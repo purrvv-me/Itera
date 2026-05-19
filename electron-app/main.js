@@ -204,4 +204,8 @@ ipcMain.on("itera-close-window", () => {
   }
 });
 
+ipcMain.on("itera-destroy-session", () => {
+  app.quit();
+});
+
 global.iteraFeatureFlags = featureFlags;
