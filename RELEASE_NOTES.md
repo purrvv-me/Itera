@@ -17,7 +17,7 @@ Itera now behaves like a standalone browser product instead of a launcher script
 
 Use the Windows portable build from the GitHub Release assets:
 
-- `Itera 0.2.0.exe`
+- `Itera-0.2.0.exe`
 
 ### Current Limitations
 
