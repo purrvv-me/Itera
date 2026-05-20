@@ -19,6 +19,8 @@
   ·
   <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download for Windows</a>
   ·
+  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">Download for Android</a>
+  ·
   <a href="https://github.com/purrvv-me/Itera/releases/tag/v2.0">Release 2.0</a>
 </p>
 
@@ -74,6 +76,10 @@ Download the current Windows build from the GitHub release:
 
 https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe
 
+Download the Android APK build:
+
+https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk
+
 ## Website
 
 The public product site lives in [`docs/index.html`](docs/index.html) and is published through GitHub Pages:
@@ -95,6 +101,13 @@ electron-app/
   assets/
     logo.svg       Itera visual mark
     itera.ico      Windows app icon
+```
+
+The Android port lives here:
+
+```text
+android-app/
+  app/src/main/java/app/itera/mobile/MainActivity.java
 ```
 
 The old Firefox proof of concept remains here:

@@ -1,5 +1,28 @@
 # Release Notes
 
+## v2.0-android - Android APK Prototype
+
+Itera now has an Android APK prototype. It ports the disposable browser idea to a mobile WebView shell: one app launch creates one temporary mobile identity, tabs live inside that launch, and closing/destroying the session clears local WebView data.
+
+### Highlights
+
+- Android APK build: `Itera.apk`.
+- Mobile browser shell with tabs.
+- Address bar, back, forward, reload, and home controls.
+- Itera mobile start page.
+- Disposable WebView data cleanup on launch and close.
+- GitHub support link opens in the user's default browser.
+
+### Download
+
+Use the Android APK from the GitHub Release assets:
+
+- `Itera.apk`
+
+### Product Principle
+
+One launch = one disposable identity. All mobile tabs live inside that one identity. Close Itera and the whole identity dies.
+
 ## v2.0 - Browser Tabs and Product Polish
 
 Itera now feels more like a real disposable browser MVP while keeping the core one-session identity model. All tabs belong to the same temporary identity for the current launch, and closing Itera still destroys the entire session.

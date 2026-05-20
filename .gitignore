@@ -5,6 +5,7 @@ dist/
 build/
 *.spec
 Itera-*.exe
+*.apk
 runtime/firefox-esr/
 .cache/
 electron-app/node_modules/
