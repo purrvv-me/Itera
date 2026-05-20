@@ -17,9 +17,9 @@
   ·
   <a href="https://purrvv-me.github.io/Itera/">Website</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases/download/v1.0/Itera-1.0.exe">Download for Windows</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download for Windows</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases/tag/v1.0">Release 1.0</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/tag/v2.0">Release 2.0</a>
 </p>
 
 ## About
@@ -46,7 +46,8 @@ The older Python/Firefox ESR wrapper is still in the repository as a proof of co
 
 - Standalone-looking Itera window.
 - Custom Itera icon and start page.
-- Minimal browser chrome with address bar, back, forward, and reload.
+- Minimal browser chrome with address bar, tabs, tab dragging, back, forward, and reload.
+- External project support link that opens in the user's default browser.
 - Disposable Electron/Chromium `userData` directory under `%TEMP%\Itera`.
 - Session cleanup after close.
 - Startup cleanup for abandoned Itera session folders.
@@ -93,7 +94,7 @@ C:\Itera\electron-app\dist\win-unpacked\Itera.exe
 Or run the portable executable:
 
 ```powershell
-C:\Itera\electron-app\dist\"Itera-1.0.exe"
+C:\Itera\electron-app\dist\"Itera-2.0.exe"
 ```
 
 ## Build
@@ -111,7 +112,7 @@ Build output:
 electron-app\dist\
   win-unpacked\
     Itera.exe
-  Itera-1.0.exe
+  Itera-2.0.exe
 ```
 
 ## Website

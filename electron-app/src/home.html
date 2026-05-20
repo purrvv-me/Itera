@@ -10,6 +10,31 @@
     <main class="home-shell">
       <img class="ghost-mark" src="../assets/logo.svg" alt="">
       <section class="identity-panel" aria-label="Itera start">
+        <section class="setup-sequence" aria-label="Disposable identity preparation">
+          <ol class="setup-steps">
+            <li style="--step-delay: 0ms">
+              <span>01</span>
+              <strong>Fresh profile</strong>
+              <small>Born for this launch only</small>
+            </li>
+            <li style="--step-delay: 520ms">
+              <span>02</span>
+              <strong>No continuity</strong>
+              <small>No account, sync, or saved state</small>
+            </li>
+            <li style="--step-delay: 1040ms">
+              <span>03</span>
+              <strong>Temporary storage</strong>
+              <small>Session data dies with the window</small>
+            </li>
+            <li style="--step-delay: 1560ms">
+              <span>04</span>
+              <strong>Silent cleanup</strong>
+              <small>No past survives after close</small>
+            </li>
+          </ol>
+        </section>
+
         <div class="brand-lockup">
           <img class="logo" src="../assets/logo.svg" alt="Itera">
           <div>
@@ -30,10 +55,21 @@
           <span>No past survives</span>
         </div>
       </section>
+
+      <aside class="support-note" aria-label="Project support">
+        <a id="githubLink" class="github-link" href="https://github.com/purrvv-me/Itera">Itera on GitHub</a>
+        <p>Please put a star on my project (*^‿^*)</p>
+      </aside>
     </main>
     <script>
       const form = document.getElementById("homeSearch");
       const input = document.getElementById("homeSearchInput");
+      const githubLink = document.getElementById("githubLink");
+
+      githubLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.open(githubLink.href, "_blank", "noopener,noreferrer");
+      });
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();

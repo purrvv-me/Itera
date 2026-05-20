@@ -10,11 +10,8 @@
     <div class="browser-shell">
       <div class="windowbar">
         <div class="tabbar" aria-label="Tabs">
-          <button id="activeTab" class="tab active" type="button" title="Current tab">
-            <img src="../assets/logo.svg" alt="">
-            <span id="tabTitle">New identity</span>
-          </button>
-          <button id="newTabButton" class="new-tab icon-button" type="button" title="New start page" aria-label="New start page">
+          <div id="tabsList" class="tabs-list" role="tablist" aria-label="Open tabs"></div>
+          <button id="newTabButton" class="new-tab icon-button" type="button" title="New tab" aria-label="New tab">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
           </button>
         </div>
@@ -50,7 +47,7 @@
           <div class="session-state" title="Temporary identity active"><span>Identity alive</span></div>
         </div>
       </header>
-      <webview id="browserView" allowpopups></webview>
+      <main id="viewStack" class="view-stack" aria-label="Browser pages"></main>
 
       <aside id="settingsPanel" class="settings-panel" aria-label="Itera settings" aria-hidden="true">
         <div class="panel-head">

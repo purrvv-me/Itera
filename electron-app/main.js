@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session } = require("electron");
+const { app, BrowserWindow, ipcMain, session, shell } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
@@ -6,6 +6,7 @@ const crypto = require("node:crypto");
 const { spawn } = require("node:child_process");
 
 const APP_NAME = "Itera";
+const PROJECT_URL = "https://github.com/purrvv-me/Itera";
 const SESSION_PREFIX = "itera-electron-";
 const LEGACY_SESSION_PREFIX = "itera-profile-";
 const sessionId = `${SESSION_PREFIX}${crypto.randomUUID()}`;
@@ -51,6 +52,12 @@ async function createWindow() {
     icon: iconPath,
     backgroundColor: "#030814",
     autoHideMenuBar: true,
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#11131a",
+      symbolColor: "#f3eee7",
+      height: 38
+    },
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       additionalArguments: [
@@ -222,6 +229,11 @@ app.on("will-quit", () => {
 
 app.on("web-contents-created", (_event, contents) => {
   contents.setWindowOpenHandler(({ url }) => {
+    if (url === PROJECT_URL || url.startsWith(`${PROJECT_URL}/`)) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
+
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send("itera-open-url", url);
     }

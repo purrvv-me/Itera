@@ -1,5 +1,31 @@
 # Release Notes
 
+## v2.0 - Browser Tabs and Product Polish
+
+Itera now feels more like a real disposable browser MVP while keeping the core one-session identity model. All tabs belong to the same temporary identity for the current launch, and closing Itera still destroys the entire session.
+
+### Highlights
+
+- Multi-tab browser UI.
+- New tab button and close button on each tab.
+- Active-tab address bar, back, forward, reload, and home behavior.
+- Tab titles update from page titles.
+- Basic loading state on tabs.
+- Drag-and-drop tab reordering.
+- Integrated title bar styling for a cleaner browser-like window.
+- Itera start page polish with setup cards, GitHub support link, and small project note.
+- GitHub support link opens in the user's default browser instead of inside Itera.
+
+### Download
+
+Use the Windows portable build from the GitHub Release assets:
+
+- `Itera-2.0.exe`
+
+### Product Principle
+
+One launch = one disposable identity. All tabs live inside that one identity. Close Itera and the whole identity dies.
+
 ## v1.0 - Standalone Disposable Browser Prototype
 
 Itera now behaves like a standalone browser product instead of a launcher script. The app opens directly into an Itera browser window, creates a fresh disposable identity for the session, and removes that identity after close.

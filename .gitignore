@@ -4,6 +4,7 @@ __pycache__/
 dist/
 build/
 *.spec
+Itera-*.exe
 runtime/firefox-esr/
 .cache/
 electron-app/node_modules/
