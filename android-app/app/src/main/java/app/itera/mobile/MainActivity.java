@@ -67,62 +67,84 @@ public class MainActivity extends Activity {
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(color("#030814"));
+        root.setPadding(0, getStatusBarHeight(), 0, 0);
         setContentView(root);
 
         LinearLayout chrome = new LinearLayout(this);
         chrome.setOrientation(LinearLayout.VERTICAL);
-        chrome.setPadding(dp(10), dp(6), dp(10), dp(8));
+        chrome.setPadding(dp(10), dp(7), dp(10), dp(9));
         chrome.setBackgroundColor(color("#171922"));
         root.addView(chrome, new LinearLayout.LayoutParams(-1, -2));
+
+        LinearLayout tabRow = new LinearLayout(this);
+        tabRow.setGravity(Gravity.CENTER_VERTICAL);
+        tabRow.setOrientation(LinearLayout.HORIZONTAL);
+        chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(40)));
 
         HorizontalScrollView tabScroll = new HorizontalScrollView(this);
         tabScroll.setHorizontalScrollBarEnabled(false);
         tabStrip = new LinearLayout(this);
         tabStrip.setOrientation(LinearLayout.HORIZONTAL);
-        tabScroll.addView(tabStrip, new HorizontalScrollView.LayoutParams(-2, dp(42)));
-        chrome.addView(tabScroll, new LinearLayout.LayoutParams(-1, dp(42)));
+        tabScroll.addView(tabStrip, new HorizontalScrollView.LayoutParams(-2, dp(38)));
+        tabRow.addView(tabScroll, new LinearLayout.LayoutParams(0, dp(38), 1));
+        tabRow.addView(tool("+", v -> createTab(HOME_URL, true)));
 
-        LinearLayout controls = new LinearLayout(this);
-        controls.setGravity(Gravity.CENTER_VERTICAL);
-        controls.setOrientation(LinearLayout.HORIZONTAL);
-        chrome.addView(controls, new LinearLayout.LayoutParams(-1, dp(48)));
-
-        controls.addView(tool("‹", v -> goBack()));
-        controls.addView(tool("›", v -> goForward()));
-        controls.addView(tool("↻", v -> reload()));
-        controls.addView(tool("⌂", v -> openHome()));
-
+        LinearLayout addressRow = new LinearLayout(this);
+        addressRow.setGravity(Gravity.CENTER_VERTICAL);
+        addressRow.setOrientation(LinearLayout.HORIZONTAL);
+        addressRow.setPadding(0, dp(6), 0, dp(4));
+        chrome.addView(addressRow, new LinearLayout.LayoutParams(-1, dp(54)));
         addressInput = new EditText(this);
         addressInput.setSingleLine(true);
         addressInput.setHint("Search or enter address");
         addressInput.setHintTextColor(color("#707B8D"));
         addressInput.setTextColor(color("#F3EEE7"));
         addressInput.setTextSize(15);
-        addressInput.setPadding(dp(14), 0, dp(14), 0);
+        addressInput.setPadding(dp(15), 0, dp(15), 0);
         addressInput.setBackgroundColor(color("#20232C"));
         addressInput.setOnEditorActionListener((v, actionId, event) -> {
             navigate(addressInput.getText().toString());
             hideKeyboard();
             return true;
         });
-        controls.addView(addressInput, new LinearLayout.LayoutParams(0, dp(40), 1));
+        addressRow.addView(addressInput, new LinearLayout.LayoutParams(-1, dp(42)));
 
-        controls.addView(tool("+", v -> createTab(HOME_URL, true)));
-        controls.addView(tool("×", v -> destroySession()));
+        LinearLayout controls = new LinearLayout(this);
+        controls.setGravity(Gravity.CENTER_VERTICAL);
+        controls.setOrientation(LinearLayout.HORIZONTAL);
+        chrome.addView(controls, new LinearLayout.LayoutParams(-1, dp(42)));
+
+        controls.addView(tool("‹", v -> goBack()));
+        controls.addView(tool("›", v -> goForward()));
+        controls.addView(tool("↻", v -> reload()));
+        controls.addView(tool("⌂", v -> openHome()));
+        controls.addView(spacer());
+        controls.addView(tool("×", v -> closeTab(activeIndex)));
+        controls.addView(tool("Burn", v -> destroySession(), 58, 15));
 
         webContainer = new FrameLayout(this);
         root.addView(webContainer, new LinearLayout.LayoutParams(-1, 0, 1));
     }
 
     private TextView tool(String label, View.OnClickListener listener) {
+        return tool(label, listener, 38, label.length() > 1 ? 15 : 24);
+    }
+
+    private TextView tool(String label, View.OnClickListener listener, int widthDp, int textSp) {
         TextView view = new TextView(this);
         view.setText(label);
         view.setTextColor(color("#9AA3B2"));
-        view.setTextSize(24);
+        view.setTextSize(textSp);
         view.setGravity(Gravity.CENTER);
         view.setOnClickListener(listener);
         view.setBackgroundColor(Color.TRANSPARENT);
-        view.setLayoutParams(new LinearLayout.LayoutParams(dp(38), dp(40)));
+        view.setLayoutParams(new LinearLayout.LayoutParams(dp(widthDp), dp(40)));
+        return view;
+    }
+
+    private View spacer() {
+        View view = new View(this);
+        view.setLayoutParams(new LinearLayout.LayoutParams(0, 1, 1));
         return view;
     }
 
@@ -160,16 +182,22 @@ public class MainActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return handleUrl(request.getUrl().toString());
+                String url = request.getUrl().toString();
+                tab.mobileUrl = url;
+                return handleUrl(url);
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                tab.mobileUrl = url;
                 return handleUrl(url);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                if (url != null && !"about:blank".equals(url)) {
+                    tab.mobileUrl = url;
+                }
                 if (HOME_URL.equals(url)) {
                     tab.title = "New identity";
                 }
@@ -188,15 +216,15 @@ public class MainActivity extends Activity {
         TextView button = new TextView(this);
         button.setSingleLine(true);
         button.setTextColor(color("#F3EEE7"));
-        button.setTextSize(14);
+        button.setTextSize(13);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(dp(12), 0, dp(10), 0);
+        button.setPadding(dp(10), 0, dp(8), 0);
         button.setOnClickListener(v -> activateTab(tabs.indexOf(tab)));
         button.setOnLongClickListener(v -> {
             closeTab(tabs.indexOf(tab));
             return true;
         });
-        button.setLayoutParams(new LinearLayout.LayoutParams(dp(156), dp(38)));
+        button.setLayoutParams(new LinearLayout.LayoutParams(dp(138), dp(36)));
         return button;
     }
 
@@ -204,7 +232,7 @@ public class MainActivity extends Activity {
         for (int i = 0; i < tabs.size(); i++) {
             Tab tab = tabs.get(i);
             boolean active = i == activeIndex;
-            tab.button.setText("▏ " + tab.title + "  ×");
+            tab.button.setText("▏ " + tab.title);
             tab.button.setBackgroundColor(active ? color("#252936") : color("#171922"));
             tab.button.setAlpha(active ? 1f : 0.82f);
         }
@@ -248,9 +276,14 @@ public class MainActivity extends Activity {
 
     private void loadInTab(Tab tab, String url) {
         if (HOME_URL.equals(url)) {
+            tab.title = "New identity";
+            tab.mobileUrl = HOME_URL;
+            updateAddress();
+            renderTabs();
             tab.webView.loadDataWithBaseURL(HOME_URL, homeHtml(), "text/html", "UTF-8", null);
             return;
         }
+        tab.mobileUrl = url;
         tab.webView.loadUrl(url);
     }
 
@@ -321,8 +354,9 @@ public class MainActivity extends Activity {
             addressInput.setText("");
             return;
         }
-        String url = active.getUrl();
-        addressInput.setText(HOME_URL.equals(url) ? "" : url);
+        Tab tab = tabs.get(activeIndex);
+        String url = tab.mobileUrl != null ? tab.mobileUrl : active.getUrl();
+        addressInput.setText(HOME_URL.equals(url) || url == null || "about:blank".equals(url) ? "" : url);
     }
 
     private WebView getActiveWebView() {
@@ -391,6 +425,14 @@ public class MainActivity extends Activity {
         return Math.round(value * getResources().getDisplayMetrics().density);
     }
 
+    private int getStatusBarHeight() {
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return getResources().getDimensionPixelSize(resourceId);
+        }
+        return dp(24);
+    }
+
     private int color(String hex) {
         return Color.parseColor(hex);
     }
@@ -398,6 +440,7 @@ public class MainActivity extends Activity {
     private static class Tab {
         int id;
         String title;
+        String mobileUrl;
         TextView button;
         WebView webView;
     }
