@@ -68,52 +68,11 @@ The intended disposable session surface includes:
 
 In the Electron build, this is handled by creating a temporary app data/session directory for each run and removing it after the app exits.
 
-## Run The Electron App
+## Download
 
-From source:
+Download the current Windows build from the GitHub release:
 
-```powershell
-cd C:\Itera\electron-app
-npm.cmd install
-npm.cmd run dev
-```
-
-If your shell has `ELECTRON_RUN_AS_NODE=1`, use the helper:
-
-```powershell
-cd C:\Itera
-powershell -ExecutionPolicy Bypass -File .\run-electron-dev.ps1
-```
-
-Run the built app:
-
-```powershell
-C:\Itera\electron-app\dist\win-unpacked\Itera.exe
-```
-
-Or run the portable executable:
-
-```powershell
-C:\Itera\electron-app\dist\"Itera-2.0.exe"
-```
-
-## Build
-
-Build the Electron portable app:
-
-```powershell
-cd C:\Itera
-powershell -ExecutionPolicy Bypass -File .\build-electron.ps1
-```
-
-Build output:
-
-```text
-electron-app\dist\
-  win-unpacked\
-    Itera.exe
-  Itera-2.0.exe
-```
+https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe
 
 ## Website
 
