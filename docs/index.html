@@ -571,7 +571,9 @@
 
       .card:hover,
       .platform:hover,
-      .comparison-list:hover {
+      .comparison-list:hover,
+      .demo-panel:hover,
+      .phone-preview:hover {
         transform: translateY(-4px);
         border-color: rgba(255, 137, 66, 0.26);
         background: rgba(16, 22, 34, 0.9);
@@ -600,6 +602,323 @@
         background: rgba(255, 136, 66, 0.1);
         color: var(--orange-soft);
         font-weight: 800;
+      }
+
+      .interface-showcase {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+        gap: 18px;
+        margin-top: 38px;
+        align-items: stretch;
+      }
+
+      .demo-window,
+      .demo-panel,
+      .phone-preview {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: rgba(13, 17, 26, 0.82);
+        box-shadow: 0 28px 90px rgba(0, 0, 0, 0.22);
+      }
+
+      .demo-window {
+        overflow: hidden;
+        min-height: 520px;
+      }
+
+      .demo-tabs {
+        height: 48px;
+        display: flex;
+        align-items: end;
+        gap: 4px;
+        padding: 0 10px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #11141d;
+      }
+
+      .demo-tab {
+        width: 210px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 12px;
+        border: 1px solid var(--line-soft);
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: #222634;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .demo-tab:nth-child(2) {
+        width: 178px;
+        opacity: 0.74;
+      }
+
+      .demo-tab img {
+        width: 16px;
+        height: 16px;
+      }
+
+      .demo-plus {
+        width: 34px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        font-size: 24px;
+      }
+
+      .demo-toolbar {
+        height: 56px;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 8px 14px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #181d28;
+      }
+
+      .demo-icon-row {
+        display: flex;
+        gap: 8px;
+      }
+
+      .demo-icon {
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--line-soft);
+        border-radius: 7px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .demo-address {
+        height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #222837;
+      }
+
+      .demo-canvas {
+        min-height: 416px;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        padding: 42px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          #050811;
+        background-size: 88px 88px;
+      }
+
+      .demo-cards {
+        width: min(720px, 100%);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 44px;
+      }
+
+      .demo-card {
+        min-height: 116px;
+        padding: 14px;
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: rgba(10, 15, 25, 0.72);
+      }
+
+      .demo-card span {
+        display: block;
+        color: var(--orange);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .demo-card strong {
+        display: block;
+        margin-top: 18px;
+        font-size: 14px;
+      }
+
+      .demo-brand {
+        color: var(--orange);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 64px;
+        letter-spacing: 0.2em;
+        text-indent: 0.2em;
+      }
+
+      .demo-search {
+        width: min(620px, 100%);
+        height: 54px;
+        margin-top: 26px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(16, 23, 36, 0.92);
+      }
+
+      .demo-panel {
+        min-height: 520px;
+        display: grid;
+        align-content: space-between;
+        padding: 24px;
+      }
+
+      .demo-panel h3,
+      .phone-preview h3 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 28px;
+      }
+
+      .demo-panel p,
+      .phone-preview p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .feature-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 22px;
+      }
+
+      .feature-row {
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        gap: 12px;
+        align-items: center;
+        min-height: 62px;
+        padding: 12px;
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .feature-row span {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--warm-line);
+        border-radius: 8px;
+        color: var(--orange-soft);
+        font-weight: 800;
+      }
+
+      .feature-row strong {
+        display: block;
+        font-size: 15px;
+      }
+
+      .feature-row small {
+        display: block;
+        margin-top: 2px;
+        color: var(--dim);
+        font-size: 13px;
+      }
+
+      .phone-preview {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.78fr) minmax(280px, 0.42fr);
+        gap: 28px;
+        align-items: center;
+        padding: 28px;
+      }
+
+      .phone-shell {
+        width: min(280px, 100%);
+        justify-self: center;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: #070a10;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.34);
+      }
+
+      .phone-screen {
+        min-height: 490px;
+        overflow: hidden;
+        border: 1px solid var(--line-soft);
+        border-radius: 20px;
+        background: #050811;
+      }
+
+      .phone-top {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 10px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #151a25;
+      }
+
+      .phone-pill {
+        flex: 1;
+        height: 28px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #202634;
+      }
+
+      .phone-dot {
+        width: 26px;
+        height: 26px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: rgba(255, 136, 66, 0.14);
+        color: var(--orange-soft);
+        font-weight: 800;
+      }
+
+      .phone-home {
+        display: grid;
+        justify-items: center;
+        padding: 70px 24px 34px;
+      }
+
+      .phone-home img {
+        width: 82px;
+        height: 82px;
+      }
+
+      .phone-home strong {
+        margin-top: 18px;
+        color: var(--orange);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 34px;
+        letter-spacing: 0.16em;
+      }
+
+      .phone-search {
+        width: 100%;
+        height: 48px;
+        margin-top: 34px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #111827;
+      }
+
+      .phone-capsules {
+        width: 100%;
+        display: grid;
+        gap: 10px;
+        margin-top: 28px;
+      }
+
+      .phone-capsules span {
+        height: 38px;
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.035);
       }
 
       .split-section {
@@ -849,6 +1168,19 @@
         transform: translateY(0);
       }
 
+      .card.reveal.is-visible:hover,
+      .platform.reveal.is-visible:hover,
+      .comparison-list.reveal.is-visible:hover,
+      .demo-panel.reveal.is-visible:hover,
+      .phone-preview.reveal.is-visible:hover {
+        transform: translateY(-4px);
+      }
+
+      .identity-step.reveal.is-visible:hover,
+      .timeline-row.reveal.is-visible:hover {
+        transform: translateX(4px);
+      }
+
       @keyframes navDrop {
         from {
           opacity: 0;
@@ -953,12 +1285,17 @@
       @media (max-width: 1040px) {
         .intro-grid,
         .split-section,
+        .interface-showcase,
         .download-panel {
           grid-template-columns: 1fr;
         }
 
         .download-actions {
           justify-content: flex-start;
+        }
+
+        .phone-preview {
+          grid-template-columns: 1fr;
         }
       }
 
@@ -1003,8 +1340,17 @@
 
         .cards,
         .platforms,
-        .comparison {
+        .comparison,
+        .interface-showcase {
           grid-template-columns: 1fr;
+        }
+
+        .phone-preview {
+          grid-column: auto;
+        }
+
+        .demo-cards {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .mock-tab.small,
@@ -1052,6 +1398,16 @@
           width: 100%;
         }
 
+        .demo-card:nth-child(n + 3),
+        .demo-tab:nth-child(2),
+        .demo-icon-row:last-child {
+          display: none;
+        }
+
+        .demo-brand {
+          font-size: 42px;
+        }
+
         .mock-search {
           grid-template-columns: 44px 1fr;
         }
@@ -1071,6 +1427,7 @@
         </a>
         <div class="nav-links">
           <a href="#identity">Identity</a>
+          <a href="#interface">Interface</a>
           <a href="#session-death">Session death</a>
           <a href="#downloads">Downloads</a>
           <a href="https://github.com/purrvv-me/Itera">GitHub</a>
@@ -1209,6 +1566,103 @@
           </div>
         </section>
 
+        <section id="interface">
+          <div class="section-inner">
+            <p class="section-kicker">Interface preview</p>
+            <h2>The browser surface is part of the product.</h2>
+            <p class="section-lead">Itera should not feel like a script that opens a webview. The visible shell communicates the model: a temporary browser identity, tabs inside one launch, and a clean session end.</p>
+            <div class="interface-showcase">
+              <article class="demo-window" aria-label="Desktop interface preview">
+                <div class="demo-tabs">
+                  <div class="demo-tab">
+                    <img src="logo.svg" alt="">
+                    <span>New identity</span>
+                  </div>
+                  <div class="demo-tab">
+                    <img src="logo.svg" alt="">
+                    <span>Disposable tab</span>
+                  </div>
+                  <div class="demo-plus">+</div>
+                </div>
+                <div class="demo-toolbar">
+                  <div class="demo-icon-row">
+                    <span class="demo-icon"></span>
+                    <span class="demo-icon"></span>
+                    <span class="demo-icon"></span>
+                  </div>
+                  <div class="demo-address"></div>
+                  <div class="demo-icon-row">
+                    <span class="demo-icon"></span>
+                    <span class="demo-icon"></span>
+                  </div>
+                </div>
+                <div class="demo-canvas">
+                  <div class="demo-cards">
+                    <div class="demo-card"><span>01</span><strong>Fresh profile</strong></div>
+                    <div class="demo-card"><span>02</span><strong>No continuity</strong></div>
+                    <div class="demo-card"><span>03</span><strong>Temporary storage</strong></div>
+                    <div class="demo-card"><span>04</span><strong>Silent cleanup</strong></div>
+                  </div>
+                  <div class="demo-brand">ITERA</div>
+                  <div class="demo-search"></div>
+                </div>
+              </article>
+
+              <article class="demo-panel">
+                <div>
+                  <h3>Function demos</h3>
+                  <p>The current MVP already has the browser basics people expect, while still avoiding persistent browser features.</p>
+                  <div class="feature-list">
+                    <div class="feature-row">
+                      <span>+</span>
+                      <div><strong>Multiple tabs</strong><small>New tabs open inside the same disposable identity.</small></div>
+                    </div>
+                    <div class="feature-row">
+                      <span>URL</span>
+                      <div><strong>Active address bar</strong><small>Navigation controls target only the selected tab.</small></div>
+                    </div>
+                    <div class="feature-row">
+                      <span>DR</span>
+                      <div><strong>Drag tabs</strong><small>Tabs can be reordered like a normal browser.</small></div>
+                    </div>
+                    <div class="feature-row">
+                      <span>X</span>
+                      <div><strong>Destroy session</strong><small>Close Itera and the session identity is removed.</small></div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="phone-preview" aria-label="Android interface preview">
+                <div>
+                  <p class="section-kicker">Mobile prototype</p>
+                  <h3>Same disposable idea, adapted for phones.</h3>
+                  <p>The Android build is intentionally lighter than the desktop app, but it follows the same rule: one launch creates one temporary identity, and closing the app clears WebView session data.</p>
+                </div>
+                <div class="phone-shell">
+                  <div class="phone-screen">
+                    <div class="phone-top">
+                      <div class="phone-dot">I</div>
+                      <div class="phone-pill"></div>
+                      <div class="phone-dot">+</div>
+                    </div>
+                    <div class="phone-home">
+                      <img src="logo.svg" alt="">
+                      <strong>ITERA</strong>
+                      <div class="phone-search"></div>
+                      <div class="phone-capsules">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
         <section id="session-death">
           <div class="section-inner split-section">
             <div class="light-panel">
@@ -1316,6 +1770,10 @@
         "section h2",
         ".section-lead",
         ".card",
+        ".demo-window",
+        ".demo-panel",
+        ".feature-row",
+        ".phone-preview",
         ".light-panel",
         ".death-panel",
         ".timeline-row",
