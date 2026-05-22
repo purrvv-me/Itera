@@ -3,26 +3,31 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Itera is a disposable browser for Windows. Every launch begins again.">
+    <meta name="description" content="Itera is a disposable browser. Every launch begins again.">
     <meta property="og:title" content="Itera - Disposable Browser">
     <meta property="og:description" content="A browser identity for one session only. Close the window and the identity dies.">
     <meta property="og:type" content="website">
+    <meta name="theme-color" content="#05070c">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
     <title>Itera - Disposable Browser</title>
     <style>
       :root {
         color-scheme: dark;
-        --bg: #030711;
-        --bg-soft: #07101f;
-        --panel: #0c1423;
-        --panel-2: #121a2a;
-        --line: rgba(255, 255, 255, 0.1);
-        --line-warm: rgba(255, 138, 66, 0.24);
-        --text: #f5f1eb;
-        --muted: #a7adba;
-        --dim: #6f7888;
-        --orange: #ff8a42;
-        --orange-2: #ffb15f;
-        --button: #f07d37;
+        --bg: #05070c;
+        --bg-2: #090b12;
+        --surface: #0d111a;
+        --surface-2: #121722;
+        --surface-3: #171c28;
+        --line: rgba(255, 255, 255, 0.12);
+        --line-soft: rgba(255, 255, 255, 0.07);
+        --warm-line: rgba(255, 137, 66, 0.34);
+        --text: #f7f2eb;
+        --muted: #abb1bd;
+        --dim: #747b88;
+        --orange: #ff8842;
+        --orange-soft: #ffc08a;
+        --button: #ff8842;
+        --button-text: #170b05;
       }
 
       * {
@@ -35,11 +40,10 @@
 
       body {
         margin: 0;
-        background:
-          radial-gradient(circle at 50% 0%, rgba(255, 138, 66, 0.12), transparent 24rem),
-          linear-gradient(180deg, #050914 0%, #030711 44%, #050914 100%);
+        background: var(--bg);
         color: var(--text);
-        font-family: Inter, "Segoe UI", system-ui, sans-serif;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        text-rendering: geometricPrecision;
       }
 
       a {
@@ -47,26 +51,31 @@
         text-decoration: none;
       }
 
-      code {
-        color: #ffd1ad;
+      img {
+        max-width: 100%;
+        display: block;
       }
 
       .page {
         min-height: 100vh;
-        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+          var(--bg);
+        background-size: 96px 96px;
       }
 
       .nav {
         position: sticky;
         top: 0;
-        z-index: 20;
+        z-index: 30;
+        height: 72px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 72px;
-        padding: 0 clamp(20px, 5vw, 64px);
-        background: rgba(3, 7, 17, 0.78);
-        border-bottom: 1px solid var(--line);
+        padding: 0 40px;
+        border-bottom: 1px solid var(--line-soft);
+        background: rgba(5, 7, 12, 0.86);
         backdrop-filter: blur(18px);
       }
 
@@ -74,99 +83,292 @@
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        font-weight: 700;
-        letter-spacing: 0.05em;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       .brand img {
-        width: 34px;
-        height: 34px;
+        width: 32px;
+        height: 32px;
       }
 
       .nav-links {
         display: flex;
         align-items: center;
-        gap: 26px;
+        gap: 24px;
         color: var(--muted);
         font-size: 15px;
       }
 
+      .nav-links a {
+        transition: color 140ms ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
       .nav-download {
-        min-height: 42px;
+        height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0 18px;
-        border-radius: 999px;
-        background: var(--button);
-        color: #150b05;
-        font-weight: 700;
+        padding: 0 16px;
+        border: 1px solid var(--warm-line);
+        border-radius: 8px;
+        background: rgba(255, 136, 66, 0.12);
+        color: var(--orange-soft);
+        font-weight: 720;
       }
 
       .hero {
         position: relative;
-        padding: clamp(72px, 9vw, 128px) clamp(20px, 5vw, 64px) 80px;
-      }
-
-      .hero-inner,
-      .section-inner {
-        width: min(1180px, 100%);
-        margin: 0 auto;
-      }
-
-      .hero-grid {
+        min-height: calc(100vh - 72px);
         display: grid;
-        grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
-        gap: clamp(48px, 7vw, 92px);
         align-items: center;
+        padding: 72px 40px 54px;
+        overflow: hidden;
       }
 
-      .eyebrow {
-        margin: 0 0 20px;
-        color: var(--orange-2);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(5, 7, 12, 0.18), var(--bg) 88%),
+          linear-gradient(90deg, rgba(5, 7, 12, 0.72), rgba(5, 7, 12, 0.18) 50%, rgba(5, 7, 12, 0.76));
+        z-index: 1;
+      }
+
+      .hero-stage {
+        position: absolute;
+        inset: 96px 40px 22px;
+        border: 1px solid var(--line-soft);
+        background: rgba(9, 11, 18, 0.58);
+      }
+
+      .hero-browser {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-rows: 48px 56px 1fr;
+        opacity: 0.74;
+      }
+
+      .hero-tabs {
+        display: flex;
+        align-items: end;
+        gap: 4px;
+        padding: 0 14px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #10131b;
+      }
+
+      .mock-tab {
+        width: 250px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+        border: 1px solid var(--line-soft);
+        border-bottom: 0;
+        border-radius: 8px 8px 0 0;
+        background: #202432;
+        color: #fff;
+        font-size: 15px;
+      }
+
+      .mock-tab.small {
+        width: 188px;
+        opacity: 0.7;
+      }
+
+      .mock-tab img {
+        width: 18px;
+        height: 18px;
+      }
+
+      .hero-toolbar {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 16px;
+        align-items: center;
+        padding: 8px 18px;
+        border-bottom: 1px solid var(--line-soft);
+        background: #181c26;
+      }
+
+      .toolset {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .tool {
+        width: 24px;
+        height: 24px;
+        color: #a7b0c0;
+      }
+
+      .mock-address {
+        height: 36px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #202634;
+      }
+
+      .mock-home {
+        display: grid;
+        place-items: center;
+        padding: 56px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+          #050811;
+        background-size: 120px 120px;
+      }
+
+      .mock-home-inner {
+        width: min(620px, 100%);
+        display: grid;
+        justify-items: center;
+        text-align: center;
+      }
+
+      .mock-home-inner img {
+        width: 112px;
+        height: 112px;
+      }
+
+      .mock-word {
+        margin-top: 8px;
+        color: var(--orange);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 58px;
+        letter-spacing: 0.24em;
+      }
+
+      .mock-search {
+        width: 100%;
+        height: 58px;
+        margin-top: 32px;
+        display: grid;
+        grid-template-columns: 58px 1fr 116px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(16, 23, 36, 0.92);
+      }
+
+      .mock-search::before {
+        content: "";
+        width: 22px;
+        height: 22px;
+        justify-self: center;
+        border-left: 3px solid var(--orange);
+        border-radius: 50%;
+      }
+
+      .mock-search span {
+        height: 12px;
+        width: 56%;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .mock-button {
+        height: 42px;
+        margin-right: 8px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--warm-line);
+        border-radius: 8px;
+        background: rgba(255, 136, 66, 0.14);
+        color: var(--orange-soft);
+        font-weight: 740;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        width: min(900px, 100%);
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .status-line {
+        width: max-content;
+        max-width: 100%;
+        margin: 0 auto 26px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.72);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--orange);
       }
 
       h1 {
         margin: 0;
-        max-width: 760px;
-        font-size: clamp(58px, 8.5vw, 116px);
+        color: var(--orange);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 104px;
         line-height: 0.95;
+        letter-spacing: 0.16em;
+        text-indent: 0.16em;
+        text-shadow: 0 14px 42px rgba(255, 136, 66, 0.18);
+      }
+
+      .hero-title {
+        margin: 22px auto 0;
+        max-width: 760px;
+        color: var(--text);
+        font-size: 36px;
+        line-height: 1.14;
         font-weight: 760;
-        letter-spacing: -0.03em;
       }
 
       .hero-copy {
-        margin: 28px 0 0;
-        max-width: 640px;
+        margin: 20px auto 0;
+        max-width: 720px;
         color: var(--muted);
-        font-size: clamp(19px, 2.1vw, 25px);
-        line-height: 1.42;
+        font-size: 20px;
+        line-height: 1.55;
       }
 
-      .hero-actions {
+      .actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 14px;
-        margin-top: 36px;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 34px;
       }
 
       .button {
-        min-height: 52px;
+        min-height: 50px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
-        padding: 0 22px;
+        padding: 0 18px;
         border: 1px solid transparent;
-        border-radius: 999px;
+        border-radius: 8px;
         background: var(--button);
-        color: #170b05;
+        color: var(--button-text);
         font-size: 16px;
-        font-weight: 750;
+        font-weight: 780;
       }
 
       .button svg {
@@ -180,376 +382,479 @@
       }
 
       .button.secondary {
-        background: transparent;
+        background: rgba(255, 255, 255, 0.04);
         border-color: var(--line);
         color: var(--text);
       }
 
-      .release-note {
+      .hero-note {
         margin-top: 16px;
         color: var(--dim);
         font-size: 14px;
       }
 
-      .product-shot {
-        position: relative;
-        min-height: 520px;
-        display: grid;
-        align-items: center;
-      }
-
-      .product-shot::before {
-        content: "";
-        position: absolute;
-        inset: 7% -8% 0 10%;
-        border-radius: 40px;
-        background: radial-gradient(circle at 50% 10%, rgba(255, 138, 66, 0.12), transparent 36rem);
-        filter: blur(2px);
-      }
-
-      .browser-card {
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: 18px;
-        background: #040811;
-        box-shadow: 0 42px 100px rgba(0, 0, 0, 0.5);
-      }
-
-      .browser-top {
-        height: 92px;
-        display: grid;
-        grid-template-rows: 38px 54px;
-        background: #151820;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .tabs {
-        display: flex;
-        align-items: end;
-        gap: 8px;
-        padding: 6px 12px 0;
-        background: #11131a;
-      }
-
-      .tab {
-        width: 230px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 0 12px;
-        border-radius: 7px 7px 0 0;
-        background: #232632;
-        color: var(--text);
-        font-size: 13px;
-      }
-
-      .tab img {
-        width: 18px;
-        height: 18px;
-      }
-
-      .toolbar {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 12px;
-        align-items: center;
-        padding: 8px 14px;
-        background: #1b1e28;
-      }
-
-      .tool-icons,
-      .tool-right {
-        display: flex;
-        gap: 8px;
-        color: #9aa3b2;
-      }
-
-      .tool-dot,
-      .tool-line {
-        width: 26px;
-        height: 26px;
-        border-radius: 7px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .address {
-        height: 34px;
-        border: 1px solid rgba(255, 255, 255, 0.09);
-        border-radius: 8px;
-        background: #222631;
-      }
-
-      .start-page {
-        position: relative;
-        min-height: 420px;
-        display: grid;
-        place-items: center;
-        padding: 44px;
-        background:
-          linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-          #030814;
-        background-size: 74px 74px;
-      }
-
-      .start-content {
-        display: grid;
-        justify-items: center;
-        text-align: center;
-      }
-
-      .start-content img {
-        width: 132px;
-        height: 132px;
-        object-fit: contain;
-      }
-
-      .wordmark {
-        margin: -8px 0 0;
-        color: var(--orange);
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: 58px;
-        letter-spacing: 0.42em;
-        text-indent: 0.42em;
-      }
-
-      .start-sub {
-        margin-top: 14px;
-        color: var(--text);
-        font-size: 18px;
-      }
-
-      .start-search {
-        width: min(520px, 100%);
-        height: 54px;
-        margin-top: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
-        background: #0f1726;
+      .hero-note a {
+        color: var(--muted);
+        border-bottom: 1px solid var(--line);
       }
 
       section {
-        padding: 92px clamp(20px, 5vw, 64px);
+        padding: 96px 40px;
       }
 
-      .section-head {
-        display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.7fr);
-        gap: 56px;
-        align-items: end;
-        margin-bottom: 34px;
+      .section-inner {
+        width: min(1160px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-kicker {
+        margin: 0 0 18px;
+        color: var(--orange-soft);
+        font-size: 13px;
+        font-weight: 760;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
       }
 
       h2 {
         margin: 0;
         max-width: 760px;
-        font-size: clamp(38px, 5vw, 72px);
-        line-height: 1;
-        letter-spacing: -0.03em;
+        font-size: 58px;
+        line-height: 1.02;
+        letter-spacing: 0;
       }
 
-      .lead {
-        margin: 0;
+      .section-lead {
+        margin: 20px 0 0;
+        max-width: 760px;
         color: var(--muted);
         font-size: 19px;
-        line-height: 1.55;
+        line-height: 1.62;
       }
 
-      .panels {
+      .intro-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
-      }
-
-      .panel {
-        min-height: 280px;
-        display: grid;
-        align-content: space-between;
-        padding: 28px;
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
-      }
-
-      .panel strong {
-        color: var(--orange-2);
-        font-size: 13px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-      }
-
-      .panel h3 {
-        margin: 18px 0 0;
-        font-size: 30px;
-        line-height: 1.08;
-      }
-
-      .panel p {
-        margin: 18px 0 0;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-
-      .panel-mark {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        background: rgba(255, 138, 66, 0.12);
-        border: 1px solid var(--line-warm);
-      }
-
-      .wide-feature {
-        display: grid;
-        grid-template-columns: minmax(0, 0.8fr) minmax(380px, 1fr);
-        gap: 24px;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 28px;
         align-items: stretch;
       }
 
-      .feature-copy {
-        min-height: 520px;
-        display: grid;
-        align-content: center;
-        padding: clamp(34px, 5vw, 56px);
-        border-radius: 28px;
-        background: #f1ede7;
-        color: #151515;
-      }
-
-      .feature-copy p {
-        color: #60646d;
-      }
-
-      .death-panel {
-        min-height: 520px;
-        position: relative;
-        overflow: hidden;
-        display: grid;
-        place-items: center;
+      .principle {
+        min-height: 420px;
+        padding: 42px;
         border: 1px solid var(--line);
-        border-radius: 28px;
-        background: #060b15;
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.82);
       }
 
-      .death-panel::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background:
-          linear-gradient(90deg, rgba(255, 138, 66, 0.18) 1px, transparent 1px),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-        background-size: 90px 90px;
-        opacity: 0.35;
+      .principle h2 {
+        max-width: 680px;
       }
 
-      .lifecycle {
-        position: relative;
-        width: min(520px, calc(100% - 48px));
+      .identity-stack {
         display: grid;
         gap: 12px;
       }
 
-      .life-step {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        padding: 18px 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-        background: rgba(12, 20, 35, 0.86);
+      .identity-step {
+        display: grid;
+        grid-template-columns: 48px 1fr auto;
+        gap: 16px;
+        align-items: center;
+        min-height: 94px;
+        padding: 18px;
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: rgba(18, 23, 34, 0.68);
+      }
+
+      .step-number {
+        color: var(--orange);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 28px;
+      }
+
+      .identity-step strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 18px;
+      }
+
+      .identity-step span {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .step-state {
+        color: var(--dim);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 34px;
+      }
+
+      .card {
+        min-height: 250px;
+        display: grid;
+        align-content: space-between;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.74);
+      }
+
+      .card h3 {
+        margin: 16px 0 0;
+        font-size: 25px;
+        line-height: 1.16;
+      }
+
+      .card p {
+        margin: 14px 0 0;
+        color: var(--muted);
+        line-height: 1.58;
+      }
+
+      .card-mark {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--warm-line);
+        border-radius: 8px;
+        background: rgba(255, 136, 66, 0.1);
+        color: var(--orange-soft);
+        font-weight: 800;
+      }
+
+      .split-section {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .light-panel {
+        min-height: 540px;
+        display: grid;
+        align-content: center;
+        padding: 44px;
+        border-radius: 8px;
+        background: #eee9e2;
+        color: #161616;
+      }
+
+      .light-panel .section-kicker {
+        color: #98501f;
+      }
+
+      .light-panel p {
+        color: #5d626b;
+      }
+
+      .death-panel {
+        min-height: 540px;
+        display: grid;
+        align-content: center;
+        padding: 32px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(255, 136, 66, 0.12) 1px, transparent 1px),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.034) 1px, transparent 1px),
+          rgba(9, 11, 18, 0.82);
+        background-size: 92px 92px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .timeline-row {
+        display: grid;
+        grid-template-columns: 104px 1fr;
+        gap: 16px;
+        align-items: center;
+        min-height: 82px;
+        padding: 18px;
+        border: 1px solid var(--line-soft);
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.82);
+      }
+
+      .timeline-row strong {
+        color: var(--orange-soft);
+      }
+
+      .timeline-row span {
         color: var(--muted);
       }
 
-      .life-step span {
-        color: var(--text);
-        font-weight: 700;
+      .timeline-row.final {
+        border-color: var(--warm-line);
+        background: rgba(255, 136, 66, 0.08);
       }
 
-      .destroyed {
-        border-color: rgba(255, 138, 66, 0.34);
-        color: #ffd0ad;
+      .platforms {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 34px;
       }
 
-      .download-band {
-        padding-bottom: 110px;
+      .platform {
+        min-height: 320px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.78);
       }
 
-      .download-card {
+      .platform-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 42px;
+      }
+
+      .platform-label {
+        color: var(--orange-soft);
+        font-size: 13px;
+        font-weight: 760;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .platform-badge {
+        padding: 7px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .platform h3 {
+        margin: 0;
+        font-size: 34px;
+      }
+
+      .platform p {
+        margin: 16px 0 24px;
+        color: var(--muted);
+        line-height: 1.58;
+      }
+
+      .plain-link {
+        color: var(--orange-soft);
+        font-weight: 760;
+      }
+
+      .comparison {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 34px;
+      }
+
+      .comparison-list {
+        padding: 26px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(13, 17, 26, 0.72);
+      }
+
+      .comparison-list h3 {
+        margin: 0 0 18px;
+        font-size: 26px;
+      }
+
+      .comparison-list ul {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        color: var(--muted);
+      }
+
+      .comparison-list li {
+        padding-left: 22px;
+        position: relative;
+        line-height: 1.5;
+      }
+
+      .comparison-list li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.68em;
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--orange);
+      }
+
+      .download-section {
+        padding-bottom: 120px;
+      }
+
+      .download-panel {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
-        gap: 32px;
+        gap: 28px;
         align-items: center;
-        padding: clamp(32px, 5vw, 56px);
-        border: 1px solid var(--line-warm);
-        border-radius: 30px;
-        background:
-          radial-gradient(circle at 82% 30%, rgba(255, 138, 66, 0.14), transparent 18rem),
-          linear-gradient(180deg, #101827, #0a101c);
+        padding: 42px;
+        border: 1px solid var(--warm-line);
+        border-radius: 8px;
+        background: #11151f;
       }
 
-      .download-card h2 {
-        max-width: 760px;
-      }
-
-      .download-card p {
-        margin: 18px 0 0;
+      .download-panel p {
+        margin: 16px 0 0;
+        max-width: 680px;
         color: var(--muted);
-        font-size: 18px;
-        line-height: 1.55;
+        line-height: 1.58;
+      }
+
+      .download-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: flex-end;
       }
 
       .footer {
-        padding: 40px clamp(20px, 5vw, 64px);
-        border-top: 1px solid var(--line);
+        padding: 38px 40px;
+        border-top: 1px solid var(--line-soft);
+        background: #04060a;
         color: var(--dim);
       }
 
       .footer-inner {
-        width: min(1180px, 100%);
+        width: min(1160px, 100%);
         margin: 0 auto;
         display: flex;
+        align-items: center;
         justify-content: space-between;
         gap: 20px;
       }
 
-      @media (max-width: 980px) {
-        .hero-grid,
-        .section-head,
-        .wide-feature,
-        .download-card {
+      @media (max-width: 1040px) {
+        .intro-grid,
+        .split-section,
+        .download-panel {
           grid-template-columns: 1fr;
         }
 
-        .product-shot {
-          min-height: auto;
-        }
-
-        .panels {
-          grid-template-columns: 1fr;
+        .download-actions {
+          justify-content: flex-start;
         }
       }
 
-      @media (max-width: 720px) {
-        .nav-links {
+      @media (max-width: 820px) {
+        .nav {
+          padding: 0 18px;
+        }
+
+        .nav-links a:not(.nav-download) {
           display: none;
         }
 
         .hero {
-          padding-top: 58px;
+          min-height: 760px;
+          padding: 60px 18px 36px;
         }
 
-        .wordmark {
-          font-size: 38px;
+        .hero-stage {
+          inset: 72px 18px 18px;
         }
 
-        .start-page {
+        h1 {
+          font-size: 64px;
+        }
+
+        .hero-title {
+          font-size: 29px;
+        }
+
+        .hero-copy,
+        .section-lead {
+          font-size: 17px;
+        }
+
+        section {
+          padding: 72px 18px;
+        }
+
+        h2 {
+          font-size: 39px;
+        }
+
+        .cards,
+        .platforms,
+        .comparison {
+          grid-template-columns: 1fr;
+        }
+
+        .mock-tab.small,
+        .toolset.right {
+          display: none;
+        }
+
+        .mock-home {
           padding: 28px;
         }
 
+        .mock-word {
+          font-size: 40px;
+        }
+
+        .identity-step {
+          grid-template-columns: 44px 1fr;
+        }
+
+        .step-state {
+          grid-column: 2;
+        }
+
         .footer-inner {
+          align-items: flex-start;
           flex-direction: column;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .nav-download {
+          display: none;
+        }
+
+        h1 {
+          font-size: 50px;
+        }
+
+        .actions,
+        .download-actions {
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .mock-search {
+          grid-template-columns: 44px 1fr;
+        }
+
+        .mock-button {
+          display: none;
         }
       }
     </style>
@@ -557,13 +862,14 @@
   <body>
     <div class="page">
       <nav class="nav">
-        <a class="brand" href="#top" aria-label="Itera">
+        <a class="brand" href="#top" aria-label="Itera home">
           <img src="logo.svg" alt="">
           <span>Itera</span>
         </a>
         <div class="nav-links">
           <a href="#identity">Identity</a>
           <a href="#session-death">Session death</a>
+          <a href="#downloads">Downloads</a>
           <a href="https://github.com/purrvv-me/Itera">GitHub</a>
           <a class="nav-download" href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download</a>
         </div>
@@ -571,107 +877,99 @@
 
       <main id="top">
         <header class="hero">
-          <div class="hero-inner hero-grid">
-            <div>
-              <p class="eyebrow">Disposable browser for Windows</p>
-              <h1>Every launch begins again.</h1>
-              <p class="hero-copy">Itera creates a fresh browser identity for one session only. Use it, close it, and the identity is destroyed.</p>
-              <div class="hero-actions">
-                <a class="button" href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-                  Download Itera 2.0
-                </a>
-                <a class="button secondary" href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">
-                  Android APK
-                </a>
-                <a class="button secondary" href="#identity">See how it works</a>
+          <div class="hero-stage" aria-hidden="true">
+            <div class="hero-browser">
+              <div class="hero-tabs">
+                <div class="mock-tab">
+                  <img src="logo.svg" alt="">
+                  <span>New identity</span>
+                </div>
+                <div class="mock-tab small">
+                  <img src="logo.svg" alt="">
+                  <span>Disposable tab</span>
+                </div>
               </div>
-              <p class="release-note">Windows portable build. Experimental prototype. Previous build: <a href="https://github.com/purrvv-me/Itera/releases/download/v1.0/Itera-1.0.exe">Itera 1.0</a>.</p>
+              <div class="hero-toolbar">
+                <div class="toolset">
+                  <svg class="tool" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg class="tool" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg class="tool" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="mock-address"></div>
+                <div class="toolset right">
+                  <svg class="tool" viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.05.05a2 2 0 1 1-2.83 2.83l-.05-.05A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 1 1 0-4h.08a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.05-.05a2 2 0 1 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 19.4 9c.21.37.42.67.6 1H20a2 2 0 1 1 0 4h-.08c-.18.33-.39.63-.52 1Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                </div>
+              </div>
+              <div class="mock-home">
+                <div class="mock-home-inner">
+                  <img src="logo.svg" alt="">
+                  <div class="mock-word">ITERA</div>
+                  <div class="mock-search">
+                    <span></span>
+                    <div class="mock-button">Begin</div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div class="product-shot" aria-label="Itera app preview">
-              <div class="browser-card">
-                <div class="browser-top">
-                  <div class="tabs">
-                    <div class="tab">
-                      <img src="logo.svg" alt="">
-                      <span>New identity</span>
-                    </div>
-                  </div>
-                  <div class="toolbar">
-                    <div class="tool-icons">
-                      <span class="tool-dot"></span>
-                      <span class="tool-dot"></span>
-                      <span class="tool-dot"></span>
-                    </div>
-                    <div class="address"></div>
-                    <div class="tool-right">
-                      <span class="tool-line"></span>
-                      <span class="tool-line"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="start-page">
-                  <div class="start-content">
-                    <img src="logo.svg" alt="">
-                    <div class="wordmark">ITERA</div>
-                    <div class="start-sub">Every launch begins again.</div>
-                    <div class="start-search"></div>
-                  </div>
-                </div>
-              </div>
+          <div class="hero-content">
+            <div class="status-line"><span class="status-dot"></span>Disposable browser runtime</div>
+            <h1>ITERA</h1>
+            <p class="hero-title">A browser identity that exists for one session only.</p>
+            <p class="hero-copy">Open Itera, browse normally, close the window. The temporary identity dies with the session. Next launch begins from zero.</p>
+            <div class="actions">
+              <a class="button" href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                Download for Windows
+              </a>
+              <a class="button secondary" href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">Download APK</a>
+              <a class="button secondary" href="#identity">See the model</a>
             </div>
+            <p class="hero-note">Version 2.0 for Windows. Android prototype available. Previous build: <a href="https://github.com/purrvv-me/Itera/releases/download/v1.0/Itera-1.0.exe">Itera 1.0</a>.</p>
           </div>
         </header>
 
         <section id="identity">
-          <div class="section-inner">
-            <div class="section-head">
-              <h2>Not incognito. Not a private mode.</h2>
-              <p class="lead">Itera is built around continuity deletion. It does not ask the browser to forget history later. It creates a temporary browser identity, then removes the entire identity when the session ends.</p>
+          <div class="section-inner intro-grid">
+            <div class="principle">
+              <p class="section-kicker">The idea</p>
+              <h2>Not a private browser. A disposable one.</h2>
+              <p class="section-lead">Modern browsers remember the user. Private modes try to limit what is saved. Itera changes the unit of trust: the whole browser identity is temporary.</p>
+              <p class="section-lead">The goal is not "my history was cleared." The goal is "my previous browser identity no longer exists."</p>
             </div>
-            <div class="panels">
-              <article class="panel">
+            <div class="identity-stack" aria-label="Disposable identity lifecycle">
+              <div class="identity-step">
+                <div class="step-number">01</div>
                 <div>
-                  <strong>01</strong>
-                  <h3>Fresh identity</h3>
-                  <p>Each launch starts from a new disposable browser state.</p>
+                  <strong>Born</strong>
+                  <span>A fresh temporary identity is created when Itera starts.</span>
                 </div>
-                <div class="panel-mark"></div>
-              </article>
-              <article class="panel">
+                <div class="step-state">launch</div>
+              </div>
+              <div class="identity-step">
+                <div class="step-number">02</div>
                 <div>
-                  <strong>02</strong>
-                  <h3>Normal browsing</h3>
-                  <p>Use the browser window normally while the session is alive.</p>
+                  <strong>Used</strong>
+                  <span>All tabs share the same disposable identity during that launch.</span>
                 </div>
-                <div class="panel-mark"></div>
-              </article>
-              <article class="panel">
+                <div class="step-state">session</div>
+              </div>
+              <div class="identity-step">
+                <div class="step-number">03</div>
                 <div>
-                  <strong>03</strong>
-                  <h3>No past survives</h3>
-                  <p>Close the window and Itera destroys the temporary session profile.</p>
+                  <strong>Destroyed</strong>
+                  <span>Closing Itera removes the identity and its local browser state.</span>
                 </div>
-                <div class="panel-mark"></div>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section id="session-death">
-          <div class="section-inner wide-feature">
-            <div class="feature-copy">
-              <p class="eyebrow">Core product idea</p>
-              <h2>Session death is the feature.</h2>
-              <p class="lead">The key feature is not tabs, bookmarks, sync, themes, or accounts. The key feature is that the previous browser identity no longer exists.</p>
-            </div>
-            <div class="death-panel">
-              <div class="lifecycle">
-                <div class="life-step"><span>Launch</span><em>identity born</em></div>
-                <div class="life-step"><span>Browse</span><em>session alive</em></div>
-                <div class="life-step"><span>Close</span><em>cleanup begins</em></div>
-                <div class="life-step destroyed"><span>Destroyed</span><em>no past survives</em></div>
+                <div class="step-state">close</div>
+              </div>
+              <div class="identity-step">
+                <div class="step-number">04</div>
+                <div>
+                  <strong>Begins again</strong>
+                  <span>The next launch starts with no continuity from the last one.</span>
+                </div>
+                <div class="step-state">restart</div>
               </div>
             </div>
           </div>
@@ -679,50 +977,122 @@
 
         <section>
           <div class="section-inner">
-            <div class="section-head">
-              <h2>What disappears.</h2>
-              <p class="lead">The disposable profile is intended to remove session state such as cookies, cache, local storage, permissions, saved form state, and browser profile files.</p>
-            </div>
-            <div class="panels">
-              <article class="panel">
+            <p class="section-kicker">Product shape</p>
+            <h2>Designed to feel like a real browser, without keeping a past.</h2>
+            <p class="section-lead">Itera has tabs, a start page, browser controls, and a standalone app shell. Those features make the disposable model usable without changing the rule: one launch equals one life.</p>
+            <div class="cards">
+              <article class="card">
                 <div>
-                  <strong>State</strong>
-                  <h3>Cookies and cache</h3>
-                  <p>Temporary browser data belongs to the current session only.</p>
+                  <div class="card-mark">1</div>
+                  <h3>One temporary identity</h3>
+                  <p>Every app launch creates a new session boundary for browsing state.</p>
                 </div>
               </article>
-              <article class="panel">
+              <article class="card">
                 <div>
-                  <strong>Storage</strong>
-                  <h3>Local app data</h3>
-                  <p>localStorage, IndexedDB, permissions, and profile state are part of the disposable identity.</p>
+                  <div class="card-mark">2</div>
+                  <h3>Tabs inside the session</h3>
+                  <p>Multiple tabs are supported, but they belong to the current identity only.</p>
                 </div>
               </article>
-              <article class="panel">
+              <article class="card">
                 <div>
-                  <strong>Recovery</strong>
-                  <h3>Abandoned sessions</h3>
-                  <p>Old Itera session folders are cleaned on launch if a previous process was interrupted.</p>
+                  <div class="card-mark">3</div>
+                  <h3>No continuity layer</h3>
+                  <p>No sync, accounts, bookmarks, session restore, or recently closed tabs.</p>
                 </div>
               </article>
             </div>
           </div>
         </section>
 
-        <section class="download-band">
-          <div class="section-inner">
-            <div class="download-card">
-              <div>
-                <h2>Download Itera for Windows.</h2>
-                <p>Open Itera, browse with a temporary identity, close the window, and begin again next launch.</p>
+        <section id="session-death">
+          <div class="section-inner split-section">
+            <div class="light-panel">
+              <p class="section-kicker">Core feature</p>
+              <h2>Session death is not cleanup. It is the product.</h2>
+              <p class="section-lead">Itera does not position itself as another privacy toggle. The product is a browser identity that is born, used, and destroyed.</p>
+            </div>
+            <div class="death-panel">
+              <div class="timeline">
+                <div class="timeline-row"><strong>Open</strong><span>Itera creates a fresh disposable runtime.</span></div>
+                <div class="timeline-row"><strong>Browse</strong><span>Cookies, cache, storage, permissions, and tabs live inside this session.</span></div>
+                <div class="timeline-row"><strong>Close</strong><span>The session is ended silently.</span></div>
+                <div class="timeline-row final"><strong>Destroy</strong><span>No past survives into the next launch.</span></div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <p class="section-kicker">Available builds</p>
+            <h2>Desktop first. Mobile prototype now available.</h2>
+            <p class="section-lead">The Windows app is the main Itera MVP. The Android APK is an early WebView-based prototype of the same disposable-session idea.</p>
+            <div class="platforms">
+              <article class="platform">
+                <div class="platform-top">
+                  <span class="platform-label">Windows</span>
+                  <span class="platform-badge">Main build</span>
+                </div>
+                <h3>Itera 2.0</h3>
+                <p>Standalone Electron browser shell with tabs, disposable local session data, and a polished Itera start page.</p>
+                <a class="plain-link" href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download Itera-2.0.exe</a>
+              </article>
+              <article class="platform">
+                <div class="platform-top">
+                  <span class="platform-label">Android</span>
+                  <span class="platform-badge">Prototype</span>
+                </div>
+                <h3>Itera APK</h3>
+                <p>Mobile disposable browser prototype with tabs, address controls, and session cleanup around Android WebView storage.</p>
+                <a class="plain-link" href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">Download Itera.apk</a>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="section-inner">
+            <p class="section-kicker">Positioning</p>
+            <h2>What Itera is, and what it is not.</h2>
+            <div class="comparison">
+              <div class="comparison-list">
+                <h3>Itera is</h3>
+                <ul>
+                  <li>A one-time-use browser identity.</li>
+                  <li>A session-based browser runtime.</li>
+                  <li>A browser without continuity between launches.</li>
+                  <li>A product built around identity death.</li>
+                </ul>
+              </div>
+              <div class="comparison-list">
+                <h3>Itera is not</h3>
+                <ul>
+                  <li>Not a Tor replacement.</li>
+                  <li>Not a VPN.</li>
+                  <li>Not a tracker blocker pitch.</li>
+                  <li>Not a normal incognito mode with branding.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="downloads" class="download-section">
+          <div class="section-inner download-panel">
+            <div>
+              <p class="section-kicker">Download</p>
+              <h2>Start with a new identity.</h2>
+              <p>Download the current Windows build or the experimental Android APK from GitHub Releases. Itera is still experimental software and should not be treated as a hardened anonymity tool.</p>
+            </div>
+            <div class="download-actions">
               <a class="button" href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
-                Download 2.0
+                Windows 2.0
               </a>
-              <a class="button secondary" href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">
-                Download APK
-              </a>
+              <a class="button secondary" href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">Android APK</a>
+              <a class="button secondary" href="https://github.com/purrvv-me/Itera">GitHub</a>
             </div>
           </div>
         </section>
