@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -70,6 +72,9 @@ public class MainActivity extends Activity {
     }
 
     private void buildUi() {
+        getWindow().setStatusBarColor(color("#050811"));
+        getWindow().setNavigationBarColor(color("#050811"));
+
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(color("#030814"));
@@ -78,58 +83,82 @@ public class MainActivity extends Activity {
 
         LinearLayout chrome = new LinearLayout(this);
         chrome.setOrientation(LinearLayout.VERTICAL);
-        chrome.setPadding(dp(10), dp(7), dp(10), dp(9));
-        chrome.setBackgroundColor(color("#171922"));
+        chrome.setPadding(dp(12), dp(9), dp(12), dp(11));
+        chrome.setBackgroundColor(color("#11141D"));
         root.addView(chrome, new LinearLayout.LayoutParams(-1, -2));
 
         LinearLayout tabRow = new LinearLayout(this);
         tabRow.setGravity(Gravity.CENTER_VERTICAL);
         tabRow.setOrientation(LinearLayout.HORIZONTAL);
-        chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(40)));
+        chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(42)));
+
+        TextView brand = new TextView(this);
+        brand.setText("I");
+        brand.setTextColor(color("#FF8A42"));
+        brand.setTextSize(18);
+        brand.setTypeface(Typeface.DEFAULT_BOLD);
+        brand.setGravity(Gravity.CENTER);
+        brand.setBackground(rounded("#171C28", "#2B3142", 11));
+        LinearLayout.LayoutParams brandParams = new LinearLayout.LayoutParams(dp(38), dp(36));
+        brandParams.setMargins(0, 0, dp(8), 0);
+        tabRow.addView(brand, brandParams);
 
         HorizontalScrollView tabScroll = new HorizontalScrollView(this);
         tabScroll.setHorizontalScrollBarEnabled(false);
+        tabScroll.setOverScrollMode(View.OVER_SCROLL_NEVER);
         tabStrip = new LinearLayout(this);
         tabStrip.setOrientation(LinearLayout.HORIZONTAL);
-        tabScroll.addView(tabStrip, new HorizontalScrollView.LayoutParams(-2, dp(38)));
+        tabScroll.addView(tabStrip, new HorizontalScrollView.LayoutParams(-2, dp(36)));
         tabRow.addView(tabScroll, new LinearLayout.LayoutParams(0, dp(38), 1));
-        tabRow.addView(tool("+", v -> createTab(HOME_URL, true)));
+
+        TextView addTab = tool("+", v -> createTab(HOME_URL, true), 40, 24);
+        addTab.setBackground(rounded("#1D2331", "#303748", 11));
+        tabRow.addView(addTab);
 
         LinearLayout addressRow = new LinearLayout(this);
         addressRow.setGravity(Gravity.CENTER_VERTICAL);
         addressRow.setOrientation(LinearLayout.HORIZONTAL);
-        addressRow.setPadding(0, dp(6), 0, dp(4));
-        chrome.addView(addressRow, new LinearLayout.LayoutParams(-1, dp(54)));
+        addressRow.setPadding(0, dp(9), 0, 0);
+        chrome.addView(addressRow, new LinearLayout.LayoutParams(-1, dp(56)));
         addressInput = new EditText(this);
         addressInput.setSingleLine(true);
         addressInput.setHint("Search or enter address");
-        addressInput.setHintTextColor(color("#707B8D"));
+        addressInput.setHintTextColor(color("#778296"));
         addressInput.setTextColor(color("#F3EEE7"));
         addressInput.setTextSize(15);
-        addressInput.setPadding(dp(15), 0, dp(15), 0);
-        addressInput.setBackgroundColor(color("#20232C"));
+        addressInput.setPadding(dp(16), 0, dp(16), 0);
+        addressInput.setBackground(rounded("#1A202D", "#30384B", 12));
         addressInput.setOnEditorActionListener((v, actionId, event) -> {
             navigate(addressInput.getText().toString());
             hideKeyboard();
             return true;
         });
-        addressRow.addView(addressInput, new LinearLayout.LayoutParams(-1, dp(42)));
+        addressRow.addView(addressInput, new LinearLayout.LayoutParams(-1, dp(44)));
+
+        webContainer = new FrameLayout(this);
+        root.addView(webContainer, new LinearLayout.LayoutParams(-1, 0, 1));
 
         LinearLayout controls = new LinearLayout(this);
         controls.setGravity(Gravity.CENTER_VERTICAL);
         controls.setOrientation(LinearLayout.HORIZONTAL);
-        chrome.addView(controls, new LinearLayout.LayoutParams(-1, dp(42)));
+        controls.setPadding(dp(12), dp(8), dp(12), dp(8));
+        controls.setBackgroundColor(color("#10131B"));
+        root.addView(controls, new LinearLayout.LayoutParams(-1, dp(62)));
 
-        controls.addView(tool("‹", v -> goBack()));
-        controls.addView(tool("›", v -> goForward()));
-        controls.addView(tool("↻", v -> reload()));
-        controls.addView(tool("⌂", v -> openHome()));
+        controls.addView(tool("‹", v -> goBack(), 42, 26));
+        controls.addView(tool("›", v -> goForward(), 42, 26));
+        controls.addView(tool("⌂", v -> openHome(), 42, 22));
+        controls.addView(tool("↻", v -> reload(), 42, 22));
         controls.addView(spacer());
-        controls.addView(tool("×", v -> closeTab(activeIndex)));
-        controls.addView(tool("Burn", v -> destroySession(), 58, 15));
-
-        webContainer = new FrameLayout(this);
-        root.addView(webContainer, new LinearLayout.LayoutParams(-1, 0, 1));
+        controls.addView(tool("×", v -> closeTab(activeIndex), 42, 22));
+        TextView burn = tool("Burn", v -> destroySession(), 72, 14);
+        burn.setTextColor(color("#FFD0AD"));
+        burn.setTypeface(Typeface.DEFAULT_BOLD);
+        burn.setBackground(rounded("#241817", "#7A452D", 13));
+        LinearLayout.LayoutParams burnParams = new LinearLayout.LayoutParams(dp(72), dp(40));
+        burnParams.setMargins(dp(8), 0, 0, 0);
+        burn.setLayoutParams(burnParams);
+        controls.addView(burn);
     }
 
     private TextView tool(String label, View.OnClickListener listener) {
@@ -143,7 +172,7 @@ public class MainActivity extends Activity {
         view.setTextSize(textSp);
         view.setGravity(Gravity.CENTER);
         view.setOnClickListener(listener);
-        view.setBackgroundColor(Color.TRANSPARENT);
+        view.setBackground(rounded("#11141D", "#11141D", 11));
         view.setLayoutParams(new LinearLayout.LayoutParams(dp(widthDp), dp(40)));
         return view;
     }
@@ -257,13 +286,16 @@ public class MainActivity extends Activity {
         button.setTextColor(color("#F3EEE7"));
         button.setTextSize(13);
         button.setGravity(Gravity.CENTER_VERTICAL);
-        button.setPadding(dp(10), 0, dp(8), 0);
+        button.setTypeface(Typeface.DEFAULT_BOLD);
+        button.setPadding(dp(12), 0, dp(12), 0);
         button.setOnClickListener(v -> activateTab(tabs.indexOf(tab)));
         button.setOnLongClickListener(v -> {
             closeTab(tabs.indexOf(tab));
             return true;
         });
-        button.setLayoutParams(new LinearLayout.LayoutParams(dp(138), dp(36)));
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dp(148), dp(36));
+        params.setMargins(0, 0, dp(6), 0);
+        button.setLayoutParams(params);
         return button;
     }
 
@@ -271,9 +303,10 @@ public class MainActivity extends Activity {
         for (int i = 0; i < tabs.size(); i++) {
             Tab tab = tabs.get(i);
             boolean active = i == activeIndex;
-            tab.button.setText("▏ " + tab.title);
-            tab.button.setBackgroundColor(active ? color("#252936") : color("#171922"));
-            tab.button.setAlpha(active ? 1f : 0.82f);
+            tab.button.setText("I  " + tab.title);
+            tab.button.setTextColor(active ? color("#FFFFFF") : color("#A7B0C0"));
+            tab.button.setBackground(active ? rounded("#242A38", "#3A4154", 11) : rounded("#151A25", "#242B3A", 11));
+            tab.button.setAlpha(active ? 1f : 0.9f);
         }
     }
 
@@ -481,13 +514,18 @@ public class MainActivity extends Activity {
 
     private String homeHtml() {
         return "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>"
-            + "<style>body{margin:0;min-height:100vh;background:#030814;color:#f3eee7;font-family:system-ui;display:grid;place-items:center;padding:28px;box-sizing:border-box;}"
-            + "main{width:min(100%,680px);display:grid;gap:22px;text-align:center}.cards{display:grid;grid-template-columns:1fr 1fr;gap:8px}.card{border:1px solid rgba(184,199,222,.14);border-radius:8px;padding:14px;text-align:left;background:rgba(6,12,24,.62)}"
-            + ".n{color:#ff8a42;font-size:12px}.card b{display:block;margin:8px 0 5px}.card span{color:#9aa3b2;font-size:13px}.match{font-size:48px;color:#ff8a42}.brand{font-family:Georgia,serif;font-size:56px;color:#ff8a42;margin:0}.copy{color:#d3c7bd;margin:0}"
-            + "form{display:grid;grid-template-columns:1fr auto;gap:8px;background:#0b1220;border:1px solid #202b3d;border-radius:8px;padding:7px}input{min-width:0;background:transparent;border:0;outline:0;color:#f3eee7;font-size:16px;padding:0 10px}button,.github{border:1px solid rgba(255,138,66,.38);border-radius:7px;background:rgba(255,138,66,.12);color:#ffd0ad;padding:11px 15px;font-weight:700;text-decoration:none}.note{color:rgba(211,199,189,.34);font-size:12px;margin:0}@media(max-width:560px){.cards{grid-template-columns:1fr}.brand{font-size:44px}}</style></head>"
-            + "<body><main><section class='cards'><div class='card'><span class='n'>01</span><b>Fresh profile</b><span>Born for this launch only</span></div><div class='card'><span class='n'>02</span><b>No continuity</b><span>No account, sync, or saved state</span></div><div class='card'><span class='n'>03</span><b>Temporary storage</b><span>Session data dies with the window</span></div><div class='card'><span class='n'>04</span><b>Silent cleanup</b><span>No past survives after close</span></div></section>"
-            + "<div class='match'>▌</div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p><form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
-            + "<a class='github' href='" + PROJECT_URL + "'>Itera on GitHub</a><p class='note'>Please put a star on my project (*^‿^*)</p></main></body></html>";
+            + "<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#030814;color:#f3eee7;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:auto}"
+            + ".page{min-height:100vh;display:grid;align-content:center;padding:30px 22px;background:linear-gradient(90deg,rgba(255,138,66,.045) 1px,transparent 1px),linear-gradient(180deg,rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(180deg,#050b18,#020610);background-size:86px 86px}"
+            + ".hero{width:min(100%,560px);margin:auto;display:grid;gap:20px;text-align:center}.mark{width:74px;height:74px;margin:auto;border-radius:24px;display:grid;place-items:center;background:rgba(255,138,66,.1);border:1px solid rgba(255,138,66,.22);color:#ff8a42;font-size:34px;font-weight:900;box-shadow:0 22px 70px rgba(0,0,0,.34)}"
+            + ".brand{font-family:Georgia,serif;font-size:48px;line-height:1;color:#ff8a42;margin:0;letter-spacing:.08em;text-shadow:0 0 26px rgba(255,138,66,.18)}.copy{margin:0;color:#d3c7bd;font-size:16px}"
+            + "form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px;background:rgba(11,18,32,.92);border:1px solid #263247;border-radius:14px;padding:7px;box-shadow:0 24px 70px rgba(0,0,0,.34)}input{min-width:0;height:42px;background:transparent;border:0;outline:0;color:#f3eee7;font-size:15px;padding:0 11px}input::placeholder{color:#778296}button,.github{border:1px solid rgba(255,138,66,.38);border-radius:11px;background:rgba(255,138,66,.13);color:#ffd0ad;padding:0 16px;font-weight:800;text-decoration:none}"
+            + ".state{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}.state span{min-height:48px;display:grid;place-items:center;border:1px solid rgba(184,199,222,.12);border-radius:12px;background:rgba(6,12,24,.58);color:#a7b0c0;font-size:12px}"
+            + ".cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.card{border:1px solid rgba(184,199,222,.12);border-radius:14px;padding:13px;text-align:left;background:rgba(6,12,24,.5)}.card small{color:#ff8a42;font-weight:800}.card b{display:block;margin:7px 0 4px}.card span{color:#8f98a8;font-size:12px;line-height:1.35}.github{display:grid;place-items:center;min-height:44px;margin-top:2px}.note{color:rgba(211,199,189,.3);font-size:11px;margin:0}@media(max-width:390px){.cards{grid-template-columns:1fr}.brand{font-size:42px}.state{grid-template-columns:1fr}}</style></head>"
+            + "<body><main class='page'><section class='hero'><div class='mark'>I</div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
+            + "<form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(/^(https?:|about:)/i.test(v)){location.href=v}else if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
+            + "<div class='state'><span>Born now</span><span>Identity alive</span><span>No past</span></div>"
+            + "<section class='cards'><div class='card'><small>01</small><b>Fresh profile</b><span>Created for this launch.</span></div><div class='card'><small>02</small><b>No continuity</b><span>No saved browser state.</span></div><div class='card'><small>03</small><b>Tabs</b><span>Inside one identity.</span></div><div class='card'><small>04</small><b>Cleanup</b><span>Session dies on close.</span></div></section>"
+            + "<a class='github' href='" + PROJECT_URL + "'>Itera on GitHub</a><p class='note'>Please put a star on my project (*^‿^*)</p></section></main></body></html>";
     }
 
     private String errorHtml(String failedUrl) {
@@ -522,6 +560,14 @@ public class MainActivity extends Activity {
 
     private int color(String hex) {
         return Color.parseColor(hex);
+    }
+
+    private GradientDrawable rounded(String fillHex, String strokeHex, int radiusDp) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(color(fillHex));
+        drawable.setCornerRadius(dp(radiusDp));
+        drawable.setStroke(dp(1), color(strokeHex));
+        return drawable;
     }
 
     private static class Tab {

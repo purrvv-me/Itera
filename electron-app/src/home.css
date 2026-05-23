@@ -31,10 +31,11 @@ body {
   min-height: 100vh;
   overflow: hidden;
   background:
-    linear-gradient(90deg, rgba(255, 138, 66, 0.055) 0 1px, transparent 1px 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 50% 34%, rgba(255, 138, 66, 0.08), transparent 24rem),
+    linear-gradient(90deg, rgba(255, 138, 66, 0.05) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 100%),
     linear-gradient(180deg, #030916 0%, #020712 50%, #01040a 100%);
-  background-size: 96px 96px, 96px 96px, auto;
+  background-size: auto, 96px 96px, 96px 96px, auto;
 }
 
 .home-shell {
@@ -128,8 +129,8 @@ body {
   gap: 7px;
   padding: 16px;
   border: 1px solid rgba(184, 199, 222, 0.1);
-  border-radius: 7px;
-  background: rgba(6, 12, 24, 0.62);
+  border-radius: 10px;
+  background: rgba(7, 13, 25, 0.68);
   color: var(--muted);
   overflow: hidden;
   opacity: 0.48;
@@ -204,7 +205,7 @@ p {
   gap: 8px;
   padding: 7px;
   border: 1px solid var(--field-border);
-  border-radius: 8px;
+  border-radius: 12px;
   background: color-mix(in srgb, var(--field) 90%, transparent);
   box-shadow:
     0 26px 80px rgba(0, 0, 0, 0.36),
@@ -241,7 +242,7 @@ p {
   height: 42px;
   min-width: 92px;
   border: 1px solid rgba(255, 138, 66, 0.38);
-  border-radius: 6px;
+  border-radius: 9px;
   background: rgba(255, 138, 66, 0.12);
   color: #ffd0ad;
   font: 600 13px var(--font-ui);
@@ -318,7 +319,7 @@ p {
   min-height: 34px;
   padding: 0 13px;
   border: 1px solid rgba(184, 199, 222, 0.14);
-  border-radius: 7px;
+  border-radius: 9px;
   background: rgba(6, 12, 24, 0.5);
   color: rgba(243, 238, 231, 0.78);
   font-size: 13px;

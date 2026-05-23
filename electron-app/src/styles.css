@@ -1,11 +1,11 @@
 :root {
   color-scheme: dark;
   --bg: #030814;
-  --chrome: #171922;
-  --chrome-dark: #10131b;
-  --chrome-line: #282b36;
-  --field: #20232c;
-  --field-border: #303542;
+  --chrome: #151922;
+  --chrome-dark: #0f121a;
+  --chrome-line: #272d3a;
+  --field: #1b2130;
+  --field-border: #31394c;
   --text: #f3eee7;
   --muted: #9aa3b2;
   --dim: #5d6879;
@@ -36,12 +36,16 @@ body {
   height: 100%;
   display: grid;
   grid-template-rows: 38px 50px minmax(0, 1fr);
-  background: var(--bg);
+  background:
+    linear-gradient(90deg, rgba(255, 138, 66, 0.035) 0 1px, transparent 1px 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 100%),
+    var(--bg);
+  background-size: 96px 96px, 96px 96px, auto;
 }
 
 .windowbar {
   display: block;
-  background: #11131a;
+  background: linear-gradient(180deg, #11141c, #0d1017);
   border-bottom: 1px solid var(--chrome-line);
   -webkit-app-region: drag;
 }
@@ -79,8 +83,8 @@ body {
   padding: 0 14px;
   border: 1px solid var(--chrome-line);
   border-bottom-color: transparent;
-  border-radius: 6px 6px 0 0;
-  background: #222530;
+  border-radius: 8px 8px 0 0;
+  background: #1d2230;
   color: var(--text);
   font-size: 13px;
   position: relative;
@@ -90,11 +94,13 @@ body {
   user-select: none;
   outline: none;
   -webkit-app-region: no-drag;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
 .tab.active {
-  background: #252936;
+  background: #262c3b;
   color: #ffffff;
+  border-color: #333b4f;
 }
 
 .tab:focus-visible {
@@ -163,6 +169,7 @@ body {
   flex: 0 0 auto;
   justify-self: start;
   -webkit-app-region: no-drag;
+  border-radius: 8px;
 }
 
 .topbar {
@@ -171,7 +178,7 @@ body {
   gap: 10px;
   align-items: center;
   padding: 6px 12px;
-  background: var(--chrome);
+  background: linear-gradient(180deg, #181c26, #161a23);
   border-bottom: 1px solid var(--chrome-line);
 }
 
@@ -198,13 +205,14 @@ button {
   width: 32px;
   height: 32px;
   border: 0;
-  border-radius: 5px;
+  border-radius: 8px;
   background: transparent;
   color: var(--muted);
   font-size: 21px;
   line-height: 1;
   cursor: default;
   -webkit-app-region: no-drag;
+  transition: background 140ms ease, color 140ms ease, transform 140ms ease;
 }
 
 button svg {
@@ -231,8 +239,12 @@ button:disabled {
 }
 
 button:not(:disabled):hover {
-  background: #2a2e39;
+  background: #252b39;
   color: var(--text);
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
 }
 
 .address {
@@ -243,16 +255,17 @@ button:not(:disabled):hover {
   width: 100%;
   height: 36px;
   border: 1px solid var(--field-border);
-  border-radius: 7px;
-  padding: 0 15px;
+  border-radius: 9px;
+  padding: 0 16px;
   outline: none;
-  background: var(--field);
+  background: linear-gradient(180deg, #1d2331, #1a202d);
   color: var(--text);
   font: 14px var(--font-ui);
 }
 
 .address input:focus {
-  border-color: #4b5262;
+  border-color: rgba(255, 138, 66, 0.56);
+  box-shadow: 0 0 0 2px rgba(255, 138, 66, 0.08);
 }
 
 .right-tools {
@@ -282,7 +295,7 @@ button:not(:disabled):hover {
   justify-self: center;
   border-radius: 50%;
   background: var(--orange);
-  box-shadow: none;
+  box-shadow: 0 0 0 5px rgba(255, 138, 66, 0.08);
 }
 
 .session-state span {
@@ -404,9 +417,9 @@ webview.active {
   overflow: auto;
   padding: 18px;
   border: 1px solid var(--chrome-line);
-  border-radius: 8px;
-  background: #191c25;
-  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.42);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1a1f2b, #151923);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
   transform: translateX(18px);
   opacity: 0;
   pointer-events: none;
@@ -472,6 +485,7 @@ webview.active {
   gap: 14px;
   color: var(--text);
   font-size: 14px;
+  padding: 0 2px;
 }
 
 .status-row strong {
@@ -483,7 +497,7 @@ webview.active {
 select {
   height: 34px;
   border: 1px solid var(--field-border);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 0 10px;
   background: var(--field);
   color: var(--text);
@@ -511,15 +525,17 @@ input[type="checkbox"] {
   width: 100%;
   height: 42px;
   margin-top: 18px;
-  border: 1px solid #3d4350;
-  background: #252936;
+  border: 1px solid rgba(255, 138, 66, 0.36);
+  border-radius: 9px;
+  background: rgba(255, 138, 66, 0.12);
   color: var(--text);
   font-size: 14px;
   font-weight: 650;
 }
 
 .destroy-button:hover {
-  background: #303543;
+  background: rgba(255, 138, 66, 0.18);
+  color: #ffd0ad;
 }
 
 .product-menu {
@@ -529,9 +545,9 @@ input[type="checkbox"] {
   width: 214px;
   padding: 8px;
   border: 1px solid var(--chrome-line);
-  border-radius: 8px;
-  background: #191c25;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.38);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #1a1f2b, #151923);
+  box-shadow: 0 22px 64px rgba(0, 0, 0, 0.44);
   opacity: 0;
   pointer-events: none;
   transform: translateY(-6px);
@@ -551,6 +567,7 @@ input[type="checkbox"] {
   padding: 0 10px;
   text-align: left;
   color: var(--text);
+  border-radius: 8px;
   font-size: 13px;
 }
 
