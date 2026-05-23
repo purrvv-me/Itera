@@ -22,6 +22,15 @@ contextBridge.exposeInMainWorld("itera", {
   },
   onOpenUrl(callback) {
     ipcRenderer.on("itera-open-url", (_event, url) => callback(url));
+  },
+  onNavigationBlocked(callback) {
+    ipcRenderer.on("itera-navigation-blocked", (_event, payload) => callback(payload));
+  },
+  onPermissionBlocked(callback) {
+    ipcRenderer.on("itera-permission-blocked", (_event, payload) => callback(payload));
+  },
+  onDownloadEvent(callback) {
+    ipcRenderer.on("itera-download-event", (_event, payload) => callback(payload));
   }
 });
 

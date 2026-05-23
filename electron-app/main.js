@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session, shell } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain, session, shell } = require("electron");
 const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
@@ -13,6 +13,11 @@ const sessionId = `${SESSION_PREFIX}${crypto.randomUUID()}`;
 const sessionRoot = path.join(os.tmpdir(), APP_NAME);
 const userDataPath = path.join(sessionRoot, sessionId);
 const partitionName = `itera-${crypto.randomUUID()}`;
+const appRoot = __dirname;
+const appFileRoots = [
+  path.join(appRoot, "src"),
+  path.join(appRoot, "assets")
+].map((entry) => path.resolve(entry));
 const smokeTestMode = process.argv.includes("--itera-smoke-test");
 const destroySmokeTestMode = process.argv.includes("--itera-destroy-smoke-test");
 
@@ -41,6 +46,7 @@ let shutdownStarted = false;
 
 async function createWindow() {
   cleanupAbandonedSessions();
+  configureDisposableSession(session.fromPartition(partitionName));
 
   const iconPath = path.join(__dirname, "assets", "itera.ico");
   mainWindow = new BrowserWindow({
@@ -109,6 +115,49 @@ async function destroySession() {
   } catch {
     // Profile directory deletion below is the authoritative cleanup path.
   }
+}
+
+function configureDisposableSession(target) {
+  target.setPermissionRequestHandler((_webContents, permission, callback) => {
+    notifyRenderer("itera-permission-blocked", { permission });
+    callback(false);
+  });
+
+  target.setPermissionCheckHandler(() => false);
+
+  target.on("will-download", (event, item) => {
+    const filename = item.getFilename() || "download";
+    const savePath = dialog.showSaveDialogSync(mainWindow, {
+      title: "Save file outside Itera",
+      defaultPath: path.join(app.getPath("downloads"), filename),
+      buttonLabel: "Save outside session",
+      message: "Downloaded files are saved outside the disposable identity and will survive after Itera closes."
+    });
+
+    if (!savePath) {
+      event.preventDefault();
+      notifyRenderer("itera-download-event", {
+        state: "cancelled",
+        filename
+      });
+      return;
+    }
+
+    item.setSavePath(savePath);
+    notifyRenderer("itera-download-event", {
+      state: "started",
+      filename,
+      path: savePath
+    });
+
+    item.once("done", (_event, state) => {
+      notifyRenderer("itera-download-event", {
+        state,
+        filename,
+        path: savePath
+      });
+    });
+  });
 }
 
 async function destroySessionAndQuit() {
@@ -234,10 +283,26 @@ app.on("web-contents-created", (_event, contents) => {
       return { action: "deny" };
     }
 
+    if (!isAllowedBrowserUrl(url)) {
+      notifyRenderer("itera-navigation-blocked", { url });
+      return { action: "deny" };
+    }
+
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send("itera-open-url", url);
     }
     return { action: "deny" };
+  });
+
+  contents.on("will-navigate", (event, url) => {
+    if (contents === mainWindow?.webContents) {
+      return;
+    }
+
+    if (!isAllowedBrowserUrl(url)) {
+      event.preventDefault();
+      notifyRenderer("itera-navigation-blocked", { url });
+    }
   });
 });
 
@@ -253,3 +318,30 @@ ipcMain.handle("itera-destroy-session", async () => {
 });
 
 global.iteraFeatureFlags = featureFlags;
+
+function isAllowedBrowserUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+
+  if (parsed.protocol === "http:" || parsed.protocol === "https:" || parsed.protocol === "about:") {
+    return true;
+  }
+
+  if (parsed.protocol === "file:") {
+    const filePath = decodeURIComponent(parsed.pathname.replace(/^\//, ""));
+    const normalizedPath = path.resolve(filePath);
+    return appFileRoots.some((root) => normalizedPath === root || normalizedPath.startsWith(`${root}${path.sep}`));
+  }
+
+  return false;
+}
+
+function notifyRenderer(channel, payload) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send(channel, payload);
+  }
+}

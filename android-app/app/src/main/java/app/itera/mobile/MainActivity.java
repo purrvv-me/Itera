@@ -3,16 +3,21 @@ package app.itera.mobile;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
@@ -23,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +165,13 @@ public class MainActivity extends Activity {
         settings.setDatabaseEnabled(true);
         settings.setMediaPlaybackRequiresUserGesture(true);
         settings.setSupportMultipleWindows(false);
+        settings.setGeolocationEnabled(false);
+        settings.setSaveFormData(false);
+        settings.setSupportZoom(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, false);
 
         Tab tab = new Tab();
         tab.id = nextTabId++;
@@ -171,12 +184,22 @@ public class MainActivity extends Activity {
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                request.deny();
+                Toast.makeText(MainActivity.this, "Permission blocked for disposable identity", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
             public void onReceivedTitle(WebView view, String title) {
                 if (title != null && !title.trim().isEmpty() && !HOME_URL.equals(view.getUrl())) {
                     tab.title = title.trim();
                     renderTabs();
                 }
             }
+        });
+
+        webView.setDownloadListener((downloadUrl, userAgent, contentDisposition, mimeType, contentLength) -> {
+            confirmDeviceDownload(downloadUrl, userAgent, contentDisposition, mimeType);
         });
 
         webView.setWebViewClient(new WebViewClient() {
@@ -203,6 +226,22 @@ public class MainActivity extends Activity {
                 }
                 updateAddress();
                 renderTabs();
+            }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request == null || !request.isForMainFrame()) {
+                    return;
+                }
+                String failedUrl = request.getUrl() == null ? "" : request.getUrl().toString();
+                if (HOME_URL.equals(failedUrl)) {
+                    return;
+                }
+                tab.title = "Connection failed";
+                tab.mobileUrl = failedUrl;
+                renderTabs();
+                updateAddress();
+                view.loadDataWithBaseURL(failedUrl, errorHtml(failedUrl), "text/html", "UTF-8", null);
             }
         });
 
@@ -348,6 +387,36 @@ public class MainActivity extends Activity {
             .show();
     }
 
+    private void confirmDeviceDownload(String downloadUrl, String userAgent, String contentDisposition, String mimeType) {
+        String filename = URLUtil.guessFileName(downloadUrl, contentDisposition, mimeType);
+        new AlertDialog.Builder(this)
+            .setTitle("Save outside Itera")
+            .setMessage(filename + " will be saved to this device and will survive after the disposable browser identity is destroyed.")
+            .setPositiveButton("Save", (dialog, which) -> startDeviceDownload(downloadUrl, userAgent, filename, mimeType))
+            .setNegativeButton("Cancel", null)
+            .show();
+    }
+
+    private void startDeviceDownload(String downloadUrl, String userAgent, String filename, String mimeType) {
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
+            request.addRequestHeader("User-Agent", userAgent);
+            request.setTitle(filename);
+            request.setDescription("Saved outside Itera disposable session");
+            request.setMimeType(mimeType);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+
+            DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+            if (manager != null) {
+                manager.enqueue(request);
+                Toast.makeText(this, "Saving to device Downloads", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception error) {
+            Toast.makeText(this, "Download could not be started", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void updateAddress() {
         WebView active = getActiveWebView();
         if (active == null) {
@@ -419,6 +488,24 @@ public class MainActivity extends Activity {
             + "<body><main><section class='cards'><div class='card'><span class='n'>01</span><b>Fresh profile</b><span>Born for this launch only</span></div><div class='card'><span class='n'>02</span><b>No continuity</b><span>No account, sync, or saved state</span></div><div class='card'><span class='n'>03</span><b>Temporary storage</b><span>Session data dies with the window</span></div><div class='card'><span class='n'>04</span><b>Silent cleanup</b><span>No past survives after close</span></div></section>"
             + "<div class='match'>▌</div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p><form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
             + "<a class='github' href='" + PROJECT_URL + "'>Itera on GitHub</a><p class='note'>Please put a star on my project (*^‿^*)</p></main></body></html>";
+    }
+
+    private String errorHtml(String failedUrl) {
+        return "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>"
+            + "<style>body{margin:0;min-height:100vh;background:#030814;color:#f3eee7;font-family:system-ui;display:grid;place-items:center;padding:28px;box-sizing:border-box}"
+            + "main{width:min(100%,560px);border:1px solid rgba(184,199,222,.14);border-radius:8px;background:rgba(6,12,24,.72);padding:24px}.k{color:#ff8a42;font-size:12px;font-weight:800}h1{margin:14px 0 0;font-size:30px}p{color:#9aa3b2;line-height:1.5}.url{word-break:break-all;color:#5d6879;font-size:13px}button{border:1px solid rgba(255,138,66,.38);border-radius:7px;background:rgba(255,138,66,.12);color:#ffd0ad;padding:11px 15px;font-weight:700}</style></head>"
+            + "<body><main><span class='k'>Connection failed</span><h1>Page did not load.</h1><p>The site could not be reached from this disposable session.</p><p class='url'>"
+            + escapeHtml(failedUrl)
+            + "</p><button onclick='location.reload()'>Try again</button></main></body></html>";
+    }
+
+    private String escapeHtml(String value) {
+        return String.valueOf(value)
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#39;");
     }
 
     private int dp(int value) {

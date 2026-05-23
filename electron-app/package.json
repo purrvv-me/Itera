@@ -1,12 +1,14 @@
 {
   "name": "itera-browser",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Itera disposable browser shell.",
   "main": "main.js",
+  "author": "purrvv-me",
   "private": true,
   "scripts": {
     "dev": "electron .",
     "start": "electron .",
+    "smoke": "node ../tools/electron_smoke_test.js",
     "package": "electron-builder --win portable",
     "dist": "electron-builder --win nsis portable"
   },
@@ -16,7 +18,7 @@
     "directories": {
       "output": "dist"
     },
-    "artifactName": "Itera-2.0.${ext}",
+    "artifactName": "Itera-2.1.${ext}",
     "files": [
       "main.js",
       "preload.js",

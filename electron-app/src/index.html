@@ -48,12 +48,13 @@
         </div>
       </header>
       <main id="viewStack" class="view-stack" aria-label="Browser pages"></main>
+      <div id="noticeStack" class="notice-stack" aria-live="polite" aria-atomic="false"></div>
 
       <aside id="settingsPanel" class="settings-panel" aria-label="Itera settings" aria-hidden="true">
         <div class="panel-head">
           <div>
             <h2>Settings</h2>
-            <p>Disposable identity controls</p>
+            <p>Disposable identity status</p>
           </div>
           <button id="closeSettingsButton" class="icon-button" type="button" aria-label="Close settings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>
@@ -74,21 +75,25 @@
 
         <section class="setting-group">
           <h3>Session</h3>
-          <label class="toggle-row">
-            <span>Destroy identity on close</span>
-            <input type="checkbox" checked disabled>
-          </label>
-          <label class="toggle-row">
-            <span>Clean abandoned sessions on launch</span>
-            <input type="checkbox" checked disabled>
-          </label>
+          <div class="status-row">
+            <span>Identity</span>
+            <strong>Alive for this launch</strong>
+          </div>
+          <div class="status-row">
+            <span>Open tabs</span>
+            <strong id="openTabsCount">1</strong>
+          </div>
+          <div class="status-row">
+            <span>Cleanup</span>
+            <strong>Always on</strong>
+          </div>
         </section>
 
         <section class="setting-group muted-group">
-          <h3>Prepared modes</h3>
-          <div class="future-row">RAM-only mode <span>Later</span></div>
-          <div class="future-row">Per-site identities <span>Later</span></div>
-          <div class="future-row">Proxy modes <span>Later</span></div>
+          <h3>About</h3>
+          <div class="future-row">Itera version <span>2.1 prototype</span></div>
+          <div class="future-row">Downloads <span>Saved outside session</span></div>
+          <div class="future-row">Permissions <span>Blocked by default</span></div>
         </section>
 
         <button id="destroySessionButton" class="destroy-button" type="button">Destroy Session</button>
