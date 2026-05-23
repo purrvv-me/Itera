@@ -7,6 +7,7 @@ import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -92,12 +94,10 @@ public class MainActivity extends Activity {
         tabRow.setOrientation(LinearLayout.HORIZONTAL);
         chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(42)));
 
-        TextView brand = new TextView(this);
-        brand.setText("I");
-        brand.setTextColor(color("#FF8A42"));
-        brand.setTextSize(18);
-        brand.setTypeface(Typeface.DEFAULT_BOLD);
-        brand.setGravity(Gravity.CENTER);
+        ImageView brand = new ImageView(this);
+        brand.setImageResource(R.drawable.ic_match);
+        brand.setPadding(dp(8), dp(7), dp(8), dp(7));
+        brand.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         brand.setBackground(rounded("#171C28", "#2B3142", 11));
         LinearLayout.LayoutParams brandParams = new LinearLayout.LayoutParams(dp(38), dp(36));
         brandParams.setMargins(0, 0, dp(8), 0);
@@ -288,6 +288,7 @@ public class MainActivity extends Activity {
         button.setGravity(Gravity.CENTER_VERTICAL);
         button.setTypeface(Typeface.DEFAULT_BOLD);
         button.setPadding(dp(12), 0, dp(12), 0);
+        attachMatchIcon(button);
         button.setOnClickListener(v -> activateTab(tabs.indexOf(tab)));
         button.setOnLongClickListener(v -> {
             closeTab(tabs.indexOf(tab));
@@ -303,11 +304,18 @@ public class MainActivity extends Activity {
         for (int i = 0; i < tabs.size(); i++) {
             Tab tab = tabs.get(i);
             boolean active = i == activeIndex;
-            tab.button.setText("I  " + tab.title);
+            tab.button.setText(tab.title);
             tab.button.setTextColor(active ? color("#FFFFFF") : color("#A7B0C0"));
             tab.button.setBackground(active ? rounded("#242A38", "#3A4154", 11) : rounded("#151A25", "#242B3A", 11));
             tab.button.setAlpha(active ? 1f : 0.9f);
         }
+    }
+
+    private void attachMatchIcon(TextView view) {
+        Drawable icon = getResources().getDrawable(R.drawable.ic_match);
+        icon.setBounds(0, 0, dp(18), dp(18));
+        view.setCompoundDrawables(icon, null, null, null);
+        view.setCompoundDrawablePadding(dp(8));
     }
 
     private void activateTab(int index) {
@@ -516,12 +524,12 @@ public class MainActivity extends Activity {
         return "<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'>"
             + "<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#030814;color:#f3eee7;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow:auto}"
             + ".page{min-height:100vh;display:grid;align-content:center;padding:30px 22px;background:linear-gradient(90deg,rgba(255,138,66,.045) 1px,transparent 1px),linear-gradient(180deg,rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(180deg,#050b18,#020610);background-size:86px 86px}"
-            + ".hero{width:min(100%,560px);margin:auto;display:grid;gap:20px;text-align:center}.mark{width:74px;height:74px;margin:auto;border-radius:24px;display:grid;place-items:center;background:rgba(255,138,66,.1);border:1px solid rgba(255,138,66,.22);color:#ff8a42;font-size:34px;font-weight:900;box-shadow:0 22px 70px rgba(0,0,0,.34)}"
+            + ".hero{width:min(100%,560px);margin:auto;display:grid;gap:20px;text-align:center}.mark{width:82px;height:82px;margin:auto;border-radius:26px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,138,66,.13),rgba(255,138,66,.04));border:1px solid rgba(255,138,66,.24);box-shadow:0 22px 70px rgba(0,0,0,.34)}.match{position:relative;width:36px;height:64px}.match i{position:absolute;left:8px;top:0;width:20px;height:31px;border-radius:60% 60% 54% 54%;background:linear-gradient(180deg,#ffb248 0%,#ff7a2f 54%,#281311 100%);box-shadow:0 0 22px rgba(255,138,66,.42)}.match b{position:absolute;left:13px;top:21px;width:10px;height:39px;border-radius:999px;background:linear-gradient(90deg,#ffd9a6,#f0a45d 58%,#b45d2b);box-shadow:0 8px 18px rgba(255,138,66,.18)}.match span{position:absolute;left:11px;top:24px;width:14px;height:12px;border-radius:50%;background:#251816}"
             + ".brand{font-family:Georgia,serif;font-size:48px;line-height:1;color:#ff8a42;margin:0;letter-spacing:.08em;text-shadow:0 0 26px rgba(255,138,66,.18)}.copy{margin:0;color:#d3c7bd;font-size:16px}"
             + "form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px;background:rgba(11,18,32,.92);border:1px solid #263247;border-radius:14px;padding:7px;box-shadow:0 24px 70px rgba(0,0,0,.34)}input{min-width:0;height:42px;background:transparent;border:0;outline:0;color:#f3eee7;font-size:15px;padding:0 11px}input::placeholder{color:#778296}button,.github{border:1px solid rgba(255,138,66,.38);border-radius:11px;background:rgba(255,138,66,.13);color:#ffd0ad;padding:0 16px;font-weight:800;text-decoration:none}"
             + ".state{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}.state span{min-height:48px;display:grid;place-items:center;border:1px solid rgba(184,199,222,.12);border-radius:12px;background:rgba(6,12,24,.58);color:#a7b0c0;font-size:12px}"
             + ".cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.card{border:1px solid rgba(184,199,222,.12);border-radius:14px;padding:13px;text-align:left;background:rgba(6,12,24,.5)}.card small{color:#ff8a42;font-weight:800}.card b{display:block;margin:7px 0 4px}.card span{color:#8f98a8;font-size:12px;line-height:1.35}.github{display:grid;place-items:center;min-height:44px;margin-top:2px}.note{color:rgba(211,199,189,.3);font-size:11px;margin:0}@media(max-width:390px){.cards{grid-template-columns:1fr}.brand{font-size:42px}.state{grid-template-columns:1fr}}</style></head>"
-            + "<body><main class='page'><section class='hero'><div class='mark'>I</div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
+            + "<body><main class='page'><section class='hero'><div class='mark'><div class='match'><i></i><b></b><span></span></div></div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
             + "<form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(/^(https?:|about:)/i.test(v)){location.href=v}else if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
             + "<div class='state'><span>Born now</span><span>Identity alive</span><span>No past</span></div>"
             + "<section class='cards'><div class='card'><small>01</small><b>Fresh profile</b><span>Created for this launch.</span></div><div class='card'><small>02</small><b>No continuity</b><span>No saved browser state.</span></div><div class='card'><small>03</small><b>Tabs</b><span>Inside one identity.</span></div><div class='card'><small>04</small><b>Cleanup</b><span>Session dies on close.</span></div></section>"

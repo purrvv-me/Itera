@@ -1,36 +1,42 @@
 <svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Itera match mark</title>
-  <desc id="desc">A single burning match.</desc>
+  <desc id="desc">A simplified burning match without text.</desc>
 
-  <g filter="url(#matchShadow)">
-    <path d="M174 145C174 140 179 135 184 135C190 135 195 140 195 146V267C195 275 189 281 181 281C173 281 167 275 167 267L174 145Z" fill="url(#wood)"/>
-    <path d="M167 267H195L181 281L167 267Z" fill="#F1B46C"/>
-    <path d="M176 146C178 143 181 141 184 141C189 141 192 145 193 149L192 163C190 158 186 156 182 157C177 159 173 155 176 146Z" fill="#1B100B"/>
-    <path d="M183 50C199 81 207 109 198 134C195 146 187 155 181 161C172 153 165 142 163 129C162 105 174 78 183 50Z" fill="url(#flameOuter)"/>
-    <path d="M184 78C193 99 197 117 191 132C188 139 185 144 180 149C175 142 171 134 172 125C174 108 180 92 184 78Z" fill="url(#flameInner)"/>
+  <g filter="url(#glow)">
+    <path d="M181 38C203 73 214 104 207 130C203 148 193 161 181 171C167 160 158 146 156 130C153 103 164 72 181 38Z" fill="url(#flameOuter)"/>
+    <path d="M183 72C196 98 200 117 194 133C191 143 185 151 179 157C172 148 169 138 171 126C173 109 178 91 183 72Z" fill="url(#flameInner)"/>
+    <path d="M163 149C163 139 171 132 181 132C193 132 201 140 201 151V284C201 295 192 304 181 304C170 304 161 295 161 284L163 149Z" fill="url(#wood)"/>
+    <path d="M161 284H201L181 304L161 284Z" fill="#ECA764"/>
+    <path d="M165 148C166 139 173 133 182 133C193 133 200 141 201 151V165C196 157 189 154 181 157C171 161 164 156 165 148Z" fill="#24140D"/>
+    <path d="M177 151H184V286C184 291 181 295 177 297V151Z" fill="url(#woodHighlight)" opacity="0.74"/>
   </g>
 
   <defs>
-    <linearGradient id="wood" x1="167" y1="208" x2="195" y2="208" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#D88939"/>
-      <stop offset="0.42" stop-color="#FFE0A5"/>
-      <stop offset="0.68" stop-color="#D98937"/>
-      <stop offset="1" stop-color="#8C4A1D"/>
+    <linearGradient id="flameOuter" x1="181" y1="38" x2="181" y2="171" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF6B21"/>
+      <stop offset="0.34" stop-color="#FFB342"/>
+      <stop offset="0.72" stop-color="#FF7A2C"/>
+      <stop offset="1" stop-color="#2A130D"/>
     </linearGradient>
-    <linearGradient id="flameOuter" x1="181" y1="50" x2="181" y2="161" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F2671E"/>
-      <stop offset="0.28" stop-color="#FFB13F"/>
-      <stop offset="0.62" stop-color="#FF7A21"/>
-      <stop offset="1" stop-color="#24100A"/>
+    <linearGradient id="flameInner" x1="181" y1="72" x2="181" y2="157" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF3B0"/>
+      <stop offset="0.52" stop-color="#FFC24A"/>
+      <stop offset="1" stop-color="#FF742C"/>
     </linearGradient>
-    <linearGradient id="flameInner" x1="181" y1="78" x2="181" y2="149" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFF0A8"/>
-      <stop offset="0.45" stop-color="#FFC24D"/>
-      <stop offset="1" stop-color="#FF6B1A"/>
+    <linearGradient id="wood" x1="161" y1="218" x2="201" y2="218" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A95D2A"/>
+      <stop offset="0.33" stop-color="#F3B76B"/>
+      <stop offset="0.58" stop-color="#FFD89A"/>
+      <stop offset="0.78" stop-color="#C97435"/>
+      <stop offset="1" stop-color="#7A3D1D"/>
     </linearGradient>
-    <filter id="matchShadow" x="95" y="15" width="170" height="300" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#000000" flood-opacity="0.55"/>
-      <feDropShadow dx="0" dy="0" stdDeviation="14" flood-color="#FF7A21" flood-opacity="0.24"/>
+    <linearGradient id="woodHighlight" x1="177" y1="151" x2="184" y2="151" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0C2"/>
+      <stop offset="1" stop-color="#E19A4C"/>
+    </linearGradient>
+    <filter id="glow" x="88" y="10" width="186" height="326" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="20" flood-color="#000000" flood-opacity="0.5"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="13" flood-color="#FF8A42" flood-opacity="0.28"/>
     </filter>
   </defs>
 </svg>

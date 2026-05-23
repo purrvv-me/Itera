@@ -64,11 +64,11 @@ def rgba_icon(size: int) -> bytes:
             wood_alpha = capsule_alpha(
                 px,
                 py,
-                size * 0.49,
-                size * 0.39,
-                size * 0.49,
-                size * 0.78,
-                max(1.2, size * 0.035),
+                size * 0.50,
+                size * 0.43,
+                size * 0.50,
+                size * 0.84,
+                max(1.7, size * 0.065),
             )
             color = blend(color, wood, wood_alpha)
 
@@ -76,31 +76,31 @@ def rgba_icon(size: int) -> bytes:
                 px,
                 py,
                 size * 0.475,
-                size * 0.40,
+                size * 0.44,
                 size * 0.475,
-                size * 0.76,
-                max(0.7, size * 0.01),
+                size * 0.80,
+                max(0.8, size * 0.018),
             )
             color = blend(color, wood_light, highlight_alpha * 0.75)
 
             head_alpha = capsule_alpha(
                 px,
                 py,
-                size * 0.47,
-                size * 0.36,
-                size * 0.515,
-                size * 0.40,
-                max(1.8, size * 0.045),
+                size * 0.465,
+                size * 0.405,
+                size * 0.535,
+                size * 0.455,
+                max(2.2, size * 0.075),
             )
             color = blend(color, head, head_alpha)
 
-            outer_alpha = flame_alpha(px, py, size * 0.50, size * 0.15, size * 0.45, size * 0.12)
+            outer_alpha = flame_alpha(px, py, size * 0.50, size * 0.08, size * 0.51, size * 0.18)
             color = blend(color, orange, outer_alpha)
 
-            mid_alpha = flame_alpha(px, py, size * 0.505, size * 0.22, size * 0.43, size * 0.075)
+            mid_alpha = flame_alpha(px, py, size * 0.505, size * 0.19, size * 0.47, size * 0.11)
             color = blend(color, flame, mid_alpha)
 
-            inner_alpha = flame_alpha(px, py, size * 0.50, size * 0.29, size * 0.41, size * 0.035)
+            inner_alpha = flame_alpha(px, py, size * 0.50, size * 0.28, size * 0.44, size * 0.055)
             color = blend(color, flame_inner, inner_alpha)
 
             pixels.append(color)
