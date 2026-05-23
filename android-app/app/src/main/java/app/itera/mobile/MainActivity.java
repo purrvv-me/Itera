@@ -95,8 +95,8 @@ public class MainActivity extends Activity {
         chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(42)));
 
         ImageView brand = new ImageView(this);
-        brand.setImageResource(R.drawable.ic_match);
-        brand.setPadding(dp(6), dp(5), dp(6), dp(5));
+        brand.setImageResource(R.drawable.itera_match_photo);
+        brand.setPadding(dp(3), dp(3), dp(3), dp(3));
         brand.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         brand.setBackground(rounded("#171C28", "#2B3142", 11));
         LinearLayout.LayoutParams brandParams = new LinearLayout.LayoutParams(dp(42), dp(38));
@@ -199,6 +199,7 @@ public class MainActivity extends Activity {
         settings.setSupportZoom(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+        settings.setAllowFileAccess(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         CookieManager.getInstance().setAcceptThirdPartyCookies(webView, false);
 
@@ -312,7 +313,7 @@ public class MainActivity extends Activity {
     }
 
     private void attachMatchIcon(TextView view) {
-        Drawable icon = getResources().getDrawable(R.drawable.ic_match);
+        Drawable icon = getResources().getDrawable(R.drawable.itera_match_photo);
         icon.setBounds(0, 0, dp(22), dp(22));
         view.setCompoundDrawables(icon, null, null, null);
         view.setCompoundDrawablePadding(dp(8));
@@ -525,12 +526,12 @@ public class MainActivity extends Activity {
             + "<style>*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#030814;color:#f3eee7;font-family:system-ui,-apple-system,Segoe UI,sans-serif;overflow-x:hidden}"
             + ".page{position:relative;min-height:100vh;display:grid;align-content:center;padding:32px 22px;background:radial-gradient(circle at 50% 30%,rgba(255,126,45,.16),transparent 32%),radial-gradient(ellipse at 50% 76%,rgba(255,138,66,.08),transparent 42%),linear-gradient(180deg,#050b18 0%,#020610 100%);overflow:hidden}"
             + ".page:before{content:'';position:absolute;left:50%;top:12%;width:300px;height:520px;transform:translateX(-50%);background:radial-gradient(ellipse at 50% 16%,rgba(255,181,77,.24) 0%,rgba(255,122,47,.16) 16%,rgba(255,122,47,.06) 33%,transparent 58%);filter:blur(12px);opacity:.78;pointer-events:none}.page:after{content:'';position:absolute;inset:auto -25% -18% -25%;height:38%;background:radial-gradient(ellipse at 50% 100%,rgba(255,117,38,.12),transparent 62%);pointer-events:none}"
-            + ".hero{position:relative;z-index:1;width:min(100%,560px);margin:auto;display:grid;gap:20px;text-align:center}.mark{width:86px;height:86px;margin:auto;border-radius:27px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,138,66,.16),rgba(255,138,66,.045));border:1px solid rgba(255,138,66,.26);box-shadow:0 24px 76px rgba(0,0,0,.38),0 0 44px rgba(255,116,44,.13)}.match{position:relative;width:42px;height:68px}.match i{position:absolute;left:10px;top:0;width:23px;height:34px;border-radius:64% 64% 54% 54%;background:linear-gradient(180deg,#ffc24a 0%,#ff7a2f 55%,#281311 100%);box-shadow:0 0 26px rgba(255,138,66,.45)}.match b{position:absolute;left:15px;top:23px;width:12px;height:41px;border-radius:999px;background:linear-gradient(90deg,#ffe0a5,#eca764 58%,#b45d2b);box-shadow:0 8px 20px rgba(255,138,66,.2)}.match span{position:absolute;left:13px;top:26px;width:16px;height:13px;border-radius:50%;background:#251816}"
+            + ".hero{position:relative;z-index:1;width:min(100%,560px);margin:auto;display:grid;gap:20px;text-align:center}.mark{width:116px;height:158px;margin:auto;border-radius:30px;display:grid;place-items:center;background:rgba(3,8,20,.38);border:1px solid rgba(255,138,66,.18);box-shadow:0 24px 76px rgba(0,0,0,.38),0 0 44px rgba(255,116,44,.13);overflow:hidden}.photo-mark{width:118px;height:218px;object-fit:cover;object-position:center top;display:block}"
             + ".brand{font-family:Georgia,serif;font-size:48px;line-height:1;color:#ff8a42;margin:0;letter-spacing:.08em;text-shadow:0 0 26px rgba(255,138,66,.18)}.copy{margin:0;color:#d3c7bd;font-size:16px}"
             + "form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px;background:rgba(11,18,32,.92);border:1px solid #263247;border-radius:14px;padding:7px;box-shadow:0 24px 70px rgba(0,0,0,.34)}input{min-width:0;height:42px;background:transparent;border:0;outline:0;color:#f3eee7;font-size:15px;padding:0 11px}input::placeholder{color:#778296}button,.github{border:1px solid rgba(255,138,66,.38);border-radius:11px;background:rgba(255,138,66,.13);color:#ffd0ad;padding:0 16px;font-weight:800;text-decoration:none}"
             + ".state{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}.state span{min-height:48px;display:grid;place-items:center;border:1px solid rgba(184,199,222,.12);border-radius:12px;background:rgba(6,12,24,.58);color:#a7b0c0;font-size:12px}"
             + ".cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.card{border:1px solid rgba(184,199,222,.12);border-radius:14px;padding:13px;text-align:left;background:rgba(6,12,24,.5)}.card small{color:#ff8a42;font-weight:800}.card b{display:block;margin:7px 0 4px}.card span{color:#8f98a8;font-size:12px;line-height:1.35}.github{display:grid;place-items:center;min-height:44px;margin-top:2px}.note{color:rgba(211,199,189,.3);font-size:11px;margin:0}@media(max-width:390px){.cards{grid-template-columns:1fr}.brand{font-size:42px}.state{grid-template-columns:1fr}}</style></head>"
-            + "<body><main class='page'><section class='hero'><div class='mark'><div class='match'><i></i><b></b><span></span></div></div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
+            + "<body><main class='page'><section class='hero'><div class='mark'><img class='photo-mark' src='file:///android_asset/itera-match-photo.png' alt=''></div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
             + "<form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(/^(https?:|about:)/i.test(v)){location.href=v}else if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
             + "<div class='state'><span>Born now</span><span>Identity alive</span><span>No past</span></div>"
             + "<section class='cards'><div class='card'><small>01</small><b>Fresh profile</b><span>Created for this launch.</span></div><div class='card'><small>02</small><b>No continuity</b><span>No saved browser state.</span></div><div class='card'><small>03</small><b>Tabs</b><span>Inside one identity.</span></div><div class='card'><small>04</small><b>Cleanup</b><span>Session dies on close.</span></div></section>"
