@@ -95,7 +95,7 @@ public class MainActivity extends Activity {
         chrome.addView(tabRow, new LinearLayout.LayoutParams(-1, dp(42)));
 
         ImageView brand = new ImageView(this);
-        brand.setImageResource(R.drawable.itera_match_photo);
+        brand.setImageResource(R.drawable.itera_logo);
         brand.setPadding(dp(3), dp(3), dp(3), dp(3));
         brand.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         brand.setBackground(rounded("#171C28", "#2B3142", 11));
@@ -313,7 +313,7 @@ public class MainActivity extends Activity {
     }
 
     private void attachMatchIcon(TextView view) {
-        Drawable icon = getResources().getDrawable(R.drawable.itera_match_photo);
+        Drawable icon = getResources().getDrawable(R.drawable.itera_logo);
         icon.setBounds(0, 0, dp(22), dp(22));
         view.setCompoundDrawables(icon, null, null, null);
         view.setCompoundDrawablePadding(dp(8));
@@ -531,7 +531,7 @@ public class MainActivity extends Activity {
             + "form{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px;background:rgba(11,18,32,.92);border:1px solid #263247;border-radius:14px;padding:7px;box-shadow:0 24px 70px rgba(0,0,0,.34)}input{min-width:0;height:42px;background:transparent;border:0;outline:0;color:#f3eee7;font-size:15px;padding:0 11px}input::placeholder{color:#778296}button,.github{border:1px solid rgba(255,138,66,.38);border-radius:11px;background:rgba(255,138,66,.13);color:#ffd0ad;padding:0 16px;font-weight:800;text-decoration:none}"
             + ".state{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:2px}.state span{min-height:48px;display:grid;place-items:center;border:1px solid rgba(184,199,222,.12);border-radius:12px;background:rgba(6,12,24,.58);color:#a7b0c0;font-size:12px}"
             + ".cards{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.card{border:1px solid rgba(184,199,222,.12);border-radius:14px;padding:13px;text-align:left;background:rgba(6,12,24,.5)}.card small{color:#ff8a42;font-weight:800}.card b{display:block;margin:7px 0 4px}.card span{color:#8f98a8;font-size:12px;line-height:1.35}.github{display:grid;place-items:center;min-height:44px;margin-top:2px}.note{color:rgba(211,199,189,.3);font-size:11px;margin:0}@media(max-width:390px){.cards{grid-template-columns:1fr}.brand{font-size:42px}.state{grid-template-columns:1fr}}</style></head>"
-            + "<body><main class='page'><section class='hero'><div class='mark'><img class='photo-mark' src='file:///android_asset/itera-match-photo.png' alt=''></div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
+            + "<body><main class='page'><section class='hero'><div class='mark'><img class='photo-mark' src='file:///android_asset/itera-logo.png' alt=''></div><h1 class='brand'>ITERA</h1><p class='copy'>Every launch begins again.</p>"
             + "<form onsubmit=\"event.preventDefault();const v=q.value.trim();if(!v)return;if(/^(https?:|about:)/i.test(v)){location.href=v}else if(v.includes('.')&&!v.includes(' ')){location.href='https://'+v}else{location.href='https://duckduckgo.com/?q='+encodeURIComponent(v)}\"><input id='q' placeholder='Search or enter address'><button>Begin</button></form>"
             + "<div class='state'><span>Born now</span><span>Identity alive</span><span>No past</span></div>"
             + "<section class='cards'><div class='card'><small>01</small><b>Fresh profile</b><span>Created for this launch.</span></div><div class='card'><small>02</small><b>No continuity</b><span>No saved browser state.</span></div><div class='card'><small>03</small><b>Tabs</b><span>Inside one identity.</span></div><div class='card'><small>04</small><b>Cleanup</b><span>Session dies on close.</span></div></section>"

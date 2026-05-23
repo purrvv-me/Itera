@@ -180,7 +180,7 @@ function createTab(url = homeFileUrl, options = {}) {
   tabButton.tabIndex = 0;
   tabButton.dataset.tabId = id;
   tabButton.innerHTML = `
-    <img src="../assets/logo.svg" alt="">
+    <img src="../assets/itera-logo.png" alt="">
     <span>New identity</span>
     <button class="tab-close" type="button" title="Close tab" aria-label="Close tab">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>

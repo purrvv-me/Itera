@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/Itera-logo.png" alt="Itera logo" width="520">
+  <img src="app/logo.png" alt="Itera logo" width="520">
 </p>
 
 <h1 align="center">Itera</h1>
@@ -99,7 +99,7 @@ electron-app/
     styles.css     Browser shell styling
     home.css       Start page styling
   assets/
-    logo.svg       Itera visual mark
+    logo.png       Itera visual mark
     itera.ico      Windows app icon
 ```
 
