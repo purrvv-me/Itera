@@ -13,6 +13,7 @@ const args = Object.fromEntries(
 contextBridge.exposeInMainWorld("itera", {
   partition: args["itera-partition"] || "itera-default",
   homeUrl: pathToFileUrl(args["itera-home"]),
+  desktopUserAgent: args["itera-user-agent"] || "",
   features: {},
   closeWindow() {
     ipcRenderer.send("itera-close-window");

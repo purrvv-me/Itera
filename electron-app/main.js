@@ -7,6 +7,7 @@ const { spawn } = require("node:child_process");
 
 const APP_NAME = "Itera";
 const PROJECT_URL = "https://github.com/purrvv-me/Itera";
+const DESKTOP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36";
 const SESSION_PREFIX = "itera-electron-";
 const LEGACY_SESSION_PREFIX = "itera-profile-";
 const sessionId = `${SESSION_PREFIX}${crypto.randomUUID()}`;
@@ -68,7 +69,8 @@ async function createWindow() {
       preload: path.join(__dirname, "preload.js"),
       additionalArguments: [
         `--itera-partition=${partitionName}`,
-        `--itera-home=${path.join(__dirname, "src", "home.html")}`
+        `--itera-home=${path.join(__dirname, "src", "home.html")}`,
+        `--itera-user-agent=${DESKTOP_USER_AGENT}`
       ],
       contextIsolation: true,
       nodeIntegration: false,
@@ -125,6 +127,8 @@ async function destroySession() {
 }
 
 function configureDisposableSession(target) {
+  target.setUserAgent(DESKTOP_USER_AGENT);
+
   target.setPermissionRequestHandler((_webContents, permission, callback) => {
     notifyRenderer("itera-permission-blocked", { permission });
     callback(false);

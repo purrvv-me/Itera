@@ -25,6 +25,7 @@ const fallbackHomeUrl = new URL("home.html", window.location.href).href;
 const homeUrl = window.itera?.homeUrl || fallbackHomeUrl;
 const homeFileUrl = homeUrl.startsWith("file:") ? homeUrl : `file:///${homeUrl.replace(/\\/g, "/")}`;
 const sharedPartition = window.itera?.partition || `itera-${crypto.randomUUID()}`;
+const desktopUserAgent = window.itera?.desktopUserAgent || "";
 
 let searchEngine = "duckduckgo";
 let activeTabId = null;
@@ -210,6 +211,9 @@ function createTab(url = homeFileUrl, options = {}) {
 
   const webview = document.createElement("webview");
   webview.setAttribute("allowpopups", "");
+  if (desktopUserAgent) {
+    webview.setAttribute("useragent", desktopUserAgent);
+  }
   webview.partition = sharedPartition;
   webview.src = url;
   webview.dataset.tabId = id;
