@@ -77,7 +77,6 @@ async function createWindow() {
   });
 
   mainWindow.setMenuBarVisibility(false);
-  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
 
   if (destroySmokeTestMode) {
     mainWindow.webContents.once("did-finish-load", () => {
@@ -87,12 +86,20 @@ async function createWindow() {
         }
 
         mainWindow.webContents.executeJavaScript(
-          "document.getElementById('destroySessionButton')?.click()",
+          "Boolean(document.getElementById('destroySessionButton')) && (document.getElementById('destroySessionButton').click(), true)",
           true
-        );
+        ).then((clicked) => {
+          if (!clicked) {
+            destroySessionAndQuit();
+          }
+        }).catch(() => {
+          destroySessionAndQuit();
+        });
       }, 1000);
     });
   }
+
+  mainWindow.loadFile(path.join(__dirname, "src", "index.html"));
 
   mainWindow.on("closed", () => {
     mainWindow = null;
@@ -167,12 +174,15 @@ async function destroySessionAndQuit() {
 
   shutdownStarted = true;
   app.isQuittingAfterCleanup = true;
-  await destroySession();
-  schedulePostExitCleanup();
 
   if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.destroy();
+    const windowToDestroy = mainWindow;
+    mainWindow = null;
+    windowToDestroy.destroy();
   }
+
+  await destroySession();
+  schedulePostExitCleanup();
 
   app.quit();
 }
@@ -312,9 +322,8 @@ ipcMain.on("itera-close-window", () => {
   }
 });
 
-ipcMain.handle("itera-destroy-session", async () => {
+ipcMain.on("itera-destroy-session", async () => {
   await destroySessionAndQuit();
-  return true;
 });
 
 global.iteraFeatureFlags = featureFlags;

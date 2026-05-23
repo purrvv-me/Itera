@@ -1,15 +1,16 @@
 :root {
   color-scheme: dark;
   --bg: #030814;
-  --chrome: #151922;
-  --chrome-dark: #0f121a;
-  --chrome-line: #272d3a;
-  --field: #1b2130;
-  --field-border: #31394c;
+  --chrome: #171b25;
+  --chrome-dark: #0c1018;
+  --chrome-line: #2a3141;
+  --field: #121927;
+  --field-border: #344054;
   --text: #f3eee7;
   --muted: #9aa3b2;
   --dim: #5d6879;
   --orange: #ff8a42;
+  --orange-strong: #ff7b32;
   --orange-soft: rgba(255, 138, 66, 0.12);
   --caption-controls-width: 178px;
   --font-ui: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
@@ -35,7 +36,7 @@ body {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 38px 50px minmax(0, 1fr);
+  grid-template-rows: 42px 58px minmax(0, 1fr);
   background:
     linear-gradient(90deg, rgba(255, 138, 66, 0.035) 0 1px, transparent 1px 100%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 100%),
@@ -45,8 +46,10 @@ body {
 
 .windowbar {
   display: block;
-  background: linear-gradient(180deg, #11141c, #0d1017);
-  border-bottom: 1px solid var(--chrome-line);
+  background:
+    radial-gradient(circle at 40px 38px, rgba(255, 138, 66, 0.12), transparent 34px),
+    linear-gradient(180deg, #111620, #0b0f17);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.075);
   -webkit-app-region: drag;
 }
 
@@ -55,8 +58,8 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 34px;
   align-items: end;
-  gap: 4px;
-  padding: 4px calc(var(--caption-controls-width) + 8px) 0 10px;
+  gap: 8px;
+  padding: 5px calc(var(--caption-controls-width) + 12px) 0 12px;
   overflow: hidden;
 }
 
@@ -65,7 +68,7 @@ body {
   flex: 1 1 auto;
   display: flex;
   align-items: end;
-  gap: 4px;
+  gap: 5px;
   overflow: hidden;
 }
 
@@ -75,32 +78,46 @@ body {
 
 .tab {
   width: auto;
-  max-width: 240px;
-  height: 34px;
+  max-width: 250px;
+  height: 37px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 14px;
-  border: 1px solid var(--chrome-line);
+  padding: 0 13px;
+  border: 1px solid rgba(52, 64, 84, 0.72);
   border-bottom-color: transparent;
-  border-radius: 8px 8px 0 0;
-  background: #1d2230;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(180deg, #1b2130, #151b27);
   color: var(--text);
   font-size: 13px;
   position: relative;
   flex: 1 1 0;
-  min-width: 72px;
+  min-width: 64px;
   cursor: default;
   user-select: none;
   outline: none;
   -webkit-app-region: no-drag;
-  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
 }
 
 .tab.active {
-  background: #262c3b;
+  background:
+    linear-gradient(90deg, rgba(255, 138, 66, 0.2), transparent 24px),
+    linear-gradient(180deg, #272d3d, #202636);
   color: #ffffff;
-  border-color: #333b4f;
+  border-color: rgba(255, 138, 66, 0.46);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.tab.active::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
 }
 
 .tab:focus-visible {
@@ -126,8 +143,8 @@ body {
 }
 
 .tab img {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   flex: 0 0 auto;
   object-fit: contain;
 }
@@ -163,42 +180,53 @@ body {
 }
 
 .new-tab {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   margin-bottom: 1px;
   flex: 0 0 auto;
   justify-self: start;
   -webkit-app-region: no-drag;
-  border-radius: 8px;
+  border-radius: 10px;
+  color: #d6dfef;
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .topbar {
   display: grid;
-  grid-template-columns: 38px auto minmax(180px, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 42px auto minmax(180px, 1fr) auto;
+  gap: 12px;
   align-items: center;
-  padding: 6px 12px;
-  background: linear-gradient(180deg, #181c26, #161a23);
-  border-bottom: 1px solid var(--chrome-line);
+  padding: 7px 14px;
+  background:
+    linear-gradient(90deg, rgba(255, 138, 66, 0.08), transparent 180px),
+    linear-gradient(180deg, #1b202c, #161b25);
+  border-bottom: 1px solid rgba(255, 138, 66, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .brand {
-  width: 32px;
-  height: 38px;
+  width: 38px;
+  height: 42px;
   display: grid;
   place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 138, 66, 0.08), rgba(255, 138, 66, 0));
 }
 
 .brand img {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   object-fit: contain;
 }
 
 .controls {
   display: grid;
   grid-template-columns: repeat(4, 32px);
-  gap: 2px;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(52, 64, 84, 0.48);
+  border-radius: 13px;
+  background: rgba(8, 12, 20, 0.3);
 }
 
 button {
@@ -239,7 +267,7 @@ button:disabled {
 }
 
 button:not(:disabled):hover {
-  background: #252b39;
+  background: rgba(255, 255, 255, 0.07);
   color: var(--text);
 }
 
@@ -253,26 +281,35 @@ button:not(:disabled):active {
 
 .address input {
   width: 100%;
-  height: 36px;
-  border: 1px solid var(--field-border);
-  border-radius: 9px;
-  padding: 0 16px;
+  height: 42px;
+  border: 1px solid rgba(62, 75, 98, 0.92);
+  border-radius: 12px;
+  padding: 0 18px;
   outline: none;
-  background: linear-gradient(180deg, #1d2331, #1a202d);
+  background:
+    linear-gradient(90deg, rgba(255, 138, 66, 0.08), transparent 55px),
+    linear-gradient(180deg, #192132, #131b29);
   color: var(--text);
   font: 14px var(--font-ui);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
 }
 
 .address input:focus {
-  border-color: rgba(255, 138, 66, 0.56);
-  box-shadow: 0 0 0 2px rgba(255, 138, 66, 0.08);
+  border-color: rgba(255, 138, 66, 0.7);
+  box-shadow:
+    0 0 0 3px rgba(255, 138, 66, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .right-tools {
   justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
+  padding: 3px;
+  border: 1px solid rgba(52, 64, 84, 0.44);
+  border-radius: 14px;
+  background: rgba(8, 12, 20, 0.24);
 }
 
 .tool-button {
@@ -282,24 +319,33 @@ button:not(:disabled):active {
 .session-state {
   display: inline-flex;
   align-items: center;
-  width: 24px;
+  gap: 8px;
+  min-width: 118px;
+  height: 32px;
+  padding: 0 11px;
   justify-content: center;
+  border: 1px solid rgba(255, 138, 66, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 138, 66, 0.07);
+  color: #d7dce6;
+  font-size: 12px;
 }
 
 .session-state::before {
   content: "";
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   display: inline-block;
   flex: 0 0 auto;
   justify-self: center;
   border-radius: 50%;
   background: var(--orange);
-  box-shadow: 0 0 0 5px rgba(255, 138, 66, 0.08);
+  box-shadow: 0 0 0 4px rgba(255, 138, 66, 0.08), 0 0 16px rgba(255, 138, 66, 0.3);
 }
 
 .session-state span {
-  display: none;
+  display: inline;
+  white-space: nowrap;
 }
 
 .view-stack {

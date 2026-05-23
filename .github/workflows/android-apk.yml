@@ -2,6 +2,18 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "GitHub release tag for the APK"
+        required: true
+        default: "v2.1-android"
+      release_name:
+        description: "GitHub release title"
+        required: true
+        default: "Itera Android 2.1"
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -38,3 +50,35 @@ jobs:
         with:
           name: Itera.apk
           path: Itera.apk
+
+      - name: Write release notes
+        run: |
+          cat > android-release-notes.md <<'EOF'
+          Itera Android brings the same disposable-session idea to phones.
+
+          One app launch creates one temporary mobile identity. Tabs live inside that launch. Closing or burning the session clears the Android WebView session state.
+
+          Highlights:
+          - Android APK build: Itera.apk.
+          - Mobile browser shell with tabs.
+          - Address bar, back, forward, reload, and home controls.
+          - Redesigned mobile start page.
+          - Disposable WebView data cleanup on launch and close.
+          - Downloads save directly to the device and survive outside the disposable identity.
+          - Permissions are blocked by default.
+          - GitHub support link opens in the user's default browser.
+
+          Experimental prototype. Itera is not a VPN, not Tor, and not a hardened anonymity tool.
+          EOF
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          RELEASE_NAME: ${{ inputs.release_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" Itera.apk --clobber
+          else
+            gh release create "$RELEASE_TAG" Itera.apk --title "$RELEASE_NAME" --notes-file android-release-notes.md --latest=false
+          fi

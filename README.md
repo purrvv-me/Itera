@@ -19,7 +19,7 @@
   ·
   <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download for Windows</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk">Download for Android</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.1-android/Itera.apk">Download for Android</a>
   ·
   <a href="https://github.com/purrvv-me/Itera/releases/tag/v2.0">Release 2.0</a>
 </p>
@@ -78,7 +78,7 @@ https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe
 
 Download the Android APK build:
 
-https://github.com/purrvv-me/Itera/releases/download/v2.0-android/Itera.apk
+https://github.com/purrvv-me/Itera/releases/download/v2.1-android/Itera.apk
 
 ## Website
 

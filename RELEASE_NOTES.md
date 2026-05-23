@@ -1,5 +1,29 @@
 # Release Notes
 
+## v2.1-android - Android Mobile Polish
+
+Itera Android now has the same updated mobile direction as the desktop MVP: cleaner controls, a more focused start page, stricter permission behavior, and direct device downloads that live outside the disposable identity.
+
+### Highlights
+
+- Android APK build: `Itera.apk`.
+- Redesigned mobile browser shell and start page.
+- Mobile tabs, address controls, back, forward, reload, and home.
+- Disposable WebView data cleanup on launch and close.
+- Permission requests are blocked by default.
+- Downloads save directly to the device and survive outside the disposable identity.
+- GitHub support link opens in the user's default browser.
+
+### Download
+
+Use the Android APK from the GitHub Release assets:
+
+- `Itera.apk`
+
+### Product Principle
+
+One launch = one disposable identity. All mobile tabs live inside that one identity. Close Itera and the whole identity dies.
+
 ## v2.0-android - Android APK Prototype
 
 Itera now has an Android APK prototype. It ports the disposable browser idea to a mobile WebView shell: one app launch creates one temporary mobile identity, tabs live inside that launch, and closing/destroying the session clears local WebView data.
