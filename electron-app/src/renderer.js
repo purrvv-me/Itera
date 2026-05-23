@@ -214,7 +214,7 @@ function createTab(url = homeFileUrl, options = {}) {
   if (desktopUserAgent) {
     webview.setAttribute("useragent", desktopUserAgent);
   }
-  webview.partition = sharedPartition;
+  webview.setAttribute("partition", sharedPartition);
   webview.src = url;
   webview.dataset.tabId = id;
 

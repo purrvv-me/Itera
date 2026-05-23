@@ -31,6 +31,8 @@ const featureFlags = Object.freeze({
 
 app.setName(APP_NAME);
 app.setPath("userData", userDataPath);
+app.userAgentFallback = DESKTOP_USER_AGENT;
+app.commandLine.appendSwitch("user-agent", DESKTOP_USER_AGENT);
 app.disableHardwareAcceleration();
 app.commandLine.appendSwitch("disable-features", "AutofillServerCommunication,MediaRouter");
 app.commandLine.appendSwitch("disable-background-networking");
@@ -79,6 +81,12 @@ async function createWindow() {
   });
 
   mainWindow.setMenuBarVisibility(false);
+  mainWindow.webContents.on("will-attach-webview", (_event, webPreferences, params) => {
+    params.partition = partitionName;
+    params.useragent = DESKTOP_USER_AGENT;
+    webPreferences.nodeIntegration = false;
+    webPreferences.contextIsolation = true;
+  });
 
   if (destroySmokeTestMode) {
     mainWindow.webContents.once("did-finish-load", () => {
@@ -128,6 +136,16 @@ async function destroySession() {
 
 function configureDisposableSession(target) {
   target.setUserAgent(DESKTOP_USER_AGENT);
+
+  target.webRequest.onBeforeSendHeaders((details, callback) => {
+    const requestHeaders = { ...details.requestHeaders };
+    setRequestHeader(requestHeaders, "User-Agent", DESKTOP_USER_AGENT);
+    setRequestHeader(requestHeaders, "Sec-CH-UA", '"Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"');
+    setRequestHeader(requestHeaders, "Sec-CH-UA-Mobile", "?0");
+    setRequestHeader(requestHeaders, "Sec-CH-UA-Platform", '"Windows"');
+    setRequestHeader(requestHeaders, "Sec-CH-UA-Platform-Version", '"15.0.0"');
+    callback({ requestHeaders });
+  });
 
   target.setPermissionRequestHandler((_webContents, permission, callback) => {
     notifyRenderer("itera-permission-blocked", { permission });
@@ -291,6 +309,12 @@ app.on("will-quit", () => {
 });
 
 app.on("web-contents-created", (_event, contents) => {
+  try {
+    contents.setUserAgent(DESKTOP_USER_AGENT);
+  } catch {
+    // Some internal contents may not allow user-agent changes.
+  }
+
   contents.setWindowOpenHandler(({ url }) => {
     if (url === PROJECT_URL || url.startsWith(`${PROJECT_URL}/`)) {
       shell.openExternal(url);
@@ -351,6 +375,16 @@ function isAllowedBrowserUrl(url) {
   }
 
   return false;
+}
+
+function setRequestHeader(headers, name, value) {
+  const normalizedName = name.toLowerCase();
+  for (const headerName of Object.keys(headers)) {
+    if (headerName.toLowerCase() === normalizedName) {
+      delete headers[headerName];
+    }
+  }
+  headers[name] = value;
 }
 
 function notifyRenderer(channel, payload) {
