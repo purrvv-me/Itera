@@ -17,11 +17,11 @@
   ·
   <a href="https://purrvv-me.github.io/Itera/">Website</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe">Download for Windows</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/download/v2.1/Itera-2.1.exe">Download for Windows</a>
   ·
   <a href="https://github.com/purrvv-me/Itera/releases/download/v2.1-android/Itera.apk">Download for Android</a>
   ·
-  <a href="https://github.com/purrvv-me/Itera/releases/tag/v2.0">Release 2.0</a>
+  <a href="https://github.com/purrvv-me/Itera/releases/tag/v2.1">Release 2.1</a>
 </p>
 
 ## About
@@ -74,7 +74,7 @@ In the Electron build, this is handled by creating a temporary app data/session 
 
 Download the current Windows build from the GitHub release:
 
-https://github.com/purrvv-me/Itera/releases/download/v2.0/Itera-2.0.exe
+https://github.com/purrvv-me/Itera/releases/download/v2.1/Itera-2.1.exe
 
 Download the Android APK build:
 

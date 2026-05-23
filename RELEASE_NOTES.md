@@ -1,5 +1,29 @@
 # Release Notes
 
+## v2.1 - Disposable Browser Hardening and Chrome Polish
+
+Itera 2.1 tightens the disposable browser behavior and makes the desktop app feel more like its own browser product instead of a generic Electron shell.
+
+### Highlights
+
+- Windows portable build: `Itera-2.1.exe`.
+- More distinctive Itera browser chrome with a stronger active-tab treatment, premium address bar, grouped navigation controls, and visible identity status.
+- `Destroy Session` is more reliable and exits through a fire-and-forget cleanup path.
+- Session cleanup smoke tests cover both normal window close and explicit session destruction.
+- Permission requests are blocked by default.
+- Downloads save directly to the device and survive outside the disposable identity.
+- External support links open in the user's default browser.
+
+### Download
+
+Use the Windows portable build from the GitHub Release assets:
+
+- `Itera-2.1.exe`
+
+### Product Principle
+
+One launch = one disposable identity. All tabs live inside that one identity. Close Itera and the whole identity dies.
+
 ## v2.1-android - Android Mobile Polish
 
 Itera Android now has the same updated mobile direction as the desktop MVP: cleaner controls, a more focused start page, stricter permission behavior, and direct device downloads that live outside the disposable identity.
