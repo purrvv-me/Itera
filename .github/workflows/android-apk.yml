@@ -62,7 +62,7 @@ jobs:
           - Android APK build: Itera.apk.
           - Mobile browser shell with tabs.
           - Address bar, back, forward, reload, and home controls.
-          - Redesigned mobile start page.
+          - Redesigned mobile start page with a cleaner match mark and soft flame background.
           - Disposable WebView data cleanup on launch and close.
           - Downloads save directly to the device and survive outside the disposable identity.
           - Permissions are blocked by default.
