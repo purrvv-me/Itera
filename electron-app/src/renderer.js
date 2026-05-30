@@ -14,7 +14,6 @@ const settingsPanel = document.getElementById("settingsPanel");
 const menuButton = document.getElementById("menuButton");
 const productMenu = document.getElementById("productMenu");
 const menuHomeButton = document.getElementById("menuHomeButton");
-const menuSettingsButton = document.getElementById("menuSettingsButton");
 const menuDestroyButton = document.getElementById("menuDestroyButton");
 const destroySessionButton = document.getElementById("destroySessionButton");
 const searchEngineSelect = document.getElementById("searchEngineSelect");
@@ -76,10 +75,6 @@ settingsButton.addEventListener("click", () => {
 
 closeSettingsButton.addEventListener("click", closeSettings);
 menuButton.addEventListener("click", toggleMenu);
-menuSettingsButton.addEventListener("click", () => {
-  closeMenu();
-  openSettings();
-});
 
 wireDestroyButton(destroySessionButton);
 wireDestroyButton(menuDestroyButton);
