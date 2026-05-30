@@ -477,6 +477,10 @@ function normalizeAddress(value) {
     return homeFileUrl;
   }
 
+  if (trimmed === homeFileUrl) {
+    return homeFileUrl;
+  }
+
   if (/^(https?|about):/i.test(trimmed)) {
     return trimmed;
   }
