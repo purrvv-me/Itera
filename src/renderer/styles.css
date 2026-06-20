@@ -286,7 +286,7 @@ body { display: flex; flex-direction: column; }
   gap: 10px;
   width: min(560px, 80vw);
 }
-#begin-input {
+.begin input {
   flex: 1;
   height: 54px;
   padding: 0 22px;
@@ -299,12 +299,12 @@ body { display: flex; flex-direction: column; }
   user-select: text;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
-#begin-input::placeholder { color: var(--muted); }
-#begin-input:focus {
+.begin input::placeholder { color: var(--muted); }
+.begin input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
-#begin-btn {
+.begin button {
   height: 54px;
   padding: 0 30px;
   border: none;
@@ -317,5 +317,5 @@ body { display: flex; flex-direction: column; }
   cursor: pointer;
   transition: transform 0.1s, filter 0.15s;
 }
-#begin-btn:hover { filter: brightness(1.08); }
-#begin-btn:active { transform: scale(0.97); }
+.begin button:hover { filter: brightness(1.08); }
+.begin button:active { transform: scale(0.97); }
