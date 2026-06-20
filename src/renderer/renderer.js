@@ -17,6 +17,16 @@
   const reloadBtn = document.getElementById('reload');
 
   document.getElementById('min-btn').addEventListener('click', () => window.itera.minimize());
+  const maxBtn = document.getElementById('max-btn');
+  maxBtn.addEventListener('click', () => window.itera.toggleMaximize());
+  window.itera.onMaximizeChange((isMax) => {
+    maxBtn.classList.toggle('is-max', isMax);
+    maxBtn.title = isMax ? 'Restore' : 'Maximize';
+  });
+  // double-clicking the title bar (but not the buttons) toggles maximize
+  document.getElementById('titlebar').addEventListener('dblclick', (e) => {
+    if (!e.target.closest('.win-controls')) window.itera.toggleMaximize();
+  });
   document.getElementById('close-btn').addEventListener('click', () => window.itera.close());
   document.getElementById('kill-session').addEventListener('click', () => window.itera.killSession());
 

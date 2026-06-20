@@ -8,5 +8,5 @@ Thumbs.db
 .vscode/
 
 # local render/test artifacts
-_site_shot.png
-_shot.js
+_*.png
+_*.js

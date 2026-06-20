@@ -109,6 +109,12 @@ function createWindow() {
 
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'index.html'));
   mainWindow.once('ready-to-show', () => mainWindow.show());
+
+  // keep the maximize/restore button icon in sync with the actual state
+  const sendState = () =>
+    mainWindow && mainWindow.webContents.send('itera:maximized', mainWindow.isMaximized());
+  mainWindow.on('maximize', sendState);
+  mainWindow.on('unmaximize', sendState);
 }
 
 // Keep popups inside the same view and force the randomized UA on every
@@ -132,6 +138,11 @@ app.on('web-contents-created', (_e, contents) => {
 // ---------------------------------------------------------------------------
 ipcMain.handle('itera:config', () => ({ partition: partitionName, userAgent }));
 ipcMain.on('itera:minimize', () => mainWindow && mainWindow.minimize());
+ipcMain.on('itera:toggle-maximize', () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMaximized()) mainWindow.unmaximize();
+  else mainWindow.maximize();
+});
 ipcMain.on('itera:close', () => app.quit());
 // Forced "kill session" — same flow as closing: visible wipe terminal, then exit.
 ipcMain.on('itera:kill-session', () => app.quit());
