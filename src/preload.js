@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('itera', {
   onMaximizeChange: (cb) => ipcRenderer.on('itera:maximized', (_e, isMax) => cb(isMax)),
   close: () => ipcRenderer.send('itera:close'),
   killSession: () => ipcRenderer.send('itera:kill-session'),
+  onNewTab: (cb) => ipcRenderer.on('itera:new-tab', (_e, payload) => cb(payload)),
 });

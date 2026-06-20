@@ -39,6 +39,12 @@
     </div>
   </div>
 
+  <!-- ===================== Tab strip (hidden until Begin) =============== -->
+  <div id="tabstrip" class="hidden">
+    <div id="tabs"></div>
+    <button id="new-tab" class="tabstrip-btn" title="New tab" aria-label="New tab">+</button>
+  </div>
+
   <!-- ===================== Browser chrome (hidden until Begin) =========== -->
   <div id="chrome" class="hidden">
     <button id="back" class="nav-btn" title="Back" aria-label="Back">&#x2039;</button>
@@ -54,7 +60,18 @@
   </div>
 
   <!-- ===================== Web content ================================== -->
-  <div id="view"></div>
+  <div id="view">
+    <!-- new-tab page: shown when the active tab has nothing loaded yet -->
+    <div id="newtab" class="hidden">
+      <img class="logo nt-logo" src="assets/itera_ui_match_icon.svg" width="92" height="92" alt="" />
+      <p class="slogan">Every launch begins again.</p>
+      <form id="newtab-form" class="begin">
+        <input id="newtab-input" type="text" spellcheck="false" autocomplete="off"
+               placeholder="Search the web, or type an address" />
+        <button type="submit">Begin</button>
+      </form>
+    </div>
+  </div>
 
   <!-- ===================== Start screen ================================= -->
   <main id="start">

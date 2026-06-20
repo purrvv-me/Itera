@@ -122,11 +122,13 @@ function createWindow() {
 app.on('web-contents-created', (_e, contents) => {
   if (contents.getType() === 'webview') {
     contents.setUserAgent(userAgent);
-    contents.setWindowOpenHandler(({ url }) => {
-      try {
-        contents.loadURL(url);
-      } catch {
-        /* ignore */
+    // A link/script opening a new window becomes a new tab in the renderer.
+    contents.setWindowOpenHandler(({ url, disposition }) => {
+      if (mainWindow && url) {
+        mainWindow.webContents.send('itera:new-tab', {
+          url,
+          background: disposition === 'background-tab',
+        });
       }
       return { action: 'deny' };
     });
