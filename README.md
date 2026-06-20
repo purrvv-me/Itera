@@ -15,6 +15,22 @@ or visit the website (GitHub Pages, served from [`docs/`](docs/)).
 > The site auto-links to this repo's releases when hosted on GitHub Pages. For a
 > local preview, edit `REPO_FALLBACK` in `docs/index.html`.
 
+## Releasing (automated)
+
+Pushing a version tag builds the installer on GitHub's Windows runners and
+publishes it to a Release automatically (`.github/workflows/release.yml`):
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The workflow runs `electron-builder`, then attaches `ITERA-Setup-<version>.exe`
+to a new GitHub Release. The website's download button points at
+`releases/latest`, so it picks up each new build with no changes. You can also
+trigger the workflow manually from the **Actions** tab to test a build without
+releasing.
+
 ## How it works
 
 - **Fresh identity per launch.** Each run gets its own unique, on-disk session
