@@ -29,7 +29,7 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "ITERA-Setup-${version}.${ext}"
+      "artifactName": "ITERA-Setup.${ext}"
     }
   }
 }
