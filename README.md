@@ -10,10 +10,14 @@ close it, a terminal window appears and **visibly erases** the session from disk
 ## Download
 
 Grab the latest Windows installer from the **[Releases](../../releases/latest)** page,
-or visit the website (GitHub Pages, served from [`docs/`](docs/)).
+or visit the website in [`docs/`](docs/).
 
-> The site auto-links to this repo's releases when hosted on GitHub Pages. For a
-> local preview, edit `REPO_FALLBACK` in `docs/index.html`.
+The site auto-deploys to GitHub Pages via `.github/workflows/pages.yml` on every
+change to `docs/`. Enable it once under **Settings → Pages → Source: GitHub
+Actions**. The download button auto-links to this repo's `releases/latest`, so
+it picks up each release with no edits.
+
+> For a local preview of the site, edit `REPO_FALLBACK` in `docs/index.html`.
 
 ## Releasing (automated)
 
