@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.vscode/
+
+# local render/test artifacts
+_site_shot.png
+_shot.js

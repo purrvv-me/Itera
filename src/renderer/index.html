@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <title>ITERA</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ===================== Title bar (custom, draggable) ================== -->
+  <div id="titlebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <!-- small match flame -->
+        <svg viewBox="0 0 64 96" width="16" height="22">
+          <defs>
+            <linearGradient id="f2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffcf5c"/>
+              <stop offset="0.55" stop-color="#ff8a1e"/>
+              <stop offset="1" stop-color="#ff5a00"/>
+            </linearGradient>
+          </defs>
+          <path d="M32 3 C 43 21, 52 30, 45 46 C 41 56, 23 56, 19 45 C 15 34, 26 28, 32 3 Z" fill="url(#f2)"/>
+          <path d="M32 22 C 38 33, 41 39, 35 47 C 31 52, 25 50, 25 43 C 25 35, 30 34, 32 22 Z" fill="#ffe6a3"/>
+          <rect x="29" y="48" width="6" height="44" rx="3" fill="#e7d9c4"/>
+          <ellipse cx="32" cy="50" rx="5" ry="6.5" fill="#33282a"/>
+        </svg>
+      </span>
+      <span class="brand-name">ITERA</span>
+    </div>
+    <div class="win-controls">
+      <button id="min-btn" class="win-btn" title="Minimize" aria-label="Minimize">&#x2013;</button>
+      <button id="close-btn" class="win-btn close" title="Close &amp; wipe" aria-label="Close">&#x2715;</button>
+    </div>
+  </div>
+
+  <!-- ===================== Browser chrome (hidden until Begin) =========== -->
+  <div id="chrome" class="hidden">
+    <button id="back" class="nav-btn" title="Back" aria-label="Back">&#x2039;</button>
+    <button id="forward" class="nav-btn" title="Forward" aria-label="Forward">&#x203A;</button>
+    <button id="reload" class="nav-btn" title="Reload" aria-label="Reload">&#x21bb;</button>
+    <form id="address-form">
+      <input id="address" type="text" spellcheck="false" autocomplete="off"
+             placeholder="Search or enter address" />
+    </form>
+    <button id="kill-session" title="Wipe this session now and erase everything (same as closing)">
+      <span class="kill-dot" aria-hidden="true"></span>Kill session
+    </button>
+  </div>
+
+  <!-- ===================== Web content ================================== -->
+  <div id="view"></div>
+
+  <!-- ===================== Start screen ================================= -->
+  <main id="start">
+    <div class="logo-wrap">
+      <img class="logo" src="assets/itera_ui_match_icon.svg" width="120" height="120" alt="ITERA match logo" />
+    </div>
+
+    <h1 class="wordmark">ITERA</h1>
+    <p class="slogan">Every launch begins again.</p>
+
+    <form id="begin-form" class="begin">
+      <input id="begin-input" type="text" spellcheck="false" autocomplete="off"
+             placeholder="Search the web, or type an address" autofocus />
+      <button id="begin-btn" type="submit">Begin</button>
+    </form>
+  </main>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
