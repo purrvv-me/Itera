@@ -1,6 +1,6 @@
 {
   "name": "itera",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "ITERA — a disposable identity browser. Every launch begins again.",
   "main": "src/main.js",
   "scripts": {

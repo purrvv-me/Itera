@@ -2,7 +2,18 @@
 
 (async function () {
   const cfg = await window.itera.getConfig();
-  const preloadUrl = new URL('webview-preload.js', location.href).href;
+
+  // Hide DuckDuckGo's first-party "use our browser" promos. We inject this as a
+  // *user stylesheet* via webview.insertCSS — it bypasses the page's CSP and,
+  // crucially, never touches the DOM, so React's rendering is left intact.
+  // (Removing nodes from under React breaks the whole page.) The promo card has
+  // a stable data-testid even though its CSS classes are randomized hashes.
+  const BLOCK_CSS = `
+    [data-testid="serp-popover-promo"],
+    .nav-menu__promo,
+    .js-side-menu-promo,
+    #react-browser-update-info { display: none !important; }
+  `;
 
   // --- elements -----------------------------------------------------------
   const startScreen = document.getElementById('start');
@@ -128,10 +139,11 @@
     wv.setAttribute('partition', cfg.partition);
     wv.setAttribute('useragent', cfg.userAgent);
     wv.setAttribute('allowpopups', 'true');
-    wv.setAttribute('preload', preloadUrl);
     viewHost.appendChild(wv);
     t.webview = wv;
 
+    // Re-apply the promo-blocking stylesheet on every document load.
+    wv.addEventListener('dom-ready', () => { wv.insertCSS(BLOCK_CSS).catch(() => {}); });
     wv.addEventListener('page-title-updated', (e) => setTitle(t, e.title));
     const onNav = (e) => {
       if (e.url) {
