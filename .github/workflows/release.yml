@@ -1,18 +1,10 @@
 name: Build & Release
 
-# Builds the Windows installer and publishes it to a GitHub Release
-# whenever a version tag (e.g. v1.0.0) is pushed.
-#
-#   git tag v1.0.0
-#   git push origin v1.0.0
-#
-# You can also run it manually (Actions tab -> Run workflow) to test the
-# build without creating a release.
+# Builds the Windows installer. Manual only — releases are published by hand,
+# never automatically. Run from the Actions tab (Run workflow) to produce a
+# build artifact; pushing a tag does NOT create a release.
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 permissions:
