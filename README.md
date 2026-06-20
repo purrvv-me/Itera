@@ -1,6 +1,8 @@
-# ITERA
+<p align="center">
+  <img src="docs/assets/logo.png" alt="ITERA" width="360" />
+</p>
 
-**Every launch begins again.**
+<h3 align="center">Every launch begins again.</h3>
 
 ITERA is a disposable-identity browser for Windows. Every launch is a brand-new
 user for the internet: no saved history, no cookies, no continuity. When you
