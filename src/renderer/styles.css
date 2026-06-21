@@ -260,8 +260,9 @@ body { display: flex; flex-direction: column; }
 }
 .logo {
   display: block;
-  width: 120px;
-  height: 120px;
+  width: auto;
+  height: 140px;
+  filter: drop-shadow(0 0 34px rgba(255, 106, 0, 0.3));
 }
 @keyframes flicker {
   0%, 100% { transform: translateY(0) scale(1); }
