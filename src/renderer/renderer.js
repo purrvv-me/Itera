@@ -42,15 +42,6 @@
   document.getElementById('close-btn').addEventListener('click', () => window.itera.close());
   document.getElementById('kill-session').addEventListener('click', () => window.itera.killSession());
 
-  // --- identity badge -----------------------------------------------------
-  (function () {
-    const s = (cfg.partition || '') + (cfg.userAgent || '');
-    let h = 0;
-    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-    const code = (h.toString(36).toUpperCase() + '00').slice(0, 2);
-    document.getElementById('ident').textContent = code;
-  })();
-
   // --- omnibox focus styling ----------------------------------------------
   address.addEventListener('focus', () => { addressForm.classList.add('focus'); address.select(); });
   address.addEventListener('blur', () => addressForm.classList.remove('focus'));

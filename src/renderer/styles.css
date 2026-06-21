@@ -140,15 +140,6 @@ button{font-family:inherit;}
 }
 #address::placeholder{color:var(--grey-dim);}
 
-/* identity badge */
-.ident{
-  width:36px;height:36px;flex:none;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  color:#1a0d00;font-size:12px;font-weight:800;letter-spacing:.02em;
-  background:linear-gradient(135deg,var(--accent-2),var(--accent));
-  box-shadow:0 0 14px rgba(255,106,0,.4);cursor:default;
-}
-
 /* kill session */
 .kill{
   flex:none;display:flex;align-items:center;gap:8px;
