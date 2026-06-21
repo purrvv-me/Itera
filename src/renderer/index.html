@@ -3,78 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+        content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https: http:;" />
   <title>ITERA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- ===================== Title bar (custom, draggable) ================== -->
-  <div id="titlebar">
-    <div class="brand">
-      <span class="brand-mark" aria-hidden="true">
-        <img src="assets/match.png" alt="" style="height:22px;width:auto;display:block;" />
-      </span>
-      <span class="brand-name">ITERA</span>
-    </div>
-    <div class="win-controls">
-      <button id="min-btn" class="win-btn" title="Minimize" aria-label="Minimize">&#x2013;</button>
-      <button id="max-btn" class="win-btn" title="Maximize" aria-label="Maximize">
-        <svg class="ic ic-max" width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="0.9" y="0.9" width="9.2" height="9.2" rx="1.5"/></svg>
-        <svg class="ic ic-restore" width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 1.6 H9.4 V8"/><rect x="1" y="2.6" width="7.4" height="7.4" rx="1.3"/></svg>
-      </button>
-      <button id="close-btn" class="win-btn close" title="Close &amp; wipe" aria-label="Close">&#x2715;</button>
-    </div>
-  </div>
 
-  <!-- ===================== Tab strip (hidden until Begin) =============== -->
-  <div id="tabstrip" class="hidden">
+  <!-- ===================== Tab strip (draggable) ===================== -->
+  <div id="tabstrip">
+    <div class="brandmark" aria-hidden="true"><img src="assets/match.png" alt="ITERA" /></div>
     <div id="tabs"></div>
-    <button id="new-tab" class="tabstrip-btn" title="New tab" aria-label="New tab">+</button>
+    <button id="new-tab" class="newtab" title="New tab" aria-label="New tab">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="wctrls">
+      <button id="min-btn" class="wbtn" title="Minimize" aria-label="Minimize">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <button id="max-btn" class="wbtn" title="Maximize" aria-label="Maximize">
+        <svg class="ic-max" viewBox="0 0 24 24" fill="none"><rect x="5.5" y="5.5" width="13" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/></svg>
+        <svg class="ic-restore" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8 V6.5 A2 2 0 0 1 10 4.5 H17.5 A2 2 0 0 1 19.5 6.5 V14 A2 2 0 0 1 17.5 16 H16"/><rect x="4.5" y="8" width="11" height="11.5" rx="2"/></svg>
+      </button>
+      <button id="close-btn" class="wbtn close" title="Close &amp; wipe" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
 
-  <!-- ===================== Browser chrome (hidden until Begin) =========== -->
-  <div id="chrome" class="hidden">
-    <button id="back" class="nav-btn" title="Back" aria-label="Back">&#x2039;</button>
-    <button id="forward" class="nav-btn" title="Forward" aria-label="Forward">&#x203A;</button>
-    <button id="reload" class="nav-btn" title="Reload" aria-label="Reload">&#x21bb;</button>
-    <form id="address-form">
-      <input id="address" type="text" spellcheck="false" autocomplete="off"
-             placeholder="Search or enter address" />
+  <!-- ======================== Toolbar ======================== -->
+  <div id="chrome">
+    <div class="navgrp">
+      <button id="back" class="iconbtn" title="Back" aria-label="Back">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="forward" class="iconbtn" title="Forward" aria-label="Forward">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="reload" class="iconbtn" title="Reload" aria-label="Reload">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8M20 4v4h-4M20 12a8 8 0 0 1-13.7 5.6L4 16M4 20v-4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <form id="address-form" class="omni">
+      <span class="shield" title="Disposable session — protected">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 5 5.5V11c0 4.2 3 7.7 7 9 4-1.3 7-4.8 7-9V5.5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <input id="address" type="text" spellcheck="false" autocomplete="off" placeholder="Search or enter address" />
     </form>
-    <button id="kill-session" title="Wipe this session now and erase everything (same as closing)">
-      <span class="kill-dot" aria-hidden="true"></span>Kill session
+
+    <div class="ident" id="ident" title="This session's randomized identity">··</div>
+
+    <button id="kill-session" class="kill" title="Wipe this session now and erase everything (same as closing)">
+      <svg class="fl" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2c4 4 5.5 7 5.5 10A6.5 6.5 0 0 1 6 12.5c0-1 .3-1.9.7-2.8.6 1.5 1.8 2.2 2.9 2.3C8.8 8.5 10.4 5 13 2Z"/></svg>
+      <span>Kill session</span>
     </button>
   </div>
 
-  <!-- ===================== Web content ================================== -->
+  <!-- ======================== Web content ======================== -->
   <div id="view">
-    <!-- new-tab page: shown when the active tab has nothing loaded yet -->
+    <!-- new-tab / home page (shown when the active tab has nothing loaded yet) -->
     <div id="newtab" class="hidden">
-      <img class="logo nt-logo" src="assets/itera_ui_match_icon.svg" width="92" height="92" alt="" />
-      <p class="slogan">Every launch begins again.</p>
-      <form id="newtab-form" class="begin">
+      <img class="nt-logo" src="assets/match.png" alt="" />
+      <h1 class="nt-word">ITERA</h1>
+      <p class="nt-slogan">Every launch begins again.</p>
+      <form id="newtab-form" class="nt-search">
         <input id="newtab-input" type="text" spellcheck="false" autocomplete="off"
                placeholder="Search the web, or type an address" />
         <button type="submit">Begin</button>
       </form>
     </div>
   </div>
-
-  <!-- ===================== Start screen ================================= -->
-  <main id="start">
-    <div class="logo-wrap">
-      <img class="logo" src="assets/match.png" alt="ITERA match logo" />
-    </div>
-
-    <h1 class="wordmark">ITERA</h1>
-    <p class="slogan">Every launch begins again.</p>
-
-    <form id="begin-form" class="begin">
-      <input id="begin-input" type="text" spellcheck="false" autocomplete="off"
-             placeholder="Search the web, or type an address" autofocus />
-      <button id="begin-btn" type="submit">Begin</button>
-    </form>
-  </main>
 
   <script src="renderer.js"></script>
 </body>

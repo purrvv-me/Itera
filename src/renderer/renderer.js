@@ -3,11 +3,8 @@
 (async function () {
   const cfg = await window.itera.getConfig();
 
-  // Hide DuckDuckGo's first-party "use our browser" promos. We inject this as a
-  // *user stylesheet* via webview.insertCSS — it bypasses the page's CSP and,
-  // crucially, never touches the DOM, so React's rendering is left intact.
-  // (Removing nodes from under React breaks the whole page.) The promo card has
-  // a stable data-testid even though its CSS classes are randomized hashes.
+  // Hide DuckDuckGo's first-party "use our browser" promos via a user stylesheet
+  // (insertCSS bypasses page CSP and never mutates the DOM, so React stays intact).
   const BLOCK_CSS = `
     [data-testid="serp-popover-promo"],
     .nav-menu__promo,
@@ -16,15 +13,10 @@
   `;
 
   // --- elements -----------------------------------------------------------
-  const startScreen = document.getElementById('start');
-  const beginForm = document.getElementById('begin-form');
-  const beginInput = document.getElementById('begin-input');
-
   const tabstrip = document.getElementById('tabstrip');
   const tabsEl = document.getElementById('tabs');
   const newTabBtn = document.getElementById('new-tab');
 
-  const chrome = document.getElementById('chrome');
   const viewHost = document.getElementById('view');
   const newtab = document.getElementById('newtab');
   const newtabForm = document.getElementById('newtab-form');
@@ -44,19 +36,31 @@
     maxBtn.classList.toggle('is-max', isMax);
     maxBtn.title = isMax ? 'Restore' : 'Maximize';
   });
-  document.getElementById('titlebar').addEventListener('dblclick', (e) => {
-    if (!e.target.closest('.win-controls')) window.itera.toggleMaximize();
+  tabstrip.addEventListener('dblclick', (e) => {
+    if (!e.target.closest('.wctrls, .tab, .newtab, .brandmark')) window.itera.toggleMaximize();
   });
   document.getElementById('close-btn').addEventListener('click', () => window.itera.close());
   document.getElementById('kill-session').addEventListener('click', () => window.itera.killSession());
+
+  // --- identity badge -----------------------------------------------------
+  (function () {
+    const s = (cfg.partition || '') + (cfg.userAgent || '');
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    const code = (h.toString(36).toUpperCase() + '00').slice(0, 2);
+    document.getElementById('ident').textContent = code;
+  })();
+
+  // --- omnibox focus styling ----------------------------------------------
+  address.addEventListener('focus', () => { addressForm.classList.add('focus'); address.select(); });
+  address.addEventListener('blur', () => addressForm.classList.remove('focus'));
 
   // --- turn a query into a URL -------------------------------------------
   function toURL(raw) {
     const q = (raw || '').trim();
     if (!q) return null;
-    if (/^[a-z]+:\/\//i.test(q)) return q;                 // already has a scheme
+    if (/^[a-z]+:\/\//i.test(q)) return q;
     if (/^(localhost|127\.0\.0\.1)(:\d+)?(\/.*)?$/i.test(q)) return 'http://' + q;
-    // looks like a domain (has a dot, no spaces)
     if (/^[^\s]+\.[^\s]{2,}([\/?#].*)?$/.test(q) && !q.includes(' ')) return 'https://' + q;
     return 'https://duckduckgo.com/?q=' + encodeURIComponent(q);
   }
@@ -64,15 +68,9 @@
   // ======================================================================
   //  Tabs
   // ======================================================================
-  const tabs = new Map(); // id -> { id, btn, titleEl, webview, blank, url, title }
+  const tabs = new Map(); // id -> { id, btn, titleEl, favEl, webview, blank, url, title }
   let activeId = null;
   let seq = 0;
-
-  function showBrowserUI() {
-    startScreen.classList.add('hidden');
-    tabstrip.classList.remove('hidden');
-    chrome.classList.remove('hidden');
-  }
 
   function syncNav() {
     const t = tabs.get(activeId);
@@ -87,6 +85,7 @@
     for (const [tid, t] of tabs) {
       const on = tid === id;
       t.btn.classList.toggle('active', on);
+      t.btn.classList.toggle('idle', !on);
       if (t.webview) t.webview.classList.toggle('active', on && !t.blank);
     }
     const t = tabs.get(id);
@@ -96,18 +95,16 @@
       address.value = '';
       backBtn.disabled = true;
       forwardBtn.disabled = true;
-      reloadBtn.textContent = '↻';
       setTimeout(() => newtabInput.focus(), 0);
     } else {
       newtab.classList.add('hidden');
       address.value = t.url || '';
-      reloadBtn.textContent = '↻';
       syncNav();
     }
   }
 
   function setTitle(t, val) {
-    t.title = val || t.url || 'New tab';
+    t.title = (val && val.trim()) || t.url || 'New tab';
     t.titleEl.textContent = t.title;
     t.btn.title = t.title;
     if (activeId === t.id) document.title = t.title + ' — ITERA';
@@ -115,21 +112,29 @@
 
   function makeTabButton(t) {
     const btn = document.createElement('div');
-    btn.className = 'tab';
+    btn.className = 'tab idle';
     btn.dataset.id = String(t.id);
+
+    const fav = document.createElement('span');
+    fav.className = 'fav';
+
     const title = document.createElement('span');
     title.className = 'tab-title';
     title.textContent = t.title;
+
     const close = document.createElement('button');
     close.className = 'tab-close';
     close.title = 'Close tab';
-    close.textContent = '✕';
-    btn.append(title, close);
-    btn.addEventListener('click', (e) => { if (e.target !== close) setActive(t.id); });
-    btn.addEventListener('auxclick', (e) => { if (e.button === 1) closeTab(t.id); }); // middle-click
+    close.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+
+    btn.append(fav, title, close);
+    btn.addEventListener('mousedown', (e) => { if (e.target.closest('.tab-close')) return; if (e.button === 0) setActive(t.id); });
+    btn.addEventListener('auxclick', (e) => { if (e.button === 1) closeTab(t.id); }); // middle-click closes
     close.addEventListener('click', (e) => { e.stopPropagation(); closeTab(t.id); });
+
     t.btn = btn;
     t.titleEl = title;
+    t.favEl = fav;
     tabsEl.appendChild(btn);
   }
 
@@ -142,9 +147,12 @@
     viewHost.appendChild(wv);
     t.webview = wv;
 
-    // Re-apply the promo-blocking stylesheet on every document load.
     wv.addEventListener('dom-ready', () => { wv.insertCSS(BLOCK_CSS).catch(() => {}); });
     wv.addEventListener('page-title-updated', (e) => setTitle(t, e.title));
+    wv.addEventListener('page-favicon-updated', (e) => {
+      const ic = e.favicons && e.favicons[0];
+      if (ic) t.favEl.style.backgroundImage = `url("${ic}")`;
+    });
     const onNav = (e) => {
       if (e.url) {
         t.url = e.url;
@@ -154,9 +162,9 @@
     };
     wv.addEventListener('did-navigate', onNav);
     wv.addEventListener('did-navigate-in-page', onNav);
-    wv.addEventListener('did-start-loading', () => { if (activeId === t.id) reloadBtn.textContent = '✕'; });
+    wv.addEventListener('did-start-loading', () => { if (activeId === t.id) reloadBtn.classList.add('loading'); });
     wv.addEventListener('did-stop-loading', () => {
-      if (activeId === t.id) { reloadBtn.textContent = '↻'; syncNav(); }
+      if (activeId === t.id) { reloadBtn.classList.remove('loading'); syncNav(); }
     });
     wv.src = url;
     return wv;
@@ -164,10 +172,9 @@
 
   function createTab(opts = {}) {
     const id = ++seq;
-    const t = { id, btn: null, titleEl: null, webview: null, blank: true, url: '', title: 'New tab' };
+    const t = { id, btn: null, titleEl: null, favEl: null, webview: null, blank: true, url: '', title: 'New tab' };
     tabs.set(id, t);
     makeTabButton(t);
-    showBrowserUI();
     if (opts.url) {
       t.blank = false;
       t.url = opts.url;
@@ -186,18 +193,8 @@
     tabs.delete(id);
     if (activeId === id) {
       const remaining = [...tabs.keys()];
-      if (remaining.length) {
-        setActive(remaining[remaining.length - 1]);
-      } else {
-        // no tabs left → back to the clean start screen
-        activeId = null;
-        tabstrip.classList.add('hidden');
-        chrome.classList.add('hidden');
-        newtab.classList.add('hidden');
-        startScreen.classList.remove('hidden');
-        beginInput.value = '';
-        beginInput.focus();
-      }
+      if (remaining.length) setActive(remaining[remaining.length - 1]);
+      else createTab(); // always keep at least one (blank) tab
     }
   }
 
@@ -219,19 +216,11 @@
   newTabBtn.addEventListener('click', () => createTab());
   newtabForm.addEventListener('submit', (e) => { e.preventDefault(); navigateActive(newtabInput.value); });
 
-  beginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const url = toURL(beginInput.value);
-    if (!url) return;
-    createTab({ url });
-  });
-
   addressForm.addEventListener('submit', (e) => {
     e.preventDefault();
     navigateActive(address.value);
     address.blur();
   });
-  address.addEventListener('focus', () => address.select());
 
   backBtn.addEventListener('click', () => {
     const t = tabs.get(activeId);
@@ -244,7 +233,7 @@
   reloadBtn.addEventListener('click', () => {
     const t = tabs.get(activeId);
     if (!t || !t.webview) return;
-    if (reloadBtn.textContent === '✕') t.webview.stop();
+    if (reloadBtn.classList.contains('loading')) t.webview.stop();
     else t.webview.reload();
   });
 
@@ -255,5 +244,6 @@
     createTab({ url, activate: !(payload && payload.background) });
   });
 
-  beginInput.focus();
+  // open with one fresh home tab
+  createTab();
 })();
