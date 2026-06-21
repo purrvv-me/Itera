@@ -118,6 +118,15 @@
   .match #logo{transform-origin:50% 92%;}
   .mark img{height:100%;width:auto;display:block;}
 
+  /* Hero logo = the nav lockup (match + ITERA), enlarged */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  .hero-lockup{display:inline-flex;align-items:center;justify-content:center;gap:clamp(12px,2.4vw,26px);margin:0 auto 22px;font-family:"Cormorant Garamond",serif;}
+  .hl-mark{height:clamp(86px,15vw,152px);width:auto;display:block;filter:drop-shadow(0 0 30px rgba(255,106,0,.4));}
+  .hl-word{
+    margin:0;font-weight:700;font-size:clamp(52px,11vw,128px);letter-spacing:.2em;padding-left:.2em;line-height:.9;
+    background:linear-gradient(180deg,#fffdfa,#cfc9c0);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
   .wordmark{
     font-family:"Cormorant Garamond",serif;
     font-weight:700;
@@ -325,11 +334,10 @@
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap hero-inner">
 
-    <div class="match">
-      <img id="logo" src="assets/match.png" alt="Burning match — ITERA" />
+    <div class="hero-lockup">
+      <img class="hl-mark" src="assets/match.png" alt="" />
+      <h1 class="hl-word">ITERA</h1>
     </div>
-
-    <h1 class="wordmark">ITERA</h1>
     <p class="slogan">Every launch begins again.</p>
     <p class="subtext">A disposable-identity browser for Windows. Open it and you're a brand-new person on the internet — zero cookies, zero history, nothing carried over.</p>
 
