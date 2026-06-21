@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win && node -e \"require('fs').copyFileSync('dist/ITERA-Setup.exe','ITERA-Setup.exe')\"",
+    "dist": "electron-builder --win && node -e \"require('fs').renameSync('dist/ITERA-Setup.exe','ITERA-Setup.exe')\"",
     "build:dir": "electron-builder --dir",
     "update": "powershell -ExecutionPolicy Bypass -File scripts/update-installed.ps1"
   },
