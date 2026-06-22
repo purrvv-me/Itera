@@ -24,7 +24,8 @@ $bgBrush = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArg
 $g.FillPath($bgBrush, $bgPath)
 
 # ---- work in SVG (64x96) coordinates ----------------------------------------
-$s  = 2.4
+# Scale up the match so it fills more of the badge (less dark padding).
+$s  = 2.78
 $g.TranslateTransform([single](128 - 33.5*$s), [single](128 - 47.5*$s))
 $g.ScaleTransform([single]$s, [single]$s)
 
