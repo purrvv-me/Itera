@@ -39,8 +39,22 @@
   tabstrip.addEventListener('dblclick', (e) => {
     if (!e.target.closest('.wctrls, .tab, .newtab, .brandmark')) window.itera.toggleMaximize();
   });
-  document.getElementById('close-btn').addEventListener('click', () => window.itera.close());
-  document.getElementById('kill-session').addEventListener('click', () => window.itera.killSession());
+  // Kill session / close: burn the whole window away from the clicked button,
+  // then fire the real wipe (visible cleanup terminal) + quit.
+  let ending = false;
+  function endSession(originEl, action) {
+    if (ending) return;
+    ending = true;
+    if (window.IteraBurn && !window.IteraBurn.reducedMotion()) {
+      window.IteraBurn.trigger(originEl, action);
+    } else {
+      action();
+    }
+  }
+  const closeBtn = document.getElementById('close-btn');
+  const killBtn = document.getElementById('kill-session');
+  closeBtn.addEventListener('click', () => endSession(closeBtn, () => window.itera.close()));
+  killBtn.addEventListener('click', () => endSession(killBtn, () => window.itera.killSession()));
 
   // --- omnibox focus styling ----------------------------------------------
   address.addEventListener('focus', () => { addressForm.classList.add('focus'); address.select(); });

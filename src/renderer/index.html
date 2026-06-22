@@ -12,6 +12,9 @@
 </head>
 <body>
 
+ <div id="screen">
+  <div id="win">
+
   <!-- ===================== Tab strip (draggable) ===================== -->
   <div id="tabstrip">
     <div class="brandmark" aria-hidden="true"><img src="assets/match.png" alt="ITERA" /></div>
@@ -75,6 +78,32 @@
     </div>
   </div>
 
+  </div><!-- /#win -->
+
+  <!-- ===================== Burn-on-kill overlay ===================== -->
+  <!-- charred / blackened paper that creeps in behind the fire edge -->
+  <div id="burn-char" aria-hidden="true"></div>
+  <!-- glowing fire edge -->
+  <div id="burn-ember" aria-hidden="true"></div>
+  <!-- ignition flash at the kill button -->
+  <div id="burn-ignite" aria-hidden="true"></div>
+  <!-- embers / smoke / ash particles -->
+  <canvas id="burn-canvas" aria-hidden="true"></canvas>
+ </div><!-- /#screen -->
+
+  <!-- displacement filter for the ragged burning edge -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="tear" x="-25%" y="-25%" width="150%" height="150%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.016 0.024" numOctaves="2" seed="11" result="n">
+          <animate attributeName="baseFrequency" dur="0.5s" values="0.016 0.024;0.022 0.03;0.016 0.024" repeatCount="indefinite"/>
+        </feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="36" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <script src="burn.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>

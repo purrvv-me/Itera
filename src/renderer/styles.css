@@ -29,6 +29,22 @@ body{
 .hidden{display:none !important;}
 button{font-family:inherit;}
 
+/* ===================== Burn-on-kill stage ====================== */
+#screen{position:relative;flex:1;min-height:0;overflow:hidden;background:#000;}
+#win{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);will-change:mask;}
+#win.burning{transition:opacity .4s ease;}
+#win.burning #view{background:var(--bg);}
+#win.burning #view webview{visibility:hidden;}
+#burn-char{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:4;}
+#burn-ember{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5;}
+#burn-ignite{
+  position:absolute;width:340px;height:340px;left:0;top:0;
+  transform:translate(-50%,-50%) scale(.2);border-radius:50%;
+  pointer-events:none;opacity:0;z-index:6;mix-blend-mode:screen;
+  background:radial-gradient(circle, rgba(255,230,150,.95) 0%, rgba(255,130,0,.6) 35%, rgba(255,60,0,0) 70%);
+}
+#burn-canvas{position:absolute;inset:0;pointer-events:none;z-index:7;}
+
 /* =========================== Tab strip =========================== */
 #tabstrip{
   display:flex;align-items:center;gap:4px;
