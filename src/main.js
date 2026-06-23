@@ -185,19 +185,27 @@ app.on('before-quit', (e) => {
   e.preventDefault();
   cleaningUp = true;
 
+  const userDataDir = app.getPath('userData');
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    // Wipe the ENTIRE app profile on exit — not just this session's partition.
+    // The terminal shows every real deletion command as it runs.
+    runVisibleCleanup([userDataDir]);
+    // give the terminal a beat to spawn before the process dies
+    setTimeout(() => app.exit(0), 250);
+  };
+
   const ses = session.fromPartition(partitionName);
   const tasks = [ses.clearStorageData(), ses.clearCache()];
   if (ses.clearAuthCache) tasks.push(ses.clearAuthCache());
   if (ses.clearHostResolverCache) tasks.push(ses.clearHostResolverCache());
+  Promise.allSettled(tasks).finally(finish);
 
-  Promise.allSettled(tasks).finally(() => {
-    // Wipe the ENTIRE app profile on exit — not just this session's partition.
-    // The terminal shows every real deletion command as it runs.
-    const userDataDir = app.getPath('userData');
-    runVisibleCleanup([userDataDir]);
-    // give the terminal a beat to spawn before the process dies
-    setTimeout(() => app.exit(0), 250);
-  });
+  // Safety net: an in-process clear can stall on a busy session, but the
+  // visible terminal wipes the whole profile anyway — never hang the exit.
+  setTimeout(finish, 1200);
 });
 
 // ---------------------------------------------------------------------------

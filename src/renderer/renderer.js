@@ -45,10 +45,21 @@
   function endSession(originEl, action) {
     if (ending) return;
     ending = true;
-    if (window.IteraBurn && !window.IteraBurn.reducedMotion()) {
-      window.IteraBurn.trigger(originEl, action);
-    } else {
-      action();
+    let fired = false;
+    const fire = () => { if (fired) return; fired = true; try { action(); } catch (_) {} };
+    // hide live pages so the burn is actually visible (a <webview> can paint
+    // over sibling DOM), and so a half-played animation can't black out the UI.
+    try { document.querySelectorAll('#view webview').forEach((w) => { w.style.visibility = 'hidden'; }); } catch (_) {}
+    try {
+      if (window.IteraBurn) {
+        window.IteraBurn.trigger(originEl, fire);
+        // Safety net: always wipe + quit even if the animation errors or stalls.
+        setTimeout(fire, 6000);
+      } else {
+        fire();
+      }
+    } catch (_) {
+      fire();
     }
   }
   const closeBtn = document.getElementById('close-btn');
