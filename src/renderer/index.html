@@ -15,7 +15,12 @@
  <div id="screen">
 
   <!-- ============ Paper bookmark tabs (functional, tucked behind the window) ============ -->
-  <div id="tabstrip"><div id="tabs"></div></div>
+  <div id="tabstrip">
+    <div id="tabs"></div>
+    <button id="new-tab" class="newtab" title="New tab" aria-label="New tab">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 
   <div id="win">
 
@@ -25,9 +30,6 @@
       <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 3 C9 8 6.4 10 6.4 14.4 A5.6 5.6 0 0 0 17.6 14.4 C17.6 10 15 8 12 3 Z" fill="url(#flameGrad)"/></svg>
     </span>
     <span class="brandword">itera</span>
-    <button id="new-tab" class="newtab" title="New tab" aria-label="New tab">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-    </button>
     <div class="wctrls">
       <button id="min-btn" class="wbtn" title="Minimize" aria-label="Minimize">
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>

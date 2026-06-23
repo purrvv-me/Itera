@@ -12,7 +12,8 @@
   --ease:cubic-bezier(.2,.7,.2,1);
   --tabstrip-h:44px;
   --toolbar-h:54px;
-  --peek:30px;          /* how far the paper tabs stick up above the window */
+  --peek:36px;          /* how far the paper tabs stick up above the window */
+  --tab-gap-top:6px;    /* breathing room so tab tops don't clip at the window edge */
   --paper:#e3d2ac;
   --paper-edge:#c9b78d;
   --paper-ink:#4a3b26;
@@ -58,10 +59,11 @@ button{font-family:inherit;}
 /* The tab strip sits *behind* the window (#win, z2); only the top --peek px
    of each paper slip shows above the title bar, like bookmarks in a book. */
 #tabstrip{
-  position:absolute;top:0;left:18px;right:150px;height:96px;z-index:1;
+  position:absolute;top:var(--tab-gap-top);left:18px;right:150px;height:96px;z-index:1;
+  display:flex;align-items:flex-start;
   -webkit-app-region:drag;
 }
-#tabs{display:flex;align-items:flex-start;padding-left:6px;height:100%;}
+#tabs{display:flex;align-items:flex-start;padding-left:6px;flex:none;min-width:0;}
 
 .tab{
   position:relative;flex:none;box-sizing:border-box;
