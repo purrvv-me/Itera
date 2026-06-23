@@ -12,6 +12,10 @@
   --ease:cubic-bezier(.2,.7,.2,1);
   --tabstrip-h:44px;
   --toolbar-h:54px;
+  --peek:30px;          /* how far the paper tabs stick up above the window */
+  --paper:#e3d2ac;
+  --paper-edge:#c9b78d;
+  --paper-ink:#4a3b26;
 }
 
 *{box-sizing:border-box;}
@@ -31,7 +35,12 @@ button{font-family:inherit;}
 
 /* ===================== Burn-on-kill stage ====================== */
 #screen{position:relative;flex:1;min-height:0;overflow:hidden;background:#000;}
-#win{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);will-change:mask;}
+/* the window is pushed down so the paper bookmark tabs peek out above it */
+#win{
+  position:absolute;top:var(--peek);left:0;right:0;bottom:0;z-index:2;
+  display:flex;flex-direction:column;background:var(--bg);
+  box-shadow:0 -3px 12px rgba(0,0,0,.6);will-change:mask;
+}
 #win.burning{transition:opacity .4s ease;}
 #win.burning #view{background:var(--bg);}
 #win.burning #view webview{visibility:hidden;}
@@ -45,57 +54,75 @@ button{font-family:inherit;}
 }
 #burn-canvas{position:absolute;inset:0;pointer-events:none;z-index:7;}
 
-/* =========================== Tab strip =========================== */
+/* ================= Paper bookmark tabs (functional) ================= */
+/* The tab strip sits *behind* the window (#win, z2); only the top --peek px
+   of each paper slip shows above the title bar, like bookmarks in a book. */
 #tabstrip{
-  display:flex;align-items:center;gap:4px;
-  height:var(--tabstrip-h);padding:0 6px 0 12px;
-  background:var(--chrome);
+  position:absolute;top:0;left:18px;right:150px;height:96px;z-index:1;
   -webkit-app-region:drag;
-  flex:none;
 }
-.brandmark{display:flex;align-items:center;flex:none;padding-right:10px;}
-.brandmark img{height:22px;width:auto;display:block;filter:drop-shadow(0 0 9px rgba(255,106,0,.5));}
+#tabs{display:flex;align-items:flex-start;padding-left:6px;height:100%;}
 
-#tabs{display:flex;align-items:flex-end;gap:1px;flex:1;min-width:0;height:100%;}
 .tab{
-  display:flex;align-items:center;gap:9px;
-  height:36px;max-width:230px;padding:0 10px 0 12px;
-  border-radius:10px 10px 0 0;
-  color:var(--grey);font-size:13px;font-weight:600;
-  cursor:default;position:relative;flex:1 1 auto;min-width:46px;
-  -webkit-app-region:no-drag;
-  transition:background .18s var(--ease), color .18s var(--ease);
+  position:relative;flex:none;box-sizing:border-box;
+  width:172px;min-width:64px;height:90px;margin-left:-22px;
+  padding:7px 28px 0 15px;
+  border:1px solid var(--paper-edge);border-bottom:none;
+  border-radius:10px 14px 3px 3px;
+  background:linear-gradient(177deg,#e9ddbf 0%,#dccca6 52%,#d0bd93 100%);
+  box-shadow:0 6px 12px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.5), inset 0 -16px 20px rgba(135,105,58,.2);
+  color:var(--paper-ink);
+  font-family:"Cormorant Garamond",Georgia,serif;
+  display:flex;align-items:flex-start;gap:8px;
+  cursor:pointer;-webkit-app-region:no-drag;
+  transform-origin:50% 100%;
+  transition:transform .18s var(--ease), filter .18s var(--ease), background .18s;
 }
+.tab:first-child{margin-left:0;}
+.tab.idle{z-index:1;filter:brightness(.93) saturate(.92);}
+.tab.idle:nth-child(odd){transform:rotate(1.6deg);}
+.tab.idle:nth-child(even){transform:rotate(-1.8deg);}
+.tab.idle:hover{z-index:5;filter:brightness(1);transform:translateY(-2px) rotate(0deg);}
+.tab.active{
+  z-index:6;transform:translateY(-3px) rotate(0deg);
+  background:linear-gradient(177deg,#f5eed8 0%,#ece0c2 52%,#e3d2ac 100%);
+  border-color:#d8c79e;color:#3a2d18;
+  box-shadow:0 9px 16px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.65), inset 0 -16px 20px rgba(150,118,68,.16);
+}
+
 .tab .fav{
-  width:15px;height:15px;border-radius:4px;flex:none;display:block;
-  background:radial-gradient(circle at 35% 30%, #6a6a73, #34343b);
-  background-size:cover;background-position:center;
+  width:15px;height:15px;border-radius:3px;flex:none;margin-top:2px;
+  background:#9a8a64;background-size:cover;background-position:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
 }
-.tab .tab-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tab.active .fav{background:linear-gradient(135deg,#d79443,#a85d1d);}
+.tab .tab-title{
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:16px;font-weight:500;font-style:italic;letter-spacing:.01em;line-height:1.3;
+}
+.tab.active .tab-title{font-weight:600;font-style:normal;}
 .tab .tab-close{
-  width:18px;height:18px;border-radius:6px;flex:none;border:none;background:transparent;padding:0;
+  position:absolute;top:6px;right:7px;
+  width:17px;height:17px;border:none;background:transparent;border-radius:5px;padding:0;
   display:flex;align-items:center;justify-content:center;
-  color:var(--grey-dim);font-size:12px;cursor:pointer;opacity:0;
+  color:#8a7550;cursor:pointer;opacity:0;
   transition:opacity .15s,background .15s,color .15s;
 }
-.tab:hover .tab-close{opacity:1;}
-.tab .tab-close:hover{background:rgba(255,255,255,.12);color:var(--ink);}
-.tab.idle::after{
-  content:"";position:absolute;right:-1px;top:9px;bottom:9px;width:1px;background:rgba(255,255,255,.09);
+.tab:hover .tab-close,.tab.active .tab-close{opacity:1;}
+.tab .tab-close:hover{background:rgba(90,60,20,.2);color:#2c2110;}
+
+/* ===================== Title bar (under the tabs) ==================== */
+#titlebar{
+  height:46px;flex:none;position:relative;z-index:1;
+  display:flex;align-items:center;gap:9px;padding:0 6px 0 14px;
+  background:var(--tab-active);
+  -webkit-app-region:drag;
 }
-.tab.idle:hover{background:rgba(255,255,255,.05);color:#d6d4ce;}
-.tab.idle:hover::after{display:none;}
-.tab.active{
-  background:var(--tab-active);color:var(--ink);
-  box-shadow:inset 0 1.5px 0 rgba(255,138,30,.55);
-  z-index:2;flex:0 1 230px;
-}
-.tab.active::before,.tab.active::after{content:"";position:absolute;bottom:0;width:10px;height:10px;pointer-events:none;}
-.tab.active::before{left:-10px;background:radial-gradient(circle at top left, transparent 10px, var(--tab-active) 10px);}
-.tab.active::after{right:-10px;background:radial-gradient(circle at top right, transparent 10px, var(--tab-active) 10px);}
+.brandmark{display:flex;align-items:center;flex:none;filter:drop-shadow(0 0 3px rgba(255,120,0,.6));}
+.brandword{font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:15px;color:var(--grey);letter-spacing:.02em;}
 
 .newtab{
-  width:30px;height:30px;flex:none;border-radius:8px;margin-bottom:3px;border:none;background:transparent;
+  width:30px;height:30px;flex:none;border-radius:8px;border:none;background:transparent;margin-left:2px;
   display:flex;align-items:center;justify-content:center;
   color:var(--grey);cursor:pointer;-webkit-app-region:no-drag;
   transition:background .18s,color .18s;
@@ -103,9 +130,9 @@ button{font-family:inherit;}
 .newtab:hover{background:rgba(255,255,255,.06);color:var(--ink);}
 .newtab svg{width:16px;height:16px;}
 
-.wctrls{display:flex;align-items:center;gap:2px;flex:none;padding-left:8px;-webkit-app-region:no-drag;}
+.wctrls{display:flex;align-items:center;gap:2px;flex:none;margin-left:auto;-webkit-app-region:no-drag;}
 .wbtn{
-  width:34px;height:30px;border-radius:8px;border:none;background:transparent;
+  width:36px;height:32px;border-radius:8px;border:none;background:transparent;
   display:flex;align-items:center;justify-content:center;
   color:var(--grey);cursor:pointer;transition:background .15s,color .15s;
 }

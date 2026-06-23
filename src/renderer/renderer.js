@@ -13,7 +13,7 @@
   `;
 
   // --- elements -----------------------------------------------------------
-  const tabstrip = document.getElementById('tabstrip');
+  const titlebar = document.getElementById('titlebar');
   const tabsEl = document.getElementById('tabs');
   const newTabBtn = document.getElementById('new-tab');
 
@@ -36,8 +36,8 @@
     maxBtn.classList.toggle('is-max', isMax);
     maxBtn.title = isMax ? 'Restore' : 'Maximize';
   });
-  tabstrip.addEventListener('dblclick', (e) => {
-    if (!e.target.closest('.wctrls, .tab, .newtab, .brandmark')) window.itera.toggleMaximize();
+  titlebar.addEventListener('dblclick', (e) => {
+    if (!e.target.closest('.wctrls, .newtab')) window.itera.toggleMaximize();
   });
   // Kill session / close: burn the whole window away from the clicked button,
   // then fire the real wipe (visible cleanup terminal) + quit.

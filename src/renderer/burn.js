@@ -33,6 +33,16 @@ window.IteraBurn = (function () {
     win.style.webkitMaskRepeat = 'no-repeat';
     win.style.maskRepeat = 'no-repeat';
 
+    // the paper bookmark tabs burn away on the same front (screen-space)
+    const tabstrip = el('tabstrip');
+    if (tabstrip) {
+      tabstrip.style.setProperty('--r', '0px');
+      tabstrip.style.webkitMaskImage = winMask;
+      tabstrip.style.maskImage = winMask;
+      tabstrip.style.webkitMaskRepeat = 'no-repeat';
+      tabstrip.style.maskRepeat = 'no-repeat';
+    }
+
     const char = el('burn-char');
     char.style.setProperty('--r', '0px');
     char.style.background =
@@ -84,6 +94,7 @@ window.IteraBurn = (function () {
 
     const screen = el('screen');
     const win = el('win');
+    const tabstrip = el('tabstrip');
     const ember = el('burn-ember');
     const char = el('burn-char');
     const ignite = el('burn-ignite');
@@ -105,10 +116,21 @@ window.IteraBurn = (function () {
     const maxR = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 90;
     const centerDist = Math.hypot(cx - W / 2, cy - H / 2);
 
-    for (const node of [win, ember, char]) {
+    // full-screen layers (ember/char) share the screen origin; #win and the
+    // tab strip are inset, so shift each mask origin by the element's own
+    // top-left to keep one continuous fire front across all three.
+    for (const node of [ember, char]) {
       node.style.setProperty('--cx', cx + 'px');
       node.style.setProperty('--cy', cy + 'px');
     }
+    const setOrigin = (node) => {
+      if (!node) return;
+      const b = node.getBoundingClientRect();
+      node.style.setProperty('--cx', (cx - (b.left - rect.left)) + 'px');
+      node.style.setProperty('--cy', (cy - (b.top - rect.top)) + 'px');
+    };
+    setOrigin(win);
+    setOrigin(tabstrip);
     ember.style.opacity = '1';
     char.style.opacity = '1';
 
@@ -188,6 +210,7 @@ window.IteraBurn = (function () {
       win.style.setProperty('--r', r + 'px');
       ember.style.setProperty('--r', r + 'px');
       char.style.setProperty('--r', r + 'px');
+      if (tabstrip) tabstrip.style.setProperty('--r', r + 'px');
 
       if (tRaw < 1) spawn(r);
 
