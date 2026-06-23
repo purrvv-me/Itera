@@ -18,73 +18,60 @@ window.IteraBurn = (function () {
 
   function el(id) { return document.getElementById(id); }
 
-  // Build the radial masks/gradients once, parameterised by --cx/--cy/--r.
+  // Gradient/mask string builders. We write the *full* string with literal
+  // pixel values every frame rather than relying on a CSS custom property
+  // (Chromium does not reliably repaint a mask-image/background gradient when
+  // only a var() inside it changes), so the front animates on every machine.
+  const px = (n) => n.toFixed(1) + 'px';
+  function winMaskStr(cx, cy, r) {
+    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
+      ' transparent 0, transparent ' + px(r - 42) + ', #000 ' + px(r + 26) + ', #000 260vmax)';
+  }
+  // Opaque charred fill that consumes the window from the ignition point
+  // outward. Solid blackened interior -> brown char at the burning edge ->
+  // transparent just beyond the front. Being opaque, it reads on any page
+  // (bright or dark) without relying on masking the window away.
+  function charBgStr(cx, cy, r) {
+    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
+      ' #080705 0px,' +
+      ' #080705 ' + px(r - 24) + ',' +
+      ' #0c0907 ' + px(r - 12) + ',' +
+      ' #2a1408 ' + px(r - 6) + ',' +
+      ' #5a2a0e ' + px(r) + ',' +
+      ' rgba(60,29,10,0.4) ' + px(r + 14) + ',' +
+      ' rgba(40,20,8,0) ' + px(r + 28) + ',' +
+      ' transparent 260vmax)';
+  }
+  function emberBgStr(cx, cy, r) {
+    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
+      ' transparent ' + px(r - 42) + ', rgba(255,80,0,0) ' + px(r - 30) + ', #ff3b00 ' + px(r - 13) +
+      ', #ff9a2e ' + px(r - 4) + ', #ffeec0 ' + px(r) + ', rgba(255,150,40,0.55) ' + px(r + 9) +
+      ', rgba(255,90,0,0) ' + px(r + 24) + ', transparent 260vmax)';
+  }
+
+  // Set the static (non-animated) layer properties once at the start of a burn.
   function prime() {
     const win = el('win');
-    const winMask =
-      'radial-gradient(circle at var(--cx,95%) var(--cy,6%),' +
-      ' transparent 0,' +
-      ' transparent calc(var(--r,0px) - 42px),' +
-      ' #000 calc(var(--r,0px) + 26px),' +
-      ' #000 260vmax)';
-    win.style.setProperty('--r', '0px');
     win.style.willChange = 'mask';
-    win.style.webkitMaskImage = winMask;
-    win.style.maskImage = winMask;
     win.style.webkitMaskRepeat = 'no-repeat';
     win.style.maskRepeat = 'no-repeat';
 
-    // the paper bookmark tabs burn away on the same front (screen-space)
     const tabstrip = el('tabstrip');
     if (tabstrip) {
-      tabstrip.style.setProperty('--r', '0px');
       tabstrip.style.willChange = 'mask';
-      tabstrip.style.webkitMaskImage = winMask;
-      tabstrip.style.maskImage = winMask;
       tabstrip.style.webkitMaskRepeat = 'no-repeat';
       tabstrip.style.maskRepeat = 'no-repeat';
     }
 
+    // char is now an OPAQUE charred fill (covers the window as it grows), with
+    // a ragged edge from the turbulence filter. No mask, no blend mode.
     const char = el('burn-char');
-    char.style.setProperty('--r', '0px');
-    char.style.background =
-      'radial-gradient(circle at var(--cx,95%) var(--cy,6%),' +
-      ' #060504 calc(var(--r,0px) - 120px),' +
-      ' #0a0807 calc(var(--r,0px) - 44px),' +
-      ' #190d06 calc(var(--r,0px) - 12px),' +
-      ' #3c1d0a calc(var(--r,0px) + 6px),' +
-      ' #281507 calc(var(--r,0px) + 38px),' +
-      ' #161009 calc(var(--r,0px) + 60px))';
-    const charMask =
-      'radial-gradient(circle at var(--cx,95%) var(--cy,6%),' +
-      ' transparent 0,' +
-      ' transparent calc(var(--r,0px) - 150px),' +
-      ' rgba(0,0,0,0.85) calc(var(--r,0px) - 118px),' +
-      ' #000 calc(var(--r,0px) - 60px),' +
-      ' #000 calc(var(--r,0px) - 12px),' +
-      ' rgba(0,0,0,0.6) calc(var(--r,0px) + 6px),' +
-      ' rgba(0,0,0,0.26) calc(var(--r,0px) + 36px),' +
-      ' transparent calc(var(--r,0px) + 62px),' +
-      ' transparent 260vmax)';
-    char.style.webkitMaskImage = charMask;
-    char.style.maskImage = charMask;
-    char.style.webkitMaskRepeat = 'no-repeat';
-    char.style.maskRepeat = 'no-repeat';
+    char.style.webkitMaskImage = 'none';
+    char.style.maskImage = 'none';
     char.style.filter = 'url(#tear)';
-    char.style.mixBlendMode = 'multiply';
+    char.style.mixBlendMode = 'normal';
 
     const ember = el('burn-ember');
-    ember.style.setProperty('--r', '0px');
-    ember.style.background =
-      'radial-gradient(circle at var(--cx,95%) var(--cy,6%),' +
-      ' transparent calc(var(--r,0px) - 42px),' +
-      ' rgba(255,80,0,0) calc(var(--r,0px) - 30px),' +
-      ' #ff3b00 calc(var(--r,0px) - 13px),' +
-      ' #ff9a2e calc(var(--r,0px) - 4px),' +
-      ' #ffeec0 var(--r,0px),' +
-      ' rgba(255,150,40,0.55) calc(var(--r,0px) + 9px),' +
-      ' rgba(255,90,0,0) calc(var(--r,0px) + 24px),' +
-      ' transparent 260vmax)';
     ember.style.filter = 'url(#tear) blur(0.5px)';
     ember.style.mixBlendMode = 'screen';
   }
@@ -120,23 +107,29 @@ window.IteraBurn = (function () {
     const maxR = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 90;
     const centerDist = Math.hypot(cx - W / 2, cy - H / 2);
 
-    // full-screen layers (ember/char) share the screen origin; #win and the
-    // tab strip are inset, so shift each mask origin by the element's own
-    // top-left to keep one continuous fire front across all three.
-    for (const node of [ember, char]) {
-      node.style.setProperty('--cx', cx + 'px');
-      node.style.setProperty('--cy', cy + 'px');
-    }
-    const setOrigin = (node) => {
-      if (!node) return;
+    // Each layer's mask/background is positioned in its OWN box, so give each
+    // an origin shifted by its top-left. ember/char are full-screen (inset:0),
+    // #win and the tab strip are inset — this keeps one continuous fire front.
+    const localOrigin = (node) => {
       const b = node.getBoundingClientRect();
-      node.style.setProperty('--cx', (cx - (b.left - rect.left)) + 'px');
-      node.style.setProperty('--cy', (cy - (b.top - rect.top)) + 'px');
+      return { x: cx - (b.left - rect.left), y: cy - (b.top - rect.top) };
     };
-    setOrigin(win);
-    setOrigin(tabstrip);
+    const oWin = localOrigin(win);
+    const oTab = tabstrip ? localOrigin(tabstrip) : null;
+    const oFull = { x: cx, y: cy };
+
     ember.style.opacity = '1';
     char.style.opacity = '1';
+
+    const paint = (r) => {
+      // opaque charred fill (covers content) + bright ember edge on top
+      char.style.background = charBgStr(oFull.x, oFull.y, r);
+      ember.style.background = emberBgStr(oFull.x, oFull.y, r);
+      // also mask the window away underneath (bonus where supported)
+      win.style.webkitMaskImage = win.style.maskImage = winMaskStr(oWin.x, oWin.y, r);
+      if (tabstrip) tabstrip.style.webkitMaskImage = tabstrip.style.maskImage = winMaskStr(oTab.x, oTab.y, r);
+    };
+    paint(0);
 
     cv.width = W * dpr; cv.height = H * dpr;
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -211,10 +204,7 @@ window.IteraBurn = (function () {
       const tRaw = (now - t0) / dur;
       const t = Math.min(tRaw, 1);
       const r = ease(t) * maxR;
-      win.style.setProperty('--r', r + 'px');
-      ember.style.setProperty('--r', r + 'px');
-      char.style.setProperty('--r', r + 'px');
-      if (tabstrip) tabstrip.style.setProperty('--r', r + 'px');
+      paint(r);
 
       if (tRaw < 1) spawn(r);
 
