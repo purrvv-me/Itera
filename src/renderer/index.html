@@ -99,7 +99,7 @@
   <canvas id="burn-canvas" aria-hidden="true"></canvas>
  </div><!-- /#screen -->
 
-  <!-- displacement filter for the ragged burning edge -->
+  <!-- brand flame gradient (title bar + active tab favicon) -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0">
@@ -107,12 +107,6 @@
         <stop offset="55%" stop-color="#ff8a1f"/>
         <stop offset="100%" stop-color="#ffd23a"/>
       </linearGradient>
-      <filter id="tear" x="-25%" y="-25%" width="150%" height="150%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.016 0.024" numOctaves="2" seed="11" result="n">
-          <animate attributeName="baseFrequency" dur="0.5s" values="0.016 0.024;0.022 0.03;0.016 0.024" repeatCount="indefinite"/>
-        </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="36" xChannelSelector="R" yChannelSelector="G"/>
-      </filter>
     </defs>
   </svg>
 

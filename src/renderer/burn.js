@@ -11,7 +11,7 @@
  * terminal) and quits.
  */
 window.IteraBurn = (function () {
-  const BURN_DURATION_SEC = 3.4;
+  const BURN_DURATION_SEC = 3.2;
   const EMBER_INTENSITY = 1;
 
   let running = false;
@@ -23,10 +23,6 @@ window.IteraBurn = (function () {
   // (Chromium does not reliably repaint a mask-image/background gradient when
   // only a var() inside it changes), so the front animates on every machine.
   const px = (n) => n.toFixed(1) + 'px';
-  function winMaskStr(cx, cy, r) {
-    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
-      ' transparent 0, transparent ' + px(r - 42) + ', #000 ' + px(r + 26) + ', #000 260vmax)';
-  }
   // Opaque charred fill that consumes the window from the ignition point
   // outward. Solid blackened interior -> brown char at the burning edge ->
   // transparent just beyond the front. Being opaque, it reads on any page
@@ -49,30 +45,18 @@ window.IteraBurn = (function () {
       ', rgba(255,90,0,0) ' + px(r + 24) + ', transparent 260vmax)';
   }
 
-  // Set the static (non-animated) layer properties once at the start of a burn.
+  // Set the static layer properties once at the start of a burn. We avoid SVG
+  // filters (animated feTurbulence rendered as sparkly noise and was flaky
+  // across GPU frames) and CSS masks (unreliable over a webview) entirely:
+  // the burn is just an opaque charred fill + a soft glowing ember edge +
+  // canvas particles, which renders identically every time.
   function prime() {
-    const win = el('win');
-    win.style.willChange = 'mask';
-    win.style.webkitMaskRepeat = 'no-repeat';
-    win.style.maskRepeat = 'no-repeat';
-
-    const tabstrip = el('tabstrip');
-    if (tabstrip) {
-      tabstrip.style.willChange = 'mask';
-      tabstrip.style.webkitMaskRepeat = 'no-repeat';
-      tabstrip.style.maskRepeat = 'no-repeat';
-    }
-
-    // char is now an OPAQUE charred fill (covers the window as it grows), with
-    // a ragged edge from the turbulence filter. No mask, no blend mode.
     const char = el('burn-char');
-    char.style.webkitMaskImage = 'none';
-    char.style.maskImage = 'none';
-    char.style.filter = 'url(#tear)';
+    char.style.filter = 'blur(1.5px)';
     char.style.mixBlendMode = 'normal';
 
     const ember = el('burn-ember');
-    ember.style.filter = 'url(#tear) blur(0.5px)';
+    ember.style.filter = 'blur(2px)';
     ember.style.mixBlendMode = 'screen';
   }
 
@@ -83,7 +67,6 @@ window.IteraBurn = (function () {
 
     const screen = el('screen');
     const win = el('win');
-    const tabstrip = el('tabstrip');
     const ember = el('burn-ember');
     const char = el('burn-char');
     const ignite = el('burn-ignite');
@@ -91,43 +74,33 @@ window.IteraBurn = (function () {
 
     // bring the (normally display:none) burn layers into the compositor
     for (const n of [char, ember, ignite, cv]) n.style.display = 'block';
-    win.classList.add('burning');
+    // .burning darkens #view and hides any live webview so the page can't flash
+    // white in the area the fire hasn't reached yet.
+    if (win) win.classList.add('burning');
 
+    // Robust dimensions: fall back to the viewport if layout isn't measured yet,
+    // so the fire front always has the right size to sweep across (a zero rect
+    // would otherwise leave the effect stuck as sparks at the origin).
     const rect = screen.getBoundingClientRect();
-    const W = rect.width, H = rect.height;
+    const W = Math.max(rect.width || window.innerWidth || 1200, 320);
+    const H = Math.max(rect.height || window.innerHeight || 800, 240);
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     // ignition origin = the button that was clicked (fallback: top-right)
-    let cx = W * 0.95, cy = 70;
+    let cx = W * 0.92, cy = 70;
     if (originEl) {
       const b = originEl.getBoundingClientRect();
-      cx = b.left + b.width / 2 - rect.left;
-      cy = b.top + b.height / 2 - rect.top;
+      if (b.width) { cx = b.left + b.width / 2 - rect.left; cy = b.top + b.height / 2 - rect.top; }
     }
     const maxR = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 90;
-    const centerDist = Math.hypot(cx - W / 2, cy - H / 2);
-
-    // Each layer's mask/background is positioned in its OWN box, so give each
-    // an origin shifted by its top-left. ember/char are full-screen (inset:0),
-    // #win and the tab strip are inset — this keeps one continuous fire front.
-    const localOrigin = (node) => {
-      const b = node.getBoundingClientRect();
-      return { x: cx - (b.left - rect.left), y: cy - (b.top - rect.top) };
-    };
-    const oWin = localOrigin(win);
-    const oTab = tabstrip ? localOrigin(tabstrip) : null;
-    const oFull = { x: cx, y: cy };
 
     ember.style.opacity = '1';
     char.style.opacity = '1';
 
+    // char/ember fill the whole screen (inset:0), so the origin is screen-space.
     const paint = (r) => {
-      // opaque charred fill (covers content) + bright ember edge on top
-      char.style.background = charBgStr(oFull.x, oFull.y, r);
-      ember.style.background = emberBgStr(oFull.x, oFull.y, r);
-      // also mask the window away underneath (bonus where supported)
-      win.style.webkitMaskImage = win.style.maskImage = winMaskStr(oWin.x, oWin.y, r);
-      if (tabstrip) tabstrip.style.webkitMaskImage = tabstrip.style.maskImage = winMaskStr(oTab.x, oTab.y, r);
+      char.style.background = charBgStr(cx, cy, r);
+      ember.style.background = emberBgStr(cx, cy, r);
     };
     paint(0);
 
@@ -199,7 +172,16 @@ window.IteraBurn = (function () {
     };
 
     let raf = null;
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      try { ctx.clearRect(0, 0, W, H); } catch (_) {}
+      if (win) win.style.opacity = '0';
+      if (typeof onComplete === 'function') onComplete();
+    };
     const step = (now) => {
+     try {
       const dt = Math.min((now - last) / 1000, 0.05); last = now;
       const tRaw = (now - t0) / dur;
       const t = Math.min(tRaw, 1);
@@ -258,10 +240,12 @@ window.IteraBurn = (function () {
       if (!done) {
         raf = requestAnimationFrame(step);
       } else {
-        ctx.clearRect(0, 0, W, H);
-        win.style.opacity = '0';
-        if (typeof onComplete === 'function') onComplete();
+        finish();
       }
+     } catch (_) {
+      // never leave a half-drawn frame frozen on screen — just complete.
+      finish();
+     }
     };
     raf = requestAnimationFrame(step);
   }
