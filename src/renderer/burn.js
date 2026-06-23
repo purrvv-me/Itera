@@ -28,6 +28,7 @@ window.IteraBurn = (function () {
       ' #000 calc(var(--r,0px) + 26px),' +
       ' #000 260vmax)';
     win.style.setProperty('--r', '0px');
+    win.style.willChange = 'mask';
     win.style.webkitMaskImage = winMask;
     win.style.maskImage = winMask;
     win.style.webkitMaskRepeat = 'no-repeat';
@@ -37,6 +38,7 @@ window.IteraBurn = (function () {
     const tabstrip = el('tabstrip');
     if (tabstrip) {
       tabstrip.style.setProperty('--r', '0px');
+      tabstrip.style.willChange = 'mask';
       tabstrip.style.webkitMaskImage = winMask;
       tabstrip.style.maskImage = winMask;
       tabstrip.style.webkitMaskRepeat = 'no-repeat';
@@ -100,6 +102,8 @@ window.IteraBurn = (function () {
     const ignite = el('burn-ignite');
     const cv = el('burn-canvas');
 
+    // bring the (normally display:none) burn layers into the compositor
+    for (const n of [char, ember, ignite, cv]) n.style.display = 'block';
     win.classList.add('burning');
 
     const rect = screen.getBoundingClientRect();

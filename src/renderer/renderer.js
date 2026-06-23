@@ -156,7 +156,10 @@
     wv.addEventListener('page-title-updated', (e) => setTitle(t, e.title));
     wv.addEventListener('page-favicon-updated', (e) => {
       const ic = e.favicons && e.favicons[0];
-      if (ic) t.favEl.style.backgroundImage = `url("${ic}")`;
+      if (!ic || ic === t.favUrl) return; // ignore repeats to avoid flicker/repaints
+      t.favUrl = ic;
+      t.favEl.style.backgroundImage = `url("${ic}")`;
+      t.favEl.classList.add('has-fav');
     });
     const onNav = (e) => {
       if (e.url) {

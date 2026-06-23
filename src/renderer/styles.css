@@ -40,20 +40,22 @@ button{font-family:inherit;}
 #win{
   position:absolute;top:var(--peek);left:0;right:0;bottom:0;z-index:2;
   display:flex;flex-direction:column;background:var(--bg);
-  box-shadow:0 -3px 12px rgba(0,0,0,.6);will-change:mask;
+  box-shadow:0 -3px 12px rgba(0,0,0,.6);
 }
 #win.burning{transition:opacity .4s ease;}
 #win.burning #view{background:var(--bg);}
 #win.burning #view webview{visibility:hidden;}
-#burn-char{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:4;}
-#burn-ember{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5;}
+/* Burn overlays are display:none while idle so they never composite over the
+   live page; burn.js turns them on only for the kill animation. */
+#burn-char{display:none;position:absolute;inset:0;pointer-events:none;opacity:0;z-index:4;}
+#burn-ember{display:none;position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5;}
 #burn-ignite{
-  position:absolute;width:340px;height:340px;left:0;top:0;
+  display:none;position:absolute;width:340px;height:340px;left:0;top:0;
   transform:translate(-50%,-50%) scale(.2);border-radius:50%;
   pointer-events:none;opacity:0;z-index:6;mix-blend-mode:screen;
   background:radial-gradient(circle, rgba(255,230,150,.95) 0%, rgba(255,130,0,.6) 35%, rgba(255,60,0,0) 70%);
 }
-#burn-canvas{position:absolute;inset:0;pointer-events:none;z-index:7;}
+#burn-canvas{display:none;position:absolute;inset:0;pointer-events:none;z-index:7;}
 
 /* ================= Paper bookmark tabs (functional) ================= */
 /* The tab strip sits *behind* the window (#win, z2); only the top --peek px
@@ -81,10 +83,10 @@ button{font-family:inherit;}
   transition:transform .18s var(--ease), filter .18s var(--ease), background .18s;
 }
 .tab:first-child{margin-left:0;}
-.tab.idle{z-index:1;filter:brightness(.93) saturate(.92);}
+.tab.idle{z-index:1;}
 .tab.idle:nth-child(odd){transform:rotate(1.6deg);}
 .tab.idle:nth-child(even){transform:rotate(-1.8deg);}
-.tab.idle:hover{z-index:5;filter:brightness(1);transform:translateY(-2px) rotate(0deg);}
+.tab.idle:hover{z-index:5;transform:translateY(-2px) rotate(0deg);}
 .tab.active{
   z-index:6;transform:translateY(-3px) rotate(0deg);
   background:linear-gradient(177deg,#f5eed8 0%,#ece0c2 52%,#e3d2ac 100%);
@@ -94,10 +96,12 @@ button{font-family:inherit;}
 
 .tab .fav{
   width:15px;height:15px;border-radius:3px;flex:none;margin-top:2px;
-  background:#9a8a64;background-size:cover;background-position:center;
+  background-color:#9a8a64;background-repeat:no-repeat;background-position:center;background-size:cover;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);
 }
-.tab.active .fav{background:linear-gradient(135deg,#d79443,#a85d1d);}
+.tab.active .fav{background-color:#c97e34;}
+/* once a real favicon loads, show it whole on a light chip instead of cropped */
+.tab .fav.has-fav{background-color:#f6efdd;background-size:11px 11px;box-shadow:inset 0 0 0 1px rgba(120,95,55,.35);}
 .tab .tab-title{
   flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   font-size:16px;font-weight:500;font-style:italic;letter-spacing:.01em;line-height:1.3;
