@@ -4,11 +4,19 @@
  * ITERA "burn the session" animation.
  *
  * Ported from the Claude Design component (ITERA Burn.dc.html) to vanilla JS.
- * The whole browser chrome (#win) is eaten away by a ragged fire edge that
- * spreads from wherever the user clicked (Kill session / Close), throwing off
- * embers, smoke and charred ash. When the window is fully consumed we invoke
- * the supplied callback — which fires the *real* wipe (visible cleanup
- * terminal) and quits.
+ * The whole browser chrome is eaten away by a fire edge that spreads from
+ * wherever the user clicked (Kill session / Close), throwing off embers, smoke
+ * and charred ash. When the window is fully consumed we invoke the supplied
+ * callback — which fires the *real* wipe (visible cleanup terminal) and quits.
+ *
+ * Everything visual is drawn on a single <canvas>: the opaque charred fill, the
+ * glowing fire edge AND the particles. Earlier versions painted the char/ember
+ * front onto CSS DOM layers (a radial-gradient rewritten every frame), but
+ * Chromium does not reliably re-rasterize a gradient background layer per frame
+ * — on some machines the front jumped straight to full size and the user saw a
+ * single flash instead of a spreading burn. The canvas, by contrast, is
+ * cleared and redrawn every frame, so the spread animates identically on every
+ * GPU.
  */
 window.IteraBurn = (function () {
   const BURN_DURATION_SEC = 3.2;
@@ -18,62 +26,62 @@ window.IteraBurn = (function () {
 
   function el(id) { return document.getElementById(id); }
 
-  // Gradient/mask string builders. We write the *full* string with literal
-  // pixel values every frame rather than relying on a CSS custom property
-  // (Chromium does not reliably repaint a mask-image/background gradient when
-  // only a var() inside it changes), so the front animates on every machine.
-  const px = (n) => n.toFixed(1) + 'px';
-  // Opaque charred fill that consumes the window from the ignition point
-  // outward. Solid blackened interior -> brown char at the burning edge ->
-  // transparent just beyond the front. Being opaque, it reads on any page
+  // Build a radial gradient on the canvas context from stops given in *pixel*
+  // radii. Offsets are clamped to [0,1] and forced monotonic so early frames
+  // (where r is tiny and inner radii go negative) stay valid.
+  function radial(ctx, cx, cy, outer, stops) {
+    const o = Math.max(outer, 1);
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, o);
+    let prev = 0;
+    for (let i = 0; i < stops.length; i++) {
+      let off = stops[i][0] / o;
+      if (off < 0) off = 0; else if (off > 1) off = 1;
+      if (off < prev) off = prev;
+      g.addColorStop(off, stops[i][1]);
+      prev = off;
+    }
+    return g;
+  }
+
+  // Opaque charred fill that consumes the screen from the ignition point
+  // outward: solid blackened interior -> brown char at the burning edge ->
+  // transparent just beyond the front. Being opaque it reads on any page
   // (bright or dark) without relying on masking the window away.
-  function charBgStr(cx, cy, r) {
-    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
-      ' #080705 0px,' +
-      ' #080705 ' + px(r - 24) + ',' +
-      ' #0c0907 ' + px(r - 12) + ',' +
-      ' #2a1408 ' + px(r - 6) + ',' +
-      ' #5a2a0e ' + px(r) + ',' +
-      ' rgba(60,29,10,0.4) ' + px(r + 14) + ',' +
-      ' rgba(40,20,8,0) ' + px(r + 28) + ',' +
-      ' transparent 260vmax)';
+  function charStops(r) {
+    return [
+      [0, '#080705'],
+      [r - 24, '#080705'],
+      [r - 12, '#0c0907'],
+      [r - 6, '#2a1408'],
+      [r, '#5a2a0e'],
+      [r + 14, 'rgba(60,29,10,0.4)'],
+      [r + 28, 'rgba(40,20,8,0)'],
+    ];
   }
-  function emberBgStr(cx, cy, r) {
-    return 'radial-gradient(circle at ' + px(cx) + ' ' + px(cy) + ',' +
-      ' transparent ' + px(r - 42) + ', rgba(255,80,0,0) ' + px(r - 30) + ', #ff3b00 ' + px(r - 13) +
-      ', #ff9a2e ' + px(r - 4) + ', #ffeec0 ' + px(r) + ', rgba(255,150,40,0.55) ' + px(r + 9) +
-      ', rgba(255,90,0,0) ' + px(r + 24) + ', transparent 260vmax)';
-  }
-
-  // Set the static layer properties once at the start of a burn. We avoid SVG
-  // filters (animated feTurbulence rendered as sparkly noise and was flaky
-  // across GPU frames) and CSS masks (unreliable over a webview) entirely:
-  // the burn is just an opaque charred fill + a soft glowing ember edge +
-  // canvas particles, which renders identically every time.
-  function prime() {
-    const char = el('burn-char');
-    char.style.filter = 'blur(1.5px)';
-    char.style.mixBlendMode = 'normal';
-
-    const ember = el('burn-ember');
-    ember.style.filter = 'blur(2px)';
-    ember.style.mixBlendMode = 'screen';
+  // Glowing fire edge, drawn additively ('lighter') over the char fill.
+  function emberStops(r) {
+    return [
+      [0, 'rgba(255,80,0,0)'],
+      [r - 30, 'rgba(255,80,0,0)'],
+      [r - 13, '#ff3b00'],
+      [r - 4, '#ff9a2e'],
+      [r, '#ffeec0'],
+      [r + 9, 'rgba(255,150,40,0.55)'],
+      [r + 24, 'rgba(255,90,0,0)'],
+    ];
   }
 
   function trigger(originEl, onComplete) {
     if (running) return;
     running = true;
-    prime();
 
     const screen = el('screen');
     const win = el('win');
-    const ember = el('burn-ember');
-    const char = el('burn-char');
     const ignite = el('burn-ignite');
     const cv = el('burn-canvas');
 
     // bring the (normally display:none) burn layers into the compositor
-    for (const n of [char, ember, ignite, cv]) n.style.display = 'block';
+    for (const n of [ignite, cv]) n.style.display = 'block';
     // .burning darkens #view and hides any live webview so the page can't flash
     // white in the area the fire hasn't reached yet.
     if (win) win.classList.add('burning');
@@ -94,16 +102,6 @@ window.IteraBurn = (function () {
     }
     const maxR = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 90;
 
-    ember.style.opacity = '1';
-    char.style.opacity = '1';
-
-    // char/ember fill the whole screen (inset:0), so the origin is screen-space.
-    const paint = (r) => {
-      char.style.background = charBgStr(cx, cy, r);
-      ember.style.background = emberBgStr(cx, cy, r);
-    };
-    paint(0);
-
     cv.width = W * dpr; cv.height = H * dpr;
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
     const ctx = cv.getContext('2d');
@@ -123,8 +121,15 @@ window.IteraBurn = (function () {
 
     const dur = BURN_DURATION_SEC * 1000;
     const dens = EMBER_INTENSITY;
-    const t0 = performance.now();
-    let last = t0;
+    // Anchor the clock to the FIRST rAF timestamp, not performance.now(). The
+    // value passed to a rAF callback and performance.now() are meant to share a
+    // time origin, but in some Electron builds they intermittently don't — when
+    // they diverge, (now - t0) is already > the whole duration on frame one, so
+    // the burn "finished" in a single frame and the user saw an instant flash
+    // instead of an animation. Deriving both t0 and dt from the rAF clock keeps
+    // the first frame at t=0 every single time.
+    let t0 = null;
+    let last = 0;
 
     const embers = [], smoke = [], ash = [];
     const ease = (t) => Math.pow(t, 1.22);
@@ -182,15 +187,30 @@ window.IteraBurn = (function () {
     };
     const step = (now) => {
      try {
+      if (t0 === null) { t0 = now; last = now; }
       const dt = Math.min((now - last) / 1000, 0.05); last = now;
       const tRaw = (now - t0) / dur;
       const t = Math.min(tRaw, 1);
       const r = ease(t) * maxR;
-      paint(r);
+      // optional, production-inert instrumentation: the crash-test harness sets
+      // window.__burnFrame to record per-frame progress (never set in the app).
+      if (typeof window.__burnFrame === 'function') { try { window.__burnFrame(t, r, maxR); } catch (_) {} }
 
       if (tRaw < 1) spawn(r);
 
       ctx.clearRect(0, 0, W, H);
+
+      // 1) opaque charred fill — grows from the ignition point every frame.
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = radial(ctx, cx, cy, r + 28, charStops(r));
+      ctx.fillRect(0, 0, W, H);
+
+      // 2) glowing fire edge, added on top.
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = radial(ctx, cx, cy, r + 24, emberStops(r));
+      ctx.fillRect(0, 0, W, H);
+
+      // 3) smoke (soft dark puffs rising off the front).
       ctx.globalCompositeOperation = 'source-over';
       for (let i = smoke.length - 1; i >= 0; i--) {
         const p = smoke[i];
@@ -203,6 +223,7 @@ window.IteraBurn = (function () {
         ctx.fillStyle = g;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, 6.2832); ctx.fill();
       }
+      // 4) ash flakes (tumbling charred bits).
       for (let i = ash.length - 1; i >= 0; i--) {
         const p = ash[i];
         p.life -= dt; if (p.life <= 0) { ash.splice(i, 1); continue; }
@@ -217,6 +238,7 @@ window.IteraBurn = (function () {
         ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.68);
         ctx.restore();
       }
+      // 5) embers (bright sparks, added).
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'lighter';
       for (let i = embers.length - 1; i >= 0; i--) {
@@ -235,8 +257,13 @@ window.IteraBurn = (function () {
         ctx.fillStyle = g;
         ctx.beginPath(); ctx.arc(p.x, p.y, s * 3, 0, 6.2832); ctx.fill();
       }
+      ctx.globalCompositeOperation = 'source-over';
 
-      const done = tRaw >= 1.05 && embers.length < 4 && smoke.length < 2;
+      // Finish as soon as the fire front has covered the whole screen. The
+      // screen is fully charred (opaque black) by now, so lingering particles
+      // add nothing visible — waiting for them to drain made the finish time
+      // (and thus the exit) drift unpredictably between ~3.4s and ~6s.
+      const done = tRaw >= 1.05;
       if (!done) {
         raf = requestAnimationFrame(step);
       } else {
