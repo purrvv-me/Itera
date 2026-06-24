@@ -67,6 +67,58 @@
   closeBtn.addEventListener('click', () => endSession(closeBtn, () => window.itera.close()));
   killBtn.addEventListener('click', () => endSession(killBtn, () => window.itera.killSession()));
 
+  // --- session identity chip ----------------------------------------------
+  // Surfaces, during the session, the disposable disguise ITERA is already
+  // wearing: the randomized Chrome UA + how long this throwaway identity has
+  // been alive. Makes "you're dissolved in the crowd" felt, not just claimed.
+  (function identity() {
+    const chip = document.getElementById('identity');
+    const card = document.getElementById('identity-card');
+    const chipDisguise = document.getElementById('id-disguise');
+    const cardDisguise = document.getElementById('idc-disguise');
+    const cardBorn = document.getElementById('idc-born');
+    const cardAge = document.getElementById('idc-age');
+    const cardKill = document.getElementById('idc-kill');
+
+    // decode the real user agent into a human-readable disguise
+    const ua = cfg.userAgent || '';
+    const m = /Chrome\/(\d+)/.exec(ua);
+    const chrome = m ? 'Chrome ' + m[1] : 'Chrome';
+    const os = /Windows NT 10/.test(ua) ? 'Windows 10' : (/Windows/.test(ua) ? 'Windows' : 'Windows');
+    chipDisguise.textContent = chrome;
+    cardDisguise.textContent = chrome + ' · ' + os;
+
+    const bornMs = cfg.sessionStart || Date.now();
+    const born = new Date(bornMs);
+    const pad = (n) => String(n).padStart(2, '0');
+    cardBorn.textContent = pad(born.getHours()) + ':' + pad(born.getMinutes());
+
+    const ageStr = (ms) => {
+      const s = Math.floor(ms / 1000);
+      if (s < 60) return s + 's';
+      const mi = Math.floor(s / 60);
+      if (mi < 60) return mi + 'm';
+      const h = Math.floor(mi / 60);
+      return h + 'h ' + (mi % 60) + 'm';
+    };
+    let ageTimer = null;
+    const tickAge = () => { cardAge.textContent = ageStr(Date.now() - bornMs); };
+
+    const setOpen = (open) => {
+      card.classList.toggle('hidden', !open);
+      chip.classList.toggle('open', open);
+      chip.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) { tickAge(); ageTimer = setInterval(tickAge, 1000); }
+      else if (ageTimer) { clearInterval(ageTimer); ageTimer = null; }
+    };
+
+    chip.addEventListener('click', (e) => { e.stopPropagation(); setOpen(card.classList.contains('hidden')); });
+    card.addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('click', () => { if (!card.classList.contains('hidden')) setOpen(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+    cardKill.addEventListener('click', () => { setOpen(false); endSession(cardKill, () => window.itera.killSession()); });
+  })();
+
   // --- omnibox focus styling ----------------------------------------------
   address.addEventListener('focus', () => { addressForm.classList.add('focus'); address.select(); });
   address.addEventListener('blur', () => addressForm.classList.remove('focus'));

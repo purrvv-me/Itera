@@ -65,10 +65,35 @@
       <input id="address" type="text" spellcheck="false" autocomplete="off" placeholder="Search or enter address" />
     </form>
 
+    <!-- who you are *right now*: the disposable identity ITERA is wearing -->
+    <button id="identity" class="identity" aria-haspopup="dialog" aria-expanded="false"
+            title="Your disposable identity this session">
+      <svg class="id-mask" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8.2" r="3.6" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M5 20c0-3.9 3.1-6.4 7-6.4s7 2.5 7 6.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      </svg>
+      <span class="id-text"><b>Anonymous</b><i id="id-disguise">Chrome</i></span>
+      <svg class="id-caret" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
     <button id="kill-session" class="kill" title="Wipe this session now and erase everything (same as closing)">
       <svg class="fl" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2c4 4 5.5 7 5.5 10A6.5 6.5 0 0 1 6 12.5c0-1 .3-1.9.7-2.8.6 1.5 1.8 2.2 2.9 2.3C8.8 8.5 10.4 5 13 2Z"/></svg>
       <span>Kill session</span>
     </button>
+  </div>
+
+  <!-- session-identity card (opened from the chip) -->
+  <div id="identity-card" class="hidden" role="dialog" aria-label="This session's identity">
+    <div class="idc-head"><span class="idc-dot"></span>Anonymous this session</div>
+    <div class="idc-rows">
+      <div class="idc-row"><span>Disguise</span><b id="idc-disguise">—</b></div>
+      <div class="idc-row"><span>Born</span><b id="idc-born">—</b></div>
+      <div class="idc-row"><span>Age</span><b id="idc-age">—</b></div>
+      <div class="idc-row"><span>Cookies &amp; history</span><b>this session only</b></div>
+    </div>
+    <p class="idc-note">Your fingerprint is the web's most common — you blend in with millions of Chrome-on-Windows users. Nothing here points back to you.</p>
+    <p class="idc-die">Everything burns the moment you close.</p>
+    <button id="idc-kill" class="idc-kill" type="button">Kill session now</button>
   </div>
 
   <!-- ======================== Web content ======================== -->

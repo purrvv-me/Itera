@@ -196,6 +196,53 @@ button{font-family:inherit;}
 .kill .fl{transform-origin:50% 90%;animation:flick 1s ease-in-out infinite;}
 @keyframes flick{0%,100%{transform:scaleY(1) translateY(0);}50%{transform:scaleY(1.18) translateY(-1px);}}
 
+/* ===================== Session identity chip ==================== */
+.identity{
+  flex:none;display:flex;align-items:center;gap:8px;
+  height:38px;padding:0 10px 0 11px;border-radius:11px;cursor:pointer;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.03);
+  color:var(--grey);transition:background .16s,border-color .16s,color .16s;
+}
+.identity:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.2);color:var(--ink);}
+.identity.open{background:rgba(255,138,30,.10);border-color:rgba(255,138,30,.45);color:var(--ink);}
+.identity .id-mask{width:17px;height:17px;flex:none;color:#3fae6e;}
+.identity .id-text{display:flex;flex-direction:column;line-height:1.05;text-align:left;min-width:0;}
+.identity .id-text b{font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:.01em;}
+.identity .id-text i{font-size:10.5px;font-style:normal;color:var(--grey);white-space:nowrap;}
+.identity .id-caret{width:13px;height:13px;flex:none;opacity:.7;transition:transform .18s var(--ease);}
+.identity.open .id-caret{transform:rotate(180deg);}
+@media (max-width:880px){ .identity .id-text{display:none;} .identity{padding:0 8px;} }
+
+/* ===================== Session identity card ==================== */
+#identity-card{
+  position:absolute;top:104px;right:12px;width:312px;z-index:40;
+  background:#141318;border:1px solid var(--line-2);border-radius:15px;
+  padding:16px 16px 15px;color:var(--ink);
+  box-shadow:0 18px 50px -12px rgba(0,0,0,.7), 0 0 0 1px rgba(255,138,30,.08);
+  animation:idcIn .16s var(--ease);
+}
+@keyframes idcIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:none;}}
+.idc-head{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;margin-bottom:13px;}
+.idc-dot{width:8px;height:8px;border-radius:50%;background:#3fae6e;box-shadow:0 0 0 0 rgba(63,174,110,.5);animation:idcPulse 2.4s ease-out infinite;}
+@keyframes idcPulse{0%{box-shadow:0 0 0 0 rgba(63,174,110,.45);}70%,100%{box-shadow:0 0 0 7px rgba(63,174,110,0);}}
+.idc-rows{display:flex;flex-direction:column;gap:9px;}
+.idc-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:13px;}
+.idc-row>span{color:var(--grey);flex:none;}
+.idc-row>b{font-weight:600;color:var(--ink);text-align:right;}
+.idc-note{margin:14px 0 0;font-size:12px;line-height:1.5;color:var(--grey);}
+.idc-die{margin:10px 0 14px;font-size:12.5px;font-weight:600;font-style:italic;
+  font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;
+  color:var(--accent-2);}
+.idc-kill{
+  width:100%;height:40px;border:none;border-radius:11px;cursor:pointer;
+  font-size:13.5px;font-weight:700;color:#1a0d00;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow:0 6px 18px -8px rgba(255,106,0,.6), inset 0 1px 0 rgba(255,255,255,.35);
+  transition:transform .12s var(--ease),filter .15s;
+}
+.idc-kill:hover{filter:brightness(1.06);}
+.idc-kill:active{transform:scale(.97);}
+
 /* ============================ Viewport =========================== */
 #view{position:relative;flex:1;background:#fff;min-height:0;}
 #view webview{position:absolute;inset:0;width:100%;height:100%;display:none;}

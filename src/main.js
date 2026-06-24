@@ -20,6 +20,7 @@ const partitionName = `persist:itera-${sessionId}`; // persisted => real files o
 const partitionDir = `itera-${sessionId}`;          // folder name under Partitions/
 
 const userAgent = randomUserAgent();
+const sessionStart = Date.now(); // when this disposable identity was born
 
 let mainWindow = null;
 let cleaningUp = false;
@@ -139,7 +140,7 @@ app.on('web-contents-created', (_e, contents) => {
 // ---------------------------------------------------------------------------
 // IPC: window controls + config for the renderer.
 // ---------------------------------------------------------------------------
-ipcMain.handle('itera:config', () => ({ partition: partitionName, userAgent }));
+ipcMain.handle('itera:config', () => ({ partition: partitionName, userAgent, sessionStart }));
 ipcMain.on('itera:minimize', () => mainWindow && mainWindow.minimize());
 ipcMain.on('itera:toggle-maximize', () => {
   if (!mainWindow) return;
