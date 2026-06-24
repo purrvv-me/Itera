@@ -45,16 +45,8 @@ button{font-family:inherit;}
 #win.burning{transition:opacity .4s ease;}
 #win.burning #view{background:var(--bg);}
 #win.burning #view webview{visibility:hidden;}
-/* Burn overlays are display:none while idle so they never composite over the
-   live page; burn.js turns them on only for the kill animation. */
-#burn-char{display:none;position:absolute;inset:0;pointer-events:none;opacity:0;z-index:4;}
-#burn-ember{display:none;position:absolute;inset:0;pointer-events:none;opacity:0;z-index:5;}
-#burn-ignite{
-  display:none;position:absolute;width:340px;height:340px;left:0;top:0;
-  transform:translate(-50%,-50%) scale(.2);border-radius:50%;
-  pointer-events:none;opacity:0;z-index:6;mix-blend-mode:screen;
-  background:radial-gradient(circle, rgba(255,230,150,.95) 0%, rgba(255,130,0,.6) 35%, rgba(255,60,0,0) 70%);
-}
+/* The burn canvas is display:none while idle so it never composites over the
+   live page; burn.js turns it on only for the kill animation. */
 #burn-canvas{display:none;position:absolute;inset:0;pointer-events:none;z-index:7;}
 
 /* ================= Paper bookmark tabs (functional) ================= */
