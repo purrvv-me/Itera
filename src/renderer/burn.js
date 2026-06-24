@@ -22,36 +22,18 @@
  */
 window.IteraBurn = (function () {
   const BURN_DURATION_SEC = 2.6;   // spread time after the ignition beat
-  const IGN_MS = 440;              // the "lighter touches the sheet" beat
+  const IGN_MS = 440;              // the "lighter touches the UI" beat
   const EMBER_DENSITY = 1;
-  const PAPER_COLOR = '#efe6cf';
 
   let running = false;
 
   function el(id) { return document.getElementById(id); }
 
-  // Build the cream paper sheet and the charred ash that sits behind it. Both
-  // are pre-rendered once per burn onto offscreen canvases sized to the screen.
-  function buildLayers(W, H, dpr) {
-    // --- cream paper with subtle fibres + vignette ---
-    const p = document.createElement('canvas');
-    p.width = Math.round(W * dpr); p.height = Math.round(H * dpr);
-    const c = p.getContext('2d');
-    c.setTransform(dpr, 0, 0, dpr, 0, 0);
-    c.fillStyle = PAPER_COLOR;
-    c.fillRect(0, 0, W, H);
-    const fibres = Math.min(3000, Math.round(W * H / 520));
-    for (let i = 0; i < fibres; i++) {
-      const x = Math.random() * W, y = Math.random() * H;
-      c.fillStyle = Math.random() < 0.5 ? 'rgba(120,100,60,0.05)' : 'rgba(255,250,236,0.06)';
-      c.fillRect(x, y, 1.4, 1.4);
-    }
-    const g = c.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, 'rgba(255,250,236,0.10)');
-    g.addColorStop(1, 'rgba(120,95,55,0.12)');
-    c.fillStyle = g; c.fillRect(0, 0, W, H);
-
-    // --- charred ash revealed as the paper burns away ---
+  // Build the charred-ash texture that the burnt region is filled with. The
+  // "paper" being burned is the app's own UI itself (the live DOM showing
+  // through the transparent, un-burnt part of the canvas), so we don't draw a
+  // synthetic sheet — only the char that's left behind where the fire passed.
+  function buildChar(W, H, dpr) {
     const ch = document.createElement('canvas');
     ch.width = Math.round(W * dpr); ch.height = Math.round(H * dpr);
     const k = ch.getContext('2d');
@@ -75,7 +57,7 @@ window.IteraBurn = (function () {
       k.fillStyle = 'rgba(126,118,108,' + (0.04 + Math.random() * 0.08) + ')';
       k.fillRect(x, y, 1.6, 1.6);
     }
-    return { paper: p, char: ch };
+    return ch;
   }
 
   function trigger(originEl, onComplete) {
@@ -87,7 +69,9 @@ window.IteraBurn = (function () {
     const cv = el('burn-canvas');
 
     cv.style.display = 'block';
-    // .burning hides any live webview so the page can't show through the paper.
+    // .burning hides the live <webview> (a GPU surface that could otherwise
+    // paint over the canvas); the page area falls back to #view's dark bg while
+    // the rest of the real chrome stays visible and burns.
     if (win) win.classList.add('burning');
 
     // Robust dimensions: fall back to the viewport if layout isn't measured yet.
@@ -137,7 +121,7 @@ window.IteraBurn = (function () {
     };
     const frontPath = (ctx, rFront, time) => { ctx.beginPath(); addFront(ctx, rFront, time); };
 
-    const { paper, char } = buildLayers(W, H, dpr);
+    const char = buildChar(W, H, dpr);
 
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     cv.style.width = W + 'px'; cv.style.height = H + 'px';
@@ -191,24 +175,31 @@ window.IteraBurn = (function () {
       if (typeof window.__burnFrame === 'function') { try { window.__burnFrame(tRaw, rFront, maxR); } catch (_) {} }
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      // Start fully transparent: the app's own UI (the live DOM beneath the
+      // canvas) shows through the un-burnt region. We only paint char + fire
+      // *inside* the front, so the fire eats the real interface — no synthetic
+      // paper sheet is drawn over it.
       ctx.clearRect(0, 0, W, H);
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
       ctx.lineJoin = 'round';
 
-      // void / charred ash behind everything
+      // charred ash fills only the BURNT region (inside the ragged front)
+      ctx.save();
+      frontPath(ctx, rFront, time);
+      ctx.clip();
       ctx.fillStyle = '#0a0807';
       ctx.fillRect(0, 0, W, H);
       ctx.drawImage(char, 0, 0, W, H);
+      ctx.restore();
 
-      // paper on top, clipped to the UNBURNT region (outside the front)
+      // scorch / browning of the UI just AHEAD of the flame (un-burnt side),
+      // clipped so it darkens the interface that hasn't caught yet, not the char
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(0, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
       addFront(ctx, rFront, time);
       ctx.clip('evenodd');
-      ctx.drawImage(paper, 0, 0, W, H);
-      // scorch / browning just ahead of the flame (paper side only)
       frontPath(ctx, rFront, time);
       ctx.lineWidth = 60; ctx.strokeStyle = 'rgba(120,72,28,0.22)'; ctx.stroke();
       frontPath(ctx, rFront, time);
