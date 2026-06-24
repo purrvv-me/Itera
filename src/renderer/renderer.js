@@ -72,9 +72,8 @@
   // wearing: the randomized Chrome UA + how long this throwaway identity has
   // been alive. Makes "you're dissolved in the crowd" felt, not just claimed.
   (function identity() {
-    const chip = document.getElementById('identity');
+    const chip = document.getElementById('identity'); // the security shield
     const card = document.getElementById('identity-card');
-    const chipDisguise = document.getElementById('id-disguise');
     const cardDisguise = document.getElementById('idc-disguise');
     const cardBorn = document.getElementById('idc-born');
     const cardAge = document.getElementById('idc-age');
@@ -85,7 +84,6 @@
     const m = /Chrome\/(\d+)/.exec(ua);
     const chrome = m ? 'Chrome ' + m[1] : 'Chrome';
     const os = /Windows NT 10/.test(ua) ? 'Windows 10' : (/Windows/.test(ua) ? 'Windows' : 'Windows');
-    chipDisguise.textContent = chrome;
     cardDisguise.textContent = chrome + ' · ' + os;
 
     const bornMs = cfg.sessionStart || Date.now();

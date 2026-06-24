@@ -173,7 +173,15 @@ button{font-family:inherit;}
 }
 .omni:hover{border-color:rgba(255,255,255,.2);}
 .omni.focus{border-color:rgba(255,138,30,.55);box-shadow:0 0 0 3px rgba(255,106,0,.12);background:#0e0e11;}
-.shield{flex:none;display:flex;align-items:center;color:#3fae6e;}
+/* the security shield doubles as the session-identity button */
+.shield{
+  flex:none;display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;margin-left:-4px;border:none;border-radius:8px;padding:0;
+  background:transparent;color:#3fae6e;cursor:pointer;
+  transition:background .15s,color .15s,box-shadow .15s;
+}
+.shield:hover{background:rgba(63,174,110,.14);}
+.shield.open{background:rgba(63,174,110,.18);box-shadow:0 0 0 1px rgba(63,174,110,.4);}
 .shield svg{width:16px;height:16px;}
 #address{
   flex:1;min-width:0;height:100%;border:none;background:transparent;outline:none;
@@ -196,26 +204,10 @@ button{font-family:inherit;}
 .kill .fl{transform-origin:50% 90%;animation:flick 1s ease-in-out infinite;}
 @keyframes flick{0%,100%{transform:scaleY(1) translateY(0);}50%{transform:scaleY(1.18) translateY(-1px);}}
 
-/* ===================== Session identity chip ==================== */
-.identity{
-  flex:none;display:flex;align-items:center;gap:8px;
-  height:38px;padding:0 10px 0 11px;border-radius:11px;cursor:pointer;
-  border:1px solid var(--line-2);background:rgba(255,255,255,.03);
-  color:var(--grey);transition:background .16s,border-color .16s,color .16s;
-}
-.identity:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.2);color:var(--ink);}
-.identity.open{background:rgba(255,138,30,.10);border-color:rgba(255,138,30,.45);color:var(--ink);}
-.identity .id-mask{width:17px;height:17px;flex:none;color:#3fae6e;}
-.identity .id-text{display:flex;flex-direction:column;line-height:1.05;text-align:left;min-width:0;}
-.identity .id-text b{font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:.01em;}
-.identity .id-text i{font-size:10.5px;font-style:normal;color:var(--grey);white-space:nowrap;}
-.identity .id-caret{width:13px;height:13px;flex:none;opacity:.7;transition:transform .18s var(--ease);}
-.identity.open .id-caret{transform:rotate(180deg);}
-@media (max-width:880px){ .identity .id-text{display:none;} .identity{padding:0 8px;} }
-
 /* ===================== Session identity card ==================== */
 #identity-card{
-  position:absolute;top:104px;right:12px;width:312px;z-index:40;
+  position:absolute;top:104px;left:134px;width:312px;z-index:40;
+  transform-origin:top left;
   background:#141318;border:1px solid var(--line-2);border-radius:15px;
   padding:16px 16px 15px;color:var(--ink);
   box-shadow:0 18px 50px -12px rgba(0,0,0,.7), 0 0 0 1px rgba(255,138,30,.08);
