@@ -155,9 +155,11 @@ window.IteraBurn = (function () {
     let t0 = null, last = null;
 
     let completed = false;
-    const complete = () => {
+    let endT = 0;
+    const complete = (ts) => {
       if (completed) return;
       completed = true;
+      endT = ts || performance.now();
       if (typeof onComplete === 'function') onComplete();
     };
 
@@ -361,10 +363,14 @@ window.IteraBurn = (function () {
       ctx.globalCompositeOperation = 'source-over';
 
       // deterministic completion the moment the front covers the screen.
-      if (tRaw >= 1) complete();
+      if (tRaw >= 1) complete(ts);
 
+      // after completion, let particles fade for a capped window (1.6s) and
+      // then stop — never drain indefinitely. The screen is full char by now,
+      // so a lingering tail adds nothing and just burns CPU before the quit.
       const left = sparks.length + smoke.length + ash.length;
-      if (igniting || tRaw < 1 || left > 0) {
+      const fading = completed && (ts - endT) < 1600 && left > 0;
+      if (!completed || fading) {
         raf = requestAnimationFrame(frame);
       }
       // else: stop. The last frame is full char — the sheet is gone.
