@@ -141,8 +141,14 @@
   function syncNav() {
     const t = tabs.get(activeId);
     const wv = t && t.webview;
-    backBtn.disabled = !(wv && !t.blank && wv.canGoBack());
-    forwardBtn.disabled = !(wv && !t.blank && wv.canGoForward());
+    let back = false, fwd = false;
+    // canGoBack/canGoForward throw if the webview isn't dom-ready yet (e.g. the
+    // setActive right after a fresh navigation). Treat "not ready" as no history.
+    if (wv && !t.blank) {
+      try { back = wv.canGoBack(); fwd = wv.canGoForward(); } catch (_) {}
+    }
+    backBtn.disabled = !back;
+    forwardBtn.disabled = !fwd;
   }
 
   function setActive(id) {
@@ -301,19 +307,22 @@
     address.blur();
   });
 
+  // webview navigation methods throw if called before the guest is dom-ready;
+  // wrap them so an early click/shortcut can never raise an uncaught error.
   backBtn.addEventListener('click', () => {
     const t = tabs.get(activeId);
-    if (t && t.webview && t.webview.canGoBack()) t.webview.goBack();
+    if (!t || !t.webview) return;
+    try { if (t.webview.canGoBack()) t.webview.goBack(); } catch (_) {}
   });
   forwardBtn.addEventListener('click', () => {
     const t = tabs.get(activeId);
-    if (t && t.webview && t.webview.canGoForward()) t.webview.goForward();
+    if (!t || !t.webview) return;
+    try { if (t.webview.canGoForward()) t.webview.goForward(); } catch (_) {}
   });
   reloadBtn.addEventListener('click', () => {
     const t = tabs.get(activeId);
     if (!t || !t.webview) return;
-    if (reloadBtn.classList.contains('loading')) t.webview.stop();
-    else t.webview.reload();
+    try { if (reloadBtn.classList.contains('loading')) t.webview.stop(); else t.webview.reload(); } catch (_) {}
   });
 
   // ======================================================================
@@ -382,8 +391,8 @@
         else { address.focus(); address.select(); }
         break;
       }
-      case 'reload': { const w = activeWebview(); if (w) w.reload(); break; }
-      case 'hardReload': { const w = activeWebview(); if (w) w.reloadIgnoringCache(); break; }
+      case 'reload': { const w = activeWebview(); if (w) { try { w.reload(); } catch (_) {} } break; }
+      case 'hardReload': { const w = activeWebview(); if (w) { try { w.reloadIgnoringCache(); } catch (_) {} } break; }
       case 'find': openFind(); break;
       case 'findNext': doFind(findInput.value, true, true); break;
       case 'findPrev': doFind(findInput.value, false, true); break;
