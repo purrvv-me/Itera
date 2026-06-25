@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 const { spawn } = require('child_process');
+const { pathToFileURL } = require('url');
 
 // ---------------------------------------------------------------------------
 // Fresh identity, every launch.
@@ -21,6 +22,8 @@ const partitionDir = `itera-${sessionId}`;          // folder name under Partiti
 
 const userAgent = randomUserAgent();
 const sessionStart = Date.now(); // when this disposable identity was born
+const fingerprint = randomFingerprint();
+const fpPreload = pathToFileURL(path.join(__dirname, 'fingerprint.js')).href;
 
 let mainWindow = null;
 let cleaningUp = false;
@@ -42,6 +45,51 @@ function randomUserAgent() {
     `Mozilla/5.0 (${platform}) AppleWebKit/537.36 (KHTML, like Gecko) ` +
     `Chrome/${chromeMajor}.0.${build}.${patch} Safari/537.36`
   );
+}
+
+// ---------------------------------------------------------------------------
+// A per-launch fingerprint profile (consistent within the session, fresh each
+// launch) used by the anti-fingerprint shim injected into every webview.
+// ---------------------------------------------------------------------------
+function randomFingerprint() {
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const gpu = pick([
+    ['Google Inc. (Intel)',  'ANGLE (Intel, Intel(R) UHD Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)'],
+    ['Google Inc. (NVIDIA)', 'ANGLE (NVIDIA, NVIDIA GeForce GTX 1660 Direct3D11 vs_5_0 ps_5_0, D3D11)'],
+    ['Google Inc. (NVIDIA)', 'ANGLE (NVIDIA, NVIDIA GeForce RTX 3060 Direct3D11 vs_5_0 ps_5_0, D3D11)'],
+    ['Google Inc. (AMD)',    'ANGLE (AMD, AMD Radeon(TM) Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)'],
+  ]);
+  return {
+    seed: (Math.random() * 0xffffffff) >>> 0,
+    platform: 'Win32',
+    languages: ['en-US', 'en'],
+    hardwareConcurrency: pick([4, 8, 8, 12, 16]),
+    deviceMemory: pick([8, 8, 16]),
+    webglVendor: gpu[0],
+    webglRenderer: gpu[1],
+  };
+}
+
+// Map a low-level key event to an ITERA shortcut action (shared by the renderer
+// chrome and by webview guests via before-input-event).
+function shortcutAction(input) {
+  if (input.type !== 'keyDown') return null;
+  const ctrl = input.control || input.meta;
+  const key = (input.key || '').toLowerCase();
+  if (key === 'f5') return input.control ? 'hardReload' : 'reload';
+  if (key === 'f3') return input.shift ? 'findPrev' : 'findNext';
+  if (!ctrl) return null;
+  if (key === 't') return 'newTab';
+  if (key === 'w') return 'closeTab';
+  if (key === 'l') return 'focusAddress';
+  if (key === 'r') return input.shift ? 'hardReload' : 'reload';
+  if (key === 'f') return 'find';
+  if (key === 'tab') return input.shift ? 'prevTab' : 'nextTab';
+  if (key === '=' || key === '+') return 'zoomIn';
+  if (key === '-' || key === '_') return 'zoomOut';
+  if (key === '0') return 'zoomReset';
+  if (key.length === 1 && key >= '1' && key <= '9') return 'tab:' + key;
+  return null;
 }
 
 function partitionsRoot() {
@@ -124,6 +172,18 @@ function createWindow() {
 app.on('web-contents-created', (_e, contents) => {
   if (contents.getType() === 'webview') {
     contents.setUserAgent(userAgent);
+    // Stop WebRTC from enumerating local network interfaces (the classic
+    // "WebRTC leak" that exposes LAN IPs even behind the page's public IP).
+    try { contents.setWebRTCIPHandlingPolicy('default_public_interface_only'); } catch (_) {}
+    // Browser keyboard shortcuts must work even while the page has focus, so we
+    // intercept them at the guest and forward the action to the renderer chrome.
+    contents.on('before-input-event', (event, input) => {
+      const action = shortcutAction(input);
+      if (action) {
+        event.preventDefault();
+        if (mainWindow) mainWindow.webContents.send('itera:shortcut', action);
+      }
+    });
     // A link/script opening a new window becomes a new tab in the renderer.
     contents.setWindowOpenHandler(({ url, disposition }) => {
       if (mainWindow && url) {
@@ -140,7 +200,10 @@ app.on('web-contents-created', (_e, contents) => {
 // ---------------------------------------------------------------------------
 // IPC: window controls + config for the renderer.
 // ---------------------------------------------------------------------------
-ipcMain.handle('itera:config', () => ({ partition: partitionName, userAgent, sessionStart }));
+ipcMain.handle('itera:config', () => ({ partition: partitionName, userAgent, sessionStart, fpPreload }));
+// Synchronous so the anti-fingerprint shim can read the profile before any page
+// script runs in the guest.
+ipcMain.on('itera:fingerprint', (e) => { e.returnValue = fingerprint; });
 ipcMain.on('itera:minimize', () => mainWindow && mainWindow.minimize());
 ipcMain.on('itera:toggle-maximize', () => {
   if (!mainWindow) return;

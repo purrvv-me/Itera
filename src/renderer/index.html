@@ -80,14 +80,30 @@
       <div class="idc-row"><span>Born</span><b id="idc-born">—</b></div>
       <div class="idc-row"><span>Age</span><b id="idc-age">—</b></div>
       <div class="idc-row"><span>Cookies &amp; history</span><b>this session only</b></div>
+      <div class="idc-row"><span>Fingerprint</span><b>randomized &amp; masked</b></div>
+      <div class="idc-row"><span>Network IP</span><b class="idc-warn">visible · no VPN</b></div>
     </div>
-    <p class="idc-note">Your fingerprint is the web's most common — you blend in with millions of Chrome-on-Windows users. Nothing here points back to you.</p>
+    <p class="idc-note">A fresh disguise every launch: randomized fingerprint (canvas, WebGL, audio), no cookies or history kept, WebRTC local-IP leak blocked. ITERA isn't a VPN — your network address is still visible to the sites you open.</p>
     <p class="idc-die">Everything burns the moment you close.</p>
     <button id="idc-kill" class="idc-kill" type="button">Kill session now</button>
   </div>
 
   <!-- ======================== Web content ======================== -->
   <div id="view">
+    <!-- find-in-page bar (Ctrl+F) -->
+    <div id="findbar" class="hidden">
+      <input id="find-input" type="text" spellcheck="false" autocomplete="off" placeholder="Find on page" />
+      <span id="find-count" class="find-count"></span>
+      <button id="find-prev" class="find-btn" title="Previous (Shift+Enter)" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="find-next" class="find-btn" title="Next (Enter)" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="find-close" class="find-btn" title="Close (Esc)" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
     <!-- new-tab / home page (shown when the active tab has nothing loaded yet) -->
     <div id="newtab" class="hidden">
       <img class="nt-logo" src="assets/match.png" alt="" />

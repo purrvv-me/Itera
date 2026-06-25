@@ -221,6 +221,7 @@ button{font-family:inherit;}
 .idc-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:13px;}
 .idc-row>span{color:var(--grey);flex:none;}
 .idc-row>b{font-weight:600;color:var(--ink);text-align:right;}
+.idc-row>b.idc-warn{color:var(--accent-2);}
 .idc-note{margin:14px 0 0;font-size:12px;line-height:1.5;color:var(--grey);}
 .idc-die{margin:10px 0 14px;font-size:12.5px;font-weight:600;font-style:italic;
   font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;
@@ -234,6 +235,29 @@ button{font-family:inherit;}
 }
 .idc-kill:hover{filter:brightness(1.06);}
 .idc-kill:active{transform:scale(.97);}
+
+/* ===================== Find in page (Ctrl+F) ===================== */
+#findbar{
+  position:absolute;top:10px;right:16px;z-index:30;
+  display:flex;align-items:center;gap:6px;
+  padding:6px 8px 6px 12px;border-radius:12px;
+  background:#15151a;border:1px solid var(--line-2);
+  box-shadow:0 12px 34px -10px rgba(0,0,0,.7);
+}
+#find-input{
+  width:200px;height:28px;border:none;background:transparent;outline:none;
+  color:var(--ink);font-size:13.5px;user-select:text;
+}
+#find-input::placeholder{color:var(--grey-dim);}
+.find-count{font-size:12px;color:var(--grey);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;}
+.find-btn{
+  width:28px;height:28px;flex:none;border:none;border-radius:8px;background:transparent;padding:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--grey);cursor:pointer;transition:background .15s,color .15s;
+}
+.find-btn:hover{background:rgba(255,255,255,.08);color:var(--ink);}
+.find-btn svg{width:16px;height:16px;}
+#find-close:hover{background:#e5484d;color:#fff;}
 
 /* ============================ Viewport =========================== */
 #view{position:relative;flex:1;background:#fff;min-height:0;}

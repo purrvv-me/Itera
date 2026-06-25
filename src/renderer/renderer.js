@@ -210,10 +210,20 @@
     wv.setAttribute('partition', cfg.partition);
     wv.setAttribute('useragent', cfg.userAgent);
     wv.setAttribute('allowpopups', 'true');
+    // anti-fingerprint shim, injected into the guest's main world before its
+    // own scripts run (needs contextIsolation off to patch page globals).
+    if (cfg.fpPreload) {
+      wv.setAttribute('preload', cfg.fpPreload);
+      wv.setAttribute('webpreferences', 'contextIsolation=no, sandbox=no, nodeIntegration=no');
+    }
     viewHost.appendChild(wv);
     t.webview = wv;
 
     wv.addEventListener('dom-ready', () => { wv.insertCSS(BLOCK_CSS).catch(() => {}); });
+    wv.addEventListener('found-in-page', (e) => {
+      if (activeId !== t.id || !e.result) return;
+      findCount.textContent = e.result.matches ? (e.result.activeMatchOrdinal + '/' + e.result.matches) : '0/0';
+    });
     wv.addEventListener('page-title-updated', (e) => setTitle(t, e.title));
     wv.addEventListener('page-favicon-updated', (e) => {
       const ic = e.favicons && e.favicons[0];
@@ -305,6 +315,117 @@
     if (reloadBtn.classList.contains('loading')) t.webview.stop();
     else t.webview.reload();
   });
+
+  // ======================================================================
+  //  Find in page
+  // ======================================================================
+  const findbar = document.getElementById('findbar');
+  const findInput = document.getElementById('find-input');
+  const findCount = document.getElementById('find-count');
+
+  function activeWebview() {
+    const t = tabs.get(activeId);
+    return t && t.webview && !t.blank ? t.webview : null;
+  }
+  function openFind() {
+    if (!activeWebview()) return;
+    findbar.classList.remove('hidden');
+    findInput.focus(); findInput.select();
+    if (findInput.value) doFind(findInput.value, true, false);
+  }
+  function closeFind() {
+    findbar.classList.add('hidden');
+    findCount.textContent = '';
+    const wv = activeWebview();
+    if (wv) { try { wv.stopFindInPage('clearSelection'); } catch (_) {} }
+  }
+  function doFind(text, forward, findNext) {
+    const wv = activeWebview();
+    if (!wv || !text) { findCount.textContent = ''; return; }
+    try { wv.findInPage(text, { forward, findNext }); } catch (_) {}
+  }
+  findInput.addEventListener('input', () => {
+    if (findInput.value) doFind(findInput.value, true, false);
+    else { findCount.textContent = ''; const wv = activeWebview(); if (wv) { try { wv.stopFindInPage('clearSelection'); } catch (_) {} } }
+  });
+  findInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); doFind(findInput.value, !e.shiftKey, true); }
+    else if (e.key === 'Escape') { e.preventDefault(); closeFind(); }
+  });
+  document.getElementById('find-prev').addEventListener('click', () => doFind(findInput.value, false, true));
+  document.getElementById('find-next').addEventListener('click', () => doFind(findInput.value, true, true));
+  document.getElementById('find-close').addEventListener('click', () => closeFind());
+
+  // ======================================================================
+  //  Keyboard shortcuts
+  // ======================================================================
+  function cycleTab(dir) {
+    const ids = [...tabs.keys()];
+    if (ids.length < 2) return;
+    const i = ids.indexOf(activeId);
+    setActive(ids[(i + dir + ids.length) % ids.length]);
+  }
+  function zoomActive(delta) {
+    const t = tabs.get(activeId);
+    if (!t || !t.webview) return;
+    t.zoom = delta === 0 ? 0 : Math.max(-3, Math.min(4.5, (t.zoom || 0) + delta));
+    try { t.webview.setZoomLevel(t.zoom); } catch (_) {}
+  }
+  function handleShortcut(action) {
+    if (!action) return;
+    switch (action) {
+      case 'newTab': createTab(); break;
+      case 'closeTab': closeTab(activeId); break;
+      case 'focusAddress': {
+        const t = tabs.get(activeId);
+        if (t && t.blank) newtabInput.focus();
+        else { address.focus(); address.select(); }
+        break;
+      }
+      case 'reload': { const w = activeWebview(); if (w) w.reload(); break; }
+      case 'hardReload': { const w = activeWebview(); if (w) w.reloadIgnoringCache(); break; }
+      case 'find': openFind(); break;
+      case 'findNext': doFind(findInput.value, true, true); break;
+      case 'findPrev': doFind(findInput.value, false, true); break;
+      case 'nextTab': cycleTab(1); break;
+      case 'prevTab': cycleTab(-1); break;
+      case 'zoomIn': zoomActive(0.5); break;
+      case 'zoomOut': zoomActive(-0.5); break;
+      case 'zoomReset': zoomActive(0); break;
+      default:
+        if (action.indexOf('tab:') === 0) {
+          const n = +action.slice(4);
+          const ids = [...tabs.keys()];
+          const idx = n === 9 ? ids.length - 1 : n - 1;
+          if (ids[idx] != null) setActive(ids[idx]);
+        }
+    }
+  }
+  // from webview guests (forwarded by the main process)
+  window.itera.onShortcut(handleShortcut);
+  // from the chrome / new-tab page itself
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !findbar.classList.contains('hidden')) { closeFind(); return; }
+    const action = shortcutFromEvent(e);
+    if (action) { e.preventDefault(); handleShortcut(action); }
+  });
+  function shortcutFromEvent(e) {
+    const ctrl = e.ctrlKey || e.metaKey;
+    const key = (e.key || '').toLowerCase();
+    if (key === 'f5') return ctrl ? 'hardReload' : 'reload';
+    if (key === 'f3') return e.shiftKey ? 'findPrev' : 'findNext';
+    if (!ctrl) return null;
+    if (key === 't') return 'newTab';
+    if (key === 'w') return 'closeTab';
+    if (key === 'l') return 'focusAddress';
+    if (key === 'r') return e.shiftKey ? 'hardReload' : 'reload';
+    if (key === 'f') return 'find';
+    if (key === '=' || key === '+') return 'zoomIn';
+    if (key === '-' || key === '_') return 'zoomOut';
+    if (key === '0') return 'zoomReset';
+    if (key.length === 1 && key >= '1' && key <= '9') return 'tab:' + key;
+    return null;
+  }
 
   // links that try to open a new window become new tabs
   window.itera.onNewTab((payload) => {
