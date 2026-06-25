@@ -221,7 +221,15 @@ button{font-family:inherit;}
 .idc-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;font-size:13px;}
 .idc-row>span{color:var(--grey);flex:none;}
 .idc-row>b{font-weight:600;color:var(--ink);text-align:right;}
-.idc-row>b.idc-warn{color:var(--accent-2);}
+/* a fixed limitation, set apart from the live session rows so it doesn't read
+   as a toggleable status */
+.idc-caveat{
+  display:flex;align-items:flex-start;gap:8px;
+  margin:13px 0 0;padding-top:13px;border-top:1px solid var(--line);
+  font-size:12px;line-height:1.45;color:var(--grey);
+}
+.idc-caveat svg{width:15px;height:15px;flex:none;margin-top:1px;color:var(--accent-2);}
+.idc-caveat b{color:var(--accent-2);font-weight:700;}
 .idc-note{margin:14px 0 0;font-size:12px;line-height:1.5;color:var(--grey);}
 .idc-die{margin:10px 0 14px;font-size:12.5px;font-weight:600;font-style:italic;
   font-family:"Cormorant Garamond",Georgia,serif;font-size:15px;

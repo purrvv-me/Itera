@@ -81,9 +81,12 @@
       <div class="idc-row"><span>Age</span><b id="idc-age">—</b></div>
       <div class="idc-row"><span>Cookies &amp; history</span><b>this session only</b></div>
       <div class="idc-row"><span>Fingerprint</span><b>randomized &amp; masked</b></div>
-      <div class="idc-row"><span>Network IP</span><b class="idc-warn">visible · no VPN</b></div>
     </div>
-    <p class="idc-note">A fresh disguise every launch: randomized fingerprint (canvas, WebGL, audio), no cookies or history kept, WebRTC local-IP leak blocked. ITERA isn't a VPN — your network address is still visible to the sites you open.</p>
+    <p class="idc-note">A fresh disguise every launch: randomized fingerprint (canvas, WebGL, audio), no cookies or history kept, WebRTC local-IP leak blocked.</p>
+    <div class="idc-caveat">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 8h.01M11.4 11.5h.9V16h.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>ITERA <b>isn't a VPN</b> — sites always see your real IP address. To hide it you'd need a VPN or Tor.</span>
+    </div>
     <p class="idc-die">Everything burns the moment you close.</p>
     <button id="idc-kill" class="idc-kill" type="button">Kill session now</button>
   </div>
